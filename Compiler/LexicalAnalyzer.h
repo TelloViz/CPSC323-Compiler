@@ -5,9 +5,22 @@
 namespace LA // Lexical Analysis 
 {
 
-	enum eToken{ACCEPT=0, IDENTIFIER, INTEGER, REAL, KEYWORD, SEPARATOR, BLANK, UNKNOWN};
+	enum eToken
+	// Valid Rat21F tokens
+	{
+		ACCEPT=0, 
+		IDENTIFIER, 
+		INTEGER, 
+		REAL, 
+		KEYWORD, 
+		SEPARATOR, 
+		BLANK, 
+		UNKNOWN
+	};
 
-	const std::unordered_map<eToken, std::string> TOKEN_TO_STRING_MAP{
+	const std::unordered_map<eToken, std::string> TOKEN_TO_STRING_MAP
+	// Map used to convert eToken enumerated values into string values for output
+	{
 		{eToken::ACCEPT, "accept"},
 		{eToken::IDENTIFIER, "identifier"},
 		{eToken::INTEGER, "integer"},
@@ -19,6 +32,7 @@ namespace LA // Lexical Analysis
 	};
 
 	struct LexicalUnit
+	// A data struct holding token and lexeme information for returning to parser
 	{
 		eToken token;
 		std::string tokenString;
@@ -26,6 +40,7 @@ namespace LA // Lexical Analysis
 	};
 
 	class LexicalAnalyzer
+	// Main class of the lexer phase. This is the LexicalAnalyzer itself.
 	{
 	public:
 		explicit LexicalAnalyzer(const std::string& sourceRef);
