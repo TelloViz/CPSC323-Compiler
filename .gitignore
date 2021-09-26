@@ -4,6 +4,12 @@
 *.vcxproj.*
 *.vs
 */Browse/
+*.tlog
+*.log
+*.idb
+*.pdb
+*.recipe
+*.ilk
 
 
 

@@ -1,5 +1,10 @@
 #include "LexicalAnalyzer.h"
 
-LexicalAnalyzer::LexicalAnalyzer(const std::string& sourceRef)
+LA::LexicalAnalyzer::LexicalAnalyzer(const std::string& sourceRef)
 {
+}
+
+LA::LexicalUnit LA::LexicalAnalyzer::Lexer()
+{
+	return LexicalUnit();
 }

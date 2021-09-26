@@ -1,4 +1,5 @@
 #include <string>
+#include <iostream>
 #include "LexicalAnalyzer.h"
 
 
@@ -10,5 +11,7 @@ LA::LexicalAnalyzer lex{ SOURCE };
 
 int main()
 {
+
+	std::cout << LA::TOKEN_TO_STRING_MAP.at(LA::eToken::KEYWORD) << std::endl;
 	return 0;
 }

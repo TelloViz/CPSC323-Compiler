@@ -30,7 +30,7 @@ namespace LA // Lexical Analysis
 	public:
 		explicit LexicalAnalyzer(const std::string& sourceRef);
 
-
+		LexicalUnit Lexer();
 
 	private:
 
