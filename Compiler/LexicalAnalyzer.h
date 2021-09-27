@@ -39,6 +39,11 @@ namespace LA // Lexical Analysis
 		std::string lexeme;
 	};
 
+	
+
+	const int NUM_STATES{ 5 };
+	const int NUM_INPUTS{ 4 };
+
 	class LexicalAnalyzer
 	// Main class of the lexer phase. This is the LexicalAnalyzer itself.
 	{
@@ -48,6 +53,14 @@ namespace LA // Lexical Analysis
 		LexicalUnit Lexer();
 
 	private:
+		
+		//, L, D, \.
+		int StateTable[NUM_STATES][NUM_INPUTS] = 
+		{
+			/*             Input                             */
+			/*             L  D  .                           */
+			/* State */ 
+		};
 
 	};
 
