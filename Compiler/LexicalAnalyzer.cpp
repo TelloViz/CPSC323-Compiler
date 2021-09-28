@@ -7,11 +7,15 @@ LA::LexicalAnalyzer::LexicalAnalyzer(const std::string& sourceRef)
 
 LA::LexicalUnit LA::LexicalAnalyzer::Lexer()
 {
-	if( !IsEOF())
+	while( !IsEOF())
 	{
 		if (IsBlank())
 		{
-
+			++m_currentIndex;
 		}
 	}
+
+	// m_currentIndex should be either pointing at the first non-blank index or the end of file at this point.
+
+
 }
