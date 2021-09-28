@@ -7,8 +7,11 @@ LA::LexicalAnalyzer::LexicalAnalyzer(const std::string& sourceRef)
 
 LA::LexicalUnit LA::LexicalAnalyzer::Lexer()
 {
-	if( !IsEOF && !IsBlank())
+	if( !IsEOF())
 	{
-		
+		if (IsBlank())
+		{
+
+		}
 	}
 }
