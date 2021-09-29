@@ -13,6 +13,6 @@ LA::LexicalAnalyzer lex{ SOURCE };
 int main()
 {
 
-	std::cout << LA::TOKEN_TO_STRING_MAP.at(LA::eToken::KEYWORD) << std::endl;
+	auto tok = lex.Lexer();
 	return 0;
 }

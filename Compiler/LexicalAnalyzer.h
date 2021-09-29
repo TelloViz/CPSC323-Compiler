@@ -7,7 +7,7 @@
 namespace LA // Lexical Analysis 
 {
 
-	enum eStates
+	enum class eStates
 	{
 		START = 0,
 		IDENTIFIER = 1,
@@ -17,14 +17,15 @@ namespace LA // Lexical Analysis
 		UNKNOWN = 5
 	};
 
-	std::list<int> acceptanceStates
+	std::list<eStates> acceptanceStates
 	{ 
 		eStates::IDENTIFIER, 
 		eStates::INTEGER, 
 		eStates::REAL, 
-		eStates::UNKNOWN };
+		eStates::UNKNOWN 
+	};
 
-	enum eToken
+	enum class eToken
 		// Valid Rat21F tokens
 	{
 		IDENTIFIER, 
@@ -58,13 +59,13 @@ namespace LA // Lexical Analysis
 		std::string lexeme;
 	};
 
-	enum eInputType
+	enum class eInputType
 	{
-		LETTER=1, 
-		DIGIT=2, 
-		PERIOD=3, 
-		BLANK, 
-		UNKNOWN
+		LETTER_INPUT=1, 
+		DIGIT_INPUT=2, 
+		PERIOD_INPUT=3, 
+		BLANK_INPUT, 
+		UNKNOWN_INPUT
 	};
 
 	const int NUM_STATES{ 6 };
@@ -77,7 +78,7 @@ namespace LA // Lexical Analysis
 		explicit LexicalAnalyzer(const std::string& sourceRef);
 
 		LexicalUnit Lexer();
-		bool IsEOF() const { return m_source[m_currentIndex] == NULL; }
+		bool IsEOF() const { return m_currentIndex > m_source.length(); }
 
 	private:
 
@@ -104,8 +105,7 @@ namespace LA // Lexical Analysis
 			"get",	 "while"		"+",			"}",
 			"{",		 ", ",		"; ",		"-",
 			"#",		 "*",		"/",			">",
-			"<",		 "=>",		"!=",		"==",
-			"="
+			"<",		 "=>",		"!=",		"="
 			
 		};
 
