@@ -33,7 +33,8 @@ namespace LA // Lexical Analysis
 		KEYWORD, 
 		SEPARATOR, 
 		BLANK, 
-		UNKNOWN
+		UNKNOWN,
+		NO_TOKEN
 	};
 
 	const std::unordered_map<eToken, std::string> TOKEN_TO_STRING_MAP
@@ -45,7 +46,8 @@ namespace LA // Lexical Analysis
 		{eToken::KEYWORD, "keyword"},
 		{eToken::SEPARATOR, "separator"},
 		{eToken::BLANK, "blank"},
-		{eToken::UNKNOWN, "unknown"}
+		{eToken::UNKNOWN, "unknown"},
+		{eToken::NO_TOKEN, "no_token"}
 	};
 
 	struct LexicalUnit
@@ -56,7 +58,14 @@ namespace LA // Lexical Analysis
 		std::string lexeme;
 	};
 
-	
+	enum eInputType
+	{
+		LETTER=1, 
+		DIGIT=2, 
+		PERIOD=3, 
+		BLANK, 
+		UNKNOWN
+	};
 
 	const int NUM_STATES{ 6 };
 	const int NUM_INPUTS{ 3 };
@@ -74,6 +83,7 @@ namespace LA // Lexical Analysis
 
 
 		bool IsBlank() const { return isspace(m_source[m_currentIndex]); }
+		bool IsDelimiter(char ch) const {return std::find(m_delimiters.begin(), m_delimiters.end(), ch) != m_delimiters.end();}
 		bool IsAccepted() const { return std::find(acceptanceStates.begin(), acceptanceStates.end(), m_currentState) != acceptanceStates.end(); }
 
 
@@ -85,7 +95,7 @@ namespace LA // Lexical Analysis
 		eStates m_currentState;
 		const std::string m_source;
 
-		std::list<std::string> m_delimiters{ ";", " ", "\t", "\n" };
+		std::list<std::string> m_delimiters{ ";", " ", "\t", "\n", "{", "}", "(", ")"};
 		std::list <std::string> m_keywords
 		{
 			"true",	 "function",	"integer",	"false",	
@@ -99,8 +109,7 @@ namespace LA // Lexical Analysis
 			
 		};
 
-		//, L, D, \.
-		int StateTable[NUM_STATES][NUM_INPUTS+1] = 
+		eStates StateTable[NUM_STATES][NUM_INPUTS+1] = 
 		{
 			/*                                                         Input                                           */
 
