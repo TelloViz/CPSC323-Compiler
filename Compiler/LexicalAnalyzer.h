@@ -68,17 +68,21 @@ namespace LA // Lexical Analysis
 		explicit LexicalAnalyzer(const std::string& sourceRef);
 
 		LexicalUnit Lexer();
+		bool IsEOF() const { return m_source[m_currentIndex] == NULL; }
 
 	private:
 
-		bool IsEOF() const { return m_source[m_currentIndex] == NULL; }
+		
 		bool IsBlank() const { return isspace(m_source[m_currentIndex]); }
 		bool IsAccepted() const { return std::find(acceptanceStates.begin(), acceptanceStates.end(), m_currentState) != acceptanceStates.end(); }
+
+
+		void IncrementIndex() { ++m_currentIndex;  }
 
 	private:
 		
 		int m_currentIndex;
-		eStates m_currentState{ eStates::START };
+		eStates m_currentState;
 		const std::string m_source;
 
 		std::list<std::string> m_delimiters{ ";", " ", "\t", "\n" };

@@ -1,21 +1,20 @@
 #include "LexicalAnalyzer.h"
 
 LA::LexicalAnalyzer::LexicalAnalyzer(const std::string& sourceRef)
-	: m_source{ sourceRef }, m_currentIndex{ 0 }
+	: m_source{ sourceRef }, m_currentIndex{ 0 }, m_currentState{eStates::START}
 {
 }
 
+// Call Lexer to recieve next token
 LA::LexicalUnit LA::LexicalAnalyzer::Lexer()
 {
-	while( !IsEOF())
+	// Increment source index to next non-blank character
+	while (!IsEOF() && IsBlank())
 	{
-		if (IsBlank())
-		{
-			++m_currentIndex;
-		}
+		IncrementIndex();
 	}
 
-	// m_currentIndex should be either pointing at the first non-blank index or the end of file at this point.
-
+	
 
 }
+
