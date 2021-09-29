@@ -62,7 +62,7 @@ namespace LA // Lexical Analysis
 	const int NUM_INPUTS{ 3 };
 
 	class LexicalAnalyzer
-	// Main class of the lexer phase. This is the LexicalAnalyzer itself.
+		// Main class of the lexer phase. This is the LexicalAnalyzer itself.
 	{
 	public:
 		explicit LexicalAnalyzer(const std::string& sourceRef);
@@ -72,21 +72,32 @@ namespace LA // Lexical Analysis
 
 	private:
 
-		
+
 		bool IsBlank() const { return isspace(m_source[m_currentIndex]); }
 		bool IsAccepted() const { return std::find(acceptanceStates.begin(), acceptanceStates.end(), m_currentState) != acceptanceStates.end(); }
 
 
-		void IncrementIndex() { ++m_currentIndex;  }
+		void IncrementIndex() { ++m_currentIndex; }
 
 	private:
-		
+
 		int m_currentIndex;
 		eStates m_currentState;
 		const std::string m_source;
 
 		std::list<std::string> m_delimiters{ ";", " ", "\t", "\n" };
-		
+		std::list <std::string> m_keywords
+		{
+			"true",	 "function",	"integer",	"false",	
+			"boolean", "real",		"if",		"endif",
+			"<=",	 "else",		"return",		"put",	
+			"get",	 "while"		"+",			"}",
+			"{",		 ", ",		"; ",		"-",
+			"#",		 "*",		"/",			">",
+			"<",		 "=>",		"!=",		"==",
+			"="
+			
+		};
 
 		//, L, D, \.
 		int StateTable[NUM_STATES][NUM_INPUTS+1] = 
