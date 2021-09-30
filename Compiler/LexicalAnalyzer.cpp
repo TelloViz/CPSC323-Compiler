@@ -1,7 +1,8 @@
 #include "LexicalAnalyzer.h"
 
-LA::LexicalAnalyzer::LexicalAnalyzer(const std::string& sourceRef)
-	: m_source{ sourceRef }, m_currentIndex{ 0 }, m_currentState{eStates::START}
+
+LA::LexicalAnalyzer::LexicalAnalyzer(std::string sourceRef)
+	: m_source{ sourceRef }, m_currentIndex{ 0 }, m_currentState{ eStates::START }
 {
 }
 
@@ -10,39 +11,74 @@ LA::LexicalUnit LA::LexicalAnalyzer::Lexer()
 {
 	if (IsEOF())
 	{
-		LexicalUnit lexUnit;
-		lexUnit.token = eToken::NO_TOKEN;
+		LA::LexicalUnit lexUnit;
+		lexUnit.token = LA::eToken::NO_TOKEN;
 		lexUnit.lexeme = TOKEN_TO_STRING_MAP.at(lexUnit.token);
 		lexUnit.tokenString = TOKEN_TO_STRING_MAP.at(lexUnit.token);
 		return lexUnit;
 	}
 
-	// Increment source index to next non-blank character
-	while (!IsEOF() && IsBlank())
-	{
-		IncrementIndex();
-	}
 	
+
 	// Cache current source char and check its input category (letter, digit, .)
-	std::string currCh{ m_source[m_currentIndex] };
-	eInputType inputType;
-	if (isalpha(currCh.front()))
-	{
-		inputType = eInputType::LETTER_INPUT;
-	}
-	else if (isdigit(currCh.front()))
-	{
-		inputType = eInputType::DIGIT_INPUT;
-	}
-	else if (isspace(currCh.front()))
-	{
-		inputType = eInputType::PERIOD_INPUT;
-	}
-
-	eStates newState;
-	newState = StateTable[static_cast<int>(m_currentState)][static_cast<int>(newState)];
-
 	
+	std::string tokenString{}, lexeme{};
+	LA::eToken token{};
+	m_currentState = LA::eStates::START;
+	LA::eStates prevState{ m_currentState };
 
+	char currCh(m_source.at(m_currentIndex));
+	int tokenStartIndex{ m_currentIndex };
+	int tokenEndIndex{ m_currentIndex };
+
+	int currStateEnumAsIndex{};
+	int inputEnumAsIndex{};
+
+	// Increment source index to next non-blank character
+	while (!IsEOF() && IsBlank(currCh))
+	{
+		IncrementSourceIndex();
+		currCh = m_source.at(m_currentIndex);
+	}
+
+	/* This while loop should grab each subsequent character
+	 as long as it is not a Delimiter or EOF */
+	while (!IsEOF() && !IsDelimiter(currCh)) 
+	{
+		currStateEnumAsIndex = static_cast<int>(m_currentState);
+		inputEnumAsIndex = static_cast<int>(InputType(currCh));
+		prevState = m_currentState;
+		m_currentState = StateTable[currStateEnumAsIndex][inputEnumAsIndex];
+		tokenEndIndex = m_currentIndex;
+		IncrementSourceIndex();
+		currCh = m_source.at(m_currentIndex);
+	}
+
+	if (IsAccepted())
+	{
+		token = STATE_TO_TOKEN_MAP.at(m_currentState);
+		tokenString = TOKEN_TO_STRING_MAP.at(token);
+		int strLength{ m_currentIndex - tokenStartIndex };
+		lexeme = std::string(m_source.substr(tokenStartIndex, strLength));
+		return LA::LexicalUnit{ token, tokenString, lexeme };
+	}
 }
 
+LA::eInputType LA::LexicalAnalyzer::InputType(char ch) const
+{
+	LA::eInputType inputType{ LA::eInputType::UNKNOWN_INPUT };
+	if (isalpha(ch))
+	{
+		inputType = LA::eInputType::LETTER_INPUT;
+	}
+	else if (isdigit(ch))
+	{
+		inputType = LA::eInputType::DIGIT_INPUT;
+	}
+	else if (isspace(ch))
+	{
+		inputType = LA::eInputType::PERIOD_INPUT;
+	}
+
+	return inputType;
+}

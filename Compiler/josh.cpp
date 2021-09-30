@@ -1,18 +1,24 @@
 #include <string>
 #include <iostream>
+#include <iomanip>
 #include "LexicalAnalyzer.h"
 
 
-const std::string SOURCE{
-	"while (fahr <= upper) a = 23.00; /* this is sample */"
+std::string SOURCE{
+	"while testing strings does it work"
 };
 
-LA::LexicalAnalyzer lex{ SOURCE };
+LA::LexicalAnalyzer lex(SOURCE);
 
 
 int main()
 {
-
-	auto tok = lex.Lexer();
+	std::cout << "    Token    |    Lexeme    \n" << std::setfill('-') << std::setw(29) << '\n';
+	while (!lex.IsEOF())
+	{
+		LA::LexicalUnit lexUnit = lex.Lexer();
+		std::cout << std::setw(13) << lexUnit.tokenString << "|" << std::setw(14) << lexUnit.lexeme << '\n';
+	}
+	
 	return 0;
 }

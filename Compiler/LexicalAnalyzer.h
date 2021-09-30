@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <list>
 #include <algorithm>
+//#include <cstdlib>
 
 namespace LA // Lexical Analysis 
 {
@@ -17,13 +18,7 @@ namespace LA // Lexical Analysis
 		UNKNOWN = 5
 	};
 
-	std::list<eStates> acceptanceStates
-	{ 
-		eStates::IDENTIFIER, 
-		eStates::INTEGER, 
-		eStates::REAL, 
-		eStates::UNKNOWN 
-	};
+	
 
 	enum class eToken
 		// Valid Rat21F tokens
@@ -38,18 +33,7 @@ namespace LA // Lexical Analysis
 		NO_TOKEN
 	};
 
-	const std::unordered_map<eToken, std::string> TOKEN_TO_STRING_MAP
-	// Map used to convert eToken enumerated values into string values for output
-	{
-		{eToken::IDENTIFIER, "identifier"},
-		{eToken::INTEGER, "integer"},
-		{eToken::REAL, "real"},
-		{eToken::KEYWORD, "keyword"},
-		{eToken::SEPARATOR, "separator"},
-		{eToken::BLANK, "blank"},
-		{eToken::UNKNOWN, "unknown"},
-		{eToken::NO_TOKEN, "no_token"}
-	};
+	
 
 	struct LexicalUnit
 	// A data struct holding token and lexeme information for returning to parser
@@ -75,28 +59,30 @@ namespace LA // Lexical Analysis
 		// Main class of the lexer phase. This is the LexicalAnalyzer itself.
 	{
 	public:
-		explicit LexicalAnalyzer(const std::string& sourceRef);
+		explicit LexicalAnalyzer(std::string sourceRef);
 
 		LexicalUnit Lexer();
-		bool IsEOF() const { return m_currentIndex > m_source.length(); }
+		bool IsEOF() const { return m_currentIndex >= m_source.length(); }
 
 	private:
 
 
-		bool IsBlank() const { return isspace(m_source[m_currentIndex]); }
+		bool IsBlank(char ch) const { return isspace(m_source.at(m_currentIndex)); }
 		bool IsDelimiter(char ch) const {return std::find(m_delimiters.begin(), m_delimiters.end(), ch) != m_delimiters.end();}
-		bool IsAccepted() const { return std::find(acceptanceStates.begin(), acceptanceStates.end(), m_currentState) != acceptanceStates.end(); }
+		bool IsAccepted() const { return STATE_TO_TOKEN_MAP.find(m_currentState) != STATE_TO_TOKEN_MAP.end(); }
 
 
-		void IncrementIndex() { ++m_currentIndex; }
+		void IncrementSourceIndex() { ++m_currentIndex; }
+
+		eInputType InputType(const char ch) const;
 
 	private:
 
 		int m_currentIndex;
 		eStates m_currentState;
-		const std::string m_source;
+		std::string m_source;
 
-		std::list<std::string> m_delimiters{ ";", " ", "\t", "\n", "{", "}", "(", ")"};
+		std::list<char> m_delimiters{ ';', ' ', '\t', '\n', '{', '}', '(', ')'};
 		std::list <std::string> m_keywords
 		{
 			"true",	 "function",	"integer",	"false",	
@@ -120,6 +106,27 @@ namespace LA // Lexical Analysis
 			/* State 3 */	  eStates::INCOMPLETE_REAL,   eStates::UNKNOWN,		   eStates::REAL,		 eStates::UNKNOWN,
 			/* State 4 */	  eStates::REAL,			eStates::UNKNOWN,	        eStates::REAL,		 eStates::UNKNOWN,
 			/* State 5 */	  eStates::UNKNOWN,			eStates::UNKNOWN,		   eStates::UNKNOWN,	 eStates::UNKNOWN
+		};
+
+		std::unordered_map<LA::eStates, LA::eToken> STATE_TO_TOKEN_MAP
+		{
+			{eStates::IDENTIFIER, eToken::IDENTIFIER},
+			{eStates::INTEGER, eToken::INTEGER},
+			{eStates::REAL, eToken::REAL},
+			{eStates::UNKNOWN, eToken::UNKNOWN}
+		};
+
+		const std::unordered_map<eToken, std::string> TOKEN_TO_STRING_MAP
+			// Map used to convert eToken enumerated values into string values for output
+		{
+			{eToken::IDENTIFIER, "identifier"},
+			{eToken::INTEGER, "integer"},
+			{eToken::REAL, "real"},
+			{eToken::KEYWORD, "keyword"},
+			{eToken::SEPARATOR, "separator"},
+			{eToken::BLANK, "blank"},
+			{eToken::UNKNOWN, "unknown"},
+			{eToken::NO_TOKEN, "no_token"}
 		};
 
 	};
