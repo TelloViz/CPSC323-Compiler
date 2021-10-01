@@ -23,14 +23,15 @@ namespace LA // Lexical Analysis
 	enum class eToken
 		// Valid Rat21F tokens
 	{
-		IDENTIFIER, 
-		INTEGER,
-		REAL,
+		IDENTIFIER=1, 
+		INTEGER=2,
+		NO_TOKEN = 3,
+		REAL=4,
 		KEYWORD, 
 		SEPARATOR, 
 		BLANK, 
-		UNKNOWN,
-		NO_TOKEN
+		UNKNOWN
+		
 	};
 
 	

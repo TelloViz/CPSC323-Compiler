@@ -50,13 +50,14 @@ LA::LexicalUnit LA::LexicalAnalyzer::Lexer()
 	 as long as it is not a Delimiter or EOF */
 	while (!IsEOF() && !IsDelimiter(currCh)) 
 	{
+		currCh = m_source.at(m_currentIndex);
 		currStateEnumAsIndex = static_cast<int>(m_currentState);
 		inputEnumAsIndex = static_cast<int>(InputType(currCh));
 		prevState = m_currentState;
 		m_currentState = StateTable[currStateEnumAsIndex][inputEnumAsIndex];
 		tokenEndIndex = m_currentIndex;
-		  
-		currCh = m_source.at(m_currentIndex);
+		IncrementSourceIndex();
+		
 	}
 
 	if (IsAccepted())
@@ -90,6 +91,10 @@ LA::eInputType LA::LexicalAnalyzer::InputType(char ch) const
 		inputType = LA::eInputType::DIGIT_INPUT;
 	}
 	else if (isspace(ch))
+	{
+		inputType = LA::eInputType::BLANK_INPUT;
+	}
+	else if (ch == char('.'))
 	{
 		inputType = LA::eInputType::PERIOD_INPUT;
 	}

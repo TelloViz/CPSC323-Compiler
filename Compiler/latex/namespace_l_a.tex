@@ -1,0 +1,168 @@
+\hypertarget{namespace_l_a}{}\doxysection{LA Namespace Reference}
+\label{namespace_l_a}\index{LA@{LA}}
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{class_l_a_1_1_lexical_analyzer}{Lexical\+Analyzer}}
+\item 
+struct \mbox{\hyperlink{struct_l_a_1_1_lexical_unit}{Lexical\+Unit}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum class \mbox{\hyperlink{namespace_l_a_a137c31fb5fde6b44a049c1ec0db0f153}{e\+States}} \{ \newline
+\mbox{\hyperlink{namespace_l_a_a137c31fb5fde6b44a049c1ec0db0f153ab078ffd28db767c502ac367053f6e0ac}{START}} = 0
+, \mbox{\hyperlink{namespace_l_a_a137c31fb5fde6b44a049c1ec0db0f153a6fcc416051346daca31c571646af127a}{IDENTIFIER}} = 1
+, \mbox{\hyperlink{namespace_l_a_a137c31fb5fde6b44a049c1ec0db0f153a5d5cd46919fa987731fb2edefe0f2a0c}{INTEGER}} = 2
+, \mbox{\hyperlink{namespace_l_a_a137c31fb5fde6b44a049c1ec0db0f153a0622d5d3ead60f9871b0e7ac7e78cd0d}{INCOMPLETE\+\_\+\+REAL}} = 3
+, \newline
+\mbox{\hyperlink{namespace_l_a_a137c31fb5fde6b44a049c1ec0db0f153a8cf125b0e31559ba75a9d9b4f818a554}{REAL}} = 4
+, \mbox{\hyperlink{namespace_l_a_a137c31fb5fde6b44a049c1ec0db0f153a696b031073e74bf2cb98e5ef201d4aa3}{UNKNOWN}} = 5
+ \}
+\item 
+enum class \mbox{\hyperlink{namespace_l_a_a3f30ce58707e0ec3b85c2d2b2777a2e5}{e\+Token}} \{ \newline
+\mbox{\hyperlink{namespace_l_a_a3f30ce58707e0ec3b85c2d2b2777a2e5a6fcc416051346daca31c571646af127a}{IDENTIFIER}}
+, \mbox{\hyperlink{namespace_l_a_a3f30ce58707e0ec3b85c2d2b2777a2e5a5d5cd46919fa987731fb2edefe0f2a0c}{INTEGER}}
+, \mbox{\hyperlink{namespace_l_a_a3f30ce58707e0ec3b85c2d2b2777a2e5a8cf125b0e31559ba75a9d9b4f818a554}{REAL}}
+, \mbox{\hyperlink{namespace_l_a_a3f30ce58707e0ec3b85c2d2b2777a2e5a780bc0722dd01d4a8d9869f060734be6}{KEYWORD}}
+, \newline
+\mbox{\hyperlink{namespace_l_a_a3f30ce58707e0ec3b85c2d2b2777a2e5a70bb8dc90aa233a66b91ae2e9dc1a850}{SEPARATOR}}
+, \mbox{\hyperlink{namespace_l_a_a3f30ce58707e0ec3b85c2d2b2777a2e5a56f031dd03707d695f76c63ddbf40bd7}{BLANK}}
+, \mbox{\hyperlink{namespace_l_a_a3f30ce58707e0ec3b85c2d2b2777a2e5a696b031073e74bf2cb98e5ef201d4aa3}{UNKNOWN}}
+, \mbox{\hyperlink{namespace_l_a_a3f30ce58707e0ec3b85c2d2b2777a2e5a93d94cf18aec8b0cc20347a52765b83d}{NO\+\_\+\+TOKEN}}
+ \}
+\item 
+enum class \mbox{\hyperlink{namespace_l_a_a30727595914f218f3d4093549c5743e8}{e\+Input\+Type}} \{ \newline
+\mbox{\hyperlink{namespace_l_a_a30727595914f218f3d4093549c5743e8a0af5573a9364f2115569b72a9c0488c2}{LETTER\+\_\+\+INPUT}} =1
+, \mbox{\hyperlink{namespace_l_a_a30727595914f218f3d4093549c5743e8ab08ff5c4dcf0d55aee69feff2038ce13}{DIGIT\+\_\+\+INPUT}} =2
+, \mbox{\hyperlink{namespace_l_a_a30727595914f218f3d4093549c5743e8aab335f2f60bad7d9ecdf5697d6de1f48}{PERIOD\+\_\+\+INPUT}} =3
+, \mbox{\hyperlink{namespace_l_a_a30727595914f218f3d4093549c5743e8a52f6501b9eb2cd47c3834ebc6868ef29}{BLANK\+\_\+\+INPUT}}
+, \newline
+\mbox{\hyperlink{namespace_l_a_a30727595914f218f3d4093549c5743e8a96ead320fac62154f743c4132439e21f}{UNKNOWN\+\_\+\+INPUT}}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+const int \mbox{\hyperlink{namespace_l_a_a0942f2a29ab888769357e2abdb37b60c}{NUM\+\_\+\+STATES}} \{ 6 \}
+\item 
+const int \mbox{\hyperlink{namespace_l_a_aecc90e9c0bb6ef977b67b4fc57b2f930}{NUM\+\_\+\+INPUTS}} \{ 3 \}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Enumeration Type Documentation}
+\mbox{\Hypertarget{namespace_l_a_a30727595914f218f3d4093549c5743e8}\label{namespace_l_a_a30727595914f218f3d4093549c5743e8}} 
+\index{LA@{LA}!eInputType@{eInputType}}
+\index{eInputType@{eInputType}!LA@{LA}}
+\doxysubsubsection{\texorpdfstring{eInputType}{eInputType}}
+{\footnotesize\ttfamily enum class \mbox{\hyperlink{namespace_l_a_a30727595914f218f3d4093549c5743e8}{LA\+::e\+Input\+Type}}\hspace{0.3cm}{\ttfamily [strong]}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LETTER\_INPUT@{LETTER\_INPUT}!LA@{LA}}\index{LA@{LA}!LETTER\_INPUT@{LETTER\_INPUT}}}\mbox{\Hypertarget{namespace_l_a_a30727595914f218f3d4093549c5743e8a0af5573a9364f2115569b72a9c0488c2}\label{namespace_l_a_a30727595914f218f3d4093549c5743e8a0af5573a9364f2115569b72a9c0488c2}} 
+LETTER\+\_\+\+INPUT&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{DIGIT\_INPUT@{DIGIT\_INPUT}!LA@{LA}}\index{LA@{LA}!DIGIT\_INPUT@{DIGIT\_INPUT}}}\mbox{\Hypertarget{namespace_l_a_a30727595914f218f3d4093549c5743e8ab08ff5c4dcf0d55aee69feff2038ce13}\label{namespace_l_a_a30727595914f218f3d4093549c5743e8ab08ff5c4dcf0d55aee69feff2038ce13}} 
+DIGIT\+\_\+\+INPUT&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PERIOD\_INPUT@{PERIOD\_INPUT}!LA@{LA}}\index{LA@{LA}!PERIOD\_INPUT@{PERIOD\_INPUT}}}\mbox{\Hypertarget{namespace_l_a_a30727595914f218f3d4093549c5743e8aab335f2f60bad7d9ecdf5697d6de1f48}\label{namespace_l_a_a30727595914f218f3d4093549c5743e8aab335f2f60bad7d9ecdf5697d6de1f48}} 
+PERIOD\+\_\+\+INPUT&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{BLANK\_INPUT@{BLANK\_INPUT}!LA@{LA}}\index{LA@{LA}!BLANK\_INPUT@{BLANK\_INPUT}}}\mbox{\Hypertarget{namespace_l_a_a30727595914f218f3d4093549c5743e8a52f6501b9eb2cd47c3834ebc6868ef29}\label{namespace_l_a_a30727595914f218f3d4093549c5743e8a52f6501b9eb2cd47c3834ebc6868ef29}} 
+BLANK\+\_\+\+INPUT&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UNKNOWN\_INPUT@{UNKNOWN\_INPUT}!LA@{LA}}\index{LA@{LA}!UNKNOWN\_INPUT@{UNKNOWN\_INPUT}}}\mbox{\Hypertarget{namespace_l_a_a30727595914f218f3d4093549c5743e8a96ead320fac62154f743c4132439e21f}\label{namespace_l_a_a30727595914f218f3d4093549c5743e8a96ead320fac62154f743c4132439e21f}} 
+UNKNOWN\+\_\+\+INPUT&\\
+\hline
+
+\end{DoxyEnumFields}
+\mbox{\Hypertarget{namespace_l_a_a137c31fb5fde6b44a049c1ec0db0f153}\label{namespace_l_a_a137c31fb5fde6b44a049c1ec0db0f153}} 
+\index{LA@{LA}!eStates@{eStates}}
+\index{eStates@{eStates}!LA@{LA}}
+\doxysubsubsection{\texorpdfstring{eStates}{eStates}}
+{\footnotesize\ttfamily enum class \mbox{\hyperlink{namespace_l_a_a137c31fb5fde6b44a049c1ec0db0f153}{LA\+::e\+States}}\hspace{0.3cm}{\ttfamily [strong]}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{START@{START}!LA@{LA}}\index{LA@{LA}!START@{START}}}\mbox{\Hypertarget{namespace_l_a_a137c31fb5fde6b44a049c1ec0db0f153ab078ffd28db767c502ac367053f6e0ac}\label{namespace_l_a_a137c31fb5fde6b44a049c1ec0db0f153ab078ffd28db767c502ac367053f6e0ac}} 
+START&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{IDENTIFIER@{IDENTIFIER}!LA@{LA}}\index{LA@{LA}!IDENTIFIER@{IDENTIFIER}}}\mbox{\Hypertarget{namespace_l_a_a137c31fb5fde6b44a049c1ec0db0f153a6fcc416051346daca31c571646af127a}\label{namespace_l_a_a137c31fb5fde6b44a049c1ec0db0f153a6fcc416051346daca31c571646af127a}} 
+IDENTIFIER&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{INTEGER@{INTEGER}!LA@{LA}}\index{LA@{LA}!INTEGER@{INTEGER}}}\mbox{\Hypertarget{namespace_l_a_a137c31fb5fde6b44a049c1ec0db0f153a5d5cd46919fa987731fb2edefe0f2a0c}\label{namespace_l_a_a137c31fb5fde6b44a049c1ec0db0f153a5d5cd46919fa987731fb2edefe0f2a0c}} 
+INTEGER&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{INCOMPLETE\_REAL@{INCOMPLETE\_REAL}!LA@{LA}}\index{LA@{LA}!INCOMPLETE\_REAL@{INCOMPLETE\_REAL}}}\mbox{\Hypertarget{namespace_l_a_a137c31fb5fde6b44a049c1ec0db0f153a0622d5d3ead60f9871b0e7ac7e78cd0d}\label{namespace_l_a_a137c31fb5fde6b44a049c1ec0db0f153a0622d5d3ead60f9871b0e7ac7e78cd0d}} 
+INCOMPLETE\+\_\+\+REAL&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{REAL@{REAL}!LA@{LA}}\index{LA@{LA}!REAL@{REAL}}}\mbox{\Hypertarget{namespace_l_a_a137c31fb5fde6b44a049c1ec0db0f153a8cf125b0e31559ba75a9d9b4f818a554}\label{namespace_l_a_a137c31fb5fde6b44a049c1ec0db0f153a8cf125b0e31559ba75a9d9b4f818a554}} 
+REAL&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UNKNOWN@{UNKNOWN}!LA@{LA}}\index{LA@{LA}!UNKNOWN@{UNKNOWN}}}\mbox{\Hypertarget{namespace_l_a_a137c31fb5fde6b44a049c1ec0db0f153a696b031073e74bf2cb98e5ef201d4aa3}\label{namespace_l_a_a137c31fb5fde6b44a049c1ec0db0f153a696b031073e74bf2cb98e5ef201d4aa3}} 
+UNKNOWN&\\
+\hline
+
+\end{DoxyEnumFields}
+\mbox{\Hypertarget{namespace_l_a_a3f30ce58707e0ec3b85c2d2b2777a2e5}\label{namespace_l_a_a3f30ce58707e0ec3b85c2d2b2777a2e5}} 
+\index{LA@{LA}!eToken@{eToken}}
+\index{eToken@{eToken}!LA@{LA}}
+\doxysubsubsection{\texorpdfstring{eToken}{eToken}}
+{\footnotesize\ttfamily enum class \mbox{\hyperlink{namespace_l_a_a3f30ce58707e0ec3b85c2d2b2777a2e5}{LA\+::e\+Token}}\hspace{0.3cm}{\ttfamily [strong]}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{IDENTIFIER@{IDENTIFIER}!LA@{LA}}\index{LA@{LA}!IDENTIFIER@{IDENTIFIER}}}\mbox{\Hypertarget{namespace_l_a_a3f30ce58707e0ec3b85c2d2b2777a2e5a6fcc416051346daca31c571646af127a}\label{namespace_l_a_a3f30ce58707e0ec3b85c2d2b2777a2e5a6fcc416051346daca31c571646af127a}} 
+IDENTIFIER&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{INTEGER@{INTEGER}!LA@{LA}}\index{LA@{LA}!INTEGER@{INTEGER}}}\mbox{\Hypertarget{namespace_l_a_a3f30ce58707e0ec3b85c2d2b2777a2e5a5d5cd46919fa987731fb2edefe0f2a0c}\label{namespace_l_a_a3f30ce58707e0ec3b85c2d2b2777a2e5a5d5cd46919fa987731fb2edefe0f2a0c}} 
+INTEGER&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{REAL@{REAL}!LA@{LA}}\index{LA@{LA}!REAL@{REAL}}}\mbox{\Hypertarget{namespace_l_a_a3f30ce58707e0ec3b85c2d2b2777a2e5a8cf125b0e31559ba75a9d9b4f818a554}\label{namespace_l_a_a3f30ce58707e0ec3b85c2d2b2777a2e5a8cf125b0e31559ba75a9d9b4f818a554}} 
+REAL&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{KEYWORD@{KEYWORD}!LA@{LA}}\index{LA@{LA}!KEYWORD@{KEYWORD}}}\mbox{\Hypertarget{namespace_l_a_a3f30ce58707e0ec3b85c2d2b2777a2e5a780bc0722dd01d4a8d9869f060734be6}\label{namespace_l_a_a3f30ce58707e0ec3b85c2d2b2777a2e5a780bc0722dd01d4a8d9869f060734be6}} 
+KEYWORD&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{SEPARATOR@{SEPARATOR}!LA@{LA}}\index{LA@{LA}!SEPARATOR@{SEPARATOR}}}\mbox{\Hypertarget{namespace_l_a_a3f30ce58707e0ec3b85c2d2b2777a2e5a70bb8dc90aa233a66b91ae2e9dc1a850}\label{namespace_l_a_a3f30ce58707e0ec3b85c2d2b2777a2e5a70bb8dc90aa233a66b91ae2e9dc1a850}} 
+SEPARATOR&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{BLANK@{BLANK}!LA@{LA}}\index{LA@{LA}!BLANK@{BLANK}}}\mbox{\Hypertarget{namespace_l_a_a3f30ce58707e0ec3b85c2d2b2777a2e5a56f031dd03707d695f76c63ddbf40bd7}\label{namespace_l_a_a3f30ce58707e0ec3b85c2d2b2777a2e5a56f031dd03707d695f76c63ddbf40bd7}} 
+BLANK&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UNKNOWN@{UNKNOWN}!LA@{LA}}\index{LA@{LA}!UNKNOWN@{UNKNOWN}}}\mbox{\Hypertarget{namespace_l_a_a3f30ce58707e0ec3b85c2d2b2777a2e5a696b031073e74bf2cb98e5ef201d4aa3}\label{namespace_l_a_a3f30ce58707e0ec3b85c2d2b2777a2e5a696b031073e74bf2cb98e5ef201d4aa3}} 
+UNKNOWN&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{NO\_TOKEN@{NO\_TOKEN}!LA@{LA}}\index{LA@{LA}!NO\_TOKEN@{NO\_TOKEN}}}\mbox{\Hypertarget{namespace_l_a_a3f30ce58707e0ec3b85c2d2b2777a2e5a93d94cf18aec8b0cc20347a52765b83d}\label{namespace_l_a_a3f30ce58707e0ec3b85c2d2b2777a2e5a93d94cf18aec8b0cc20347a52765b83d}} 
+NO\+\_\+\+TOKEN&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{namespace_l_a_aecc90e9c0bb6ef977b67b4fc57b2f930}\label{namespace_l_a_aecc90e9c0bb6ef977b67b4fc57b2f930}} 
+\index{LA@{LA}!NUM\_INPUTS@{NUM\_INPUTS}}
+\index{NUM\_INPUTS@{NUM\_INPUTS}!LA@{LA}}
+\doxysubsubsection{\texorpdfstring{NUM\_INPUTS}{NUM\_INPUTS}}
+{\footnotesize\ttfamily const int LA\+::\+NUM\+\_\+\+INPUTS \{ 3 \}}
+
+\mbox{\Hypertarget{namespace_l_a_a0942f2a29ab888769357e2abdb37b60c}\label{namespace_l_a_a0942f2a29ab888769357e2abdb37b60c}} 
+\index{LA@{LA}!NUM\_STATES@{NUM\_STATES}}
+\index{NUM\_STATES@{NUM\_STATES}!LA@{LA}}
+\doxysubsubsection{\texorpdfstring{NUM\_STATES}{NUM\_STATES}}
+{\footnotesize\ttfamily const int LA\+::\+NUM\+\_\+\+STATES \{ 6 \}}
+
