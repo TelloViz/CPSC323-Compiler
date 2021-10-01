@@ -5,7 +5,7 @@
 
 
 std::string SOURCE{
-	"123.321"
+	"if  "
 };
 
 LA::LexicalAnalyzer lex(SOURCE);

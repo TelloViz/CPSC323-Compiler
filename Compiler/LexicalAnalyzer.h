@@ -63,14 +63,15 @@ namespace LA // Lexical Analysis
 		explicit LexicalAnalyzer(std::string sourceRef);
 
 		LexicalUnit Lexer();
-		bool IsEOF() const { return m_currentIndex >= m_source.length(); }
+		bool IsEOF() const { return (m_currentIndex + 1) >= m_source.length(); }
 
 	private:
 
 
 		bool IsBlank(char ch) const { return isspace(m_source.at(m_currentIndex)); }
-		bool IsDelimiter(char ch) const {return std::find(m_delimiters.begin(), m_delimiters.end(), ch) != m_delimiters.end();}
-		bool IsAccepted() const { return STATE_TO_TOKEN_MAP.find(m_currentState) != STATE_TO_TOKEN_MAP.end(); }
+		bool IsDelimiter(char ch) const;
+		bool IsAccepted() const;
+		bool IsKeyword(const std::string kw) const;
 
 
 		void IncrementSourceIndex() { ++m_currentIndex; }
@@ -89,11 +90,19 @@ namespace LA // Lexical Analysis
 			"true",	 "function",	"integer",	"false",	
 			"boolean", "real",		"if",		"endif",
 			"<=",	 "else",		"return",		"put",	
-			"get",	 "while"		"+",			"}",
+			"get",	 "while",		"+",			"}",
 			"{",		 ", ",		"; ",		"-",
 			"#",		 "*",		"/",			">",
 			"<",		 "=>",		"!=",		"="
 			
+		};
+
+		std::list <eStates> m_acceptStates
+		{
+			LA::eStates::IDENTIFIER,
+			LA::eStates::INTEGER,
+			LA::eStates::REAL,
+			LA::eStates::UNKNOWN
 		};
 
 		eStates StateTable[NUM_STATES][NUM_INPUTS+1] = 
