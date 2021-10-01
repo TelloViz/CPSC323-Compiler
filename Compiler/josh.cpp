@@ -5,7 +5,7 @@
 
 
 std::string SOURCE{
-	"while testing strings does it work"
+	"while (fahr <= upper) a = 23.00; /* this is sample */"
 };
 
 LA::LexicalAnalyzer lex(SOURCE);

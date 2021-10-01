@@ -50,7 +50,7 @@ LA::LexicalUnit LA::LexicalAnalyzer::Lexer()
 		prevState = m_currentState;
 		m_currentState = StateTable[currStateEnumAsIndex][inputEnumAsIndex];
 		tokenEndIndex = m_currentIndex;
-		IncrementSourceIndex();
+		  
 		currCh = m_source.at(m_currentIndex);
 	}
 
@@ -61,6 +61,15 @@ LA::LexicalUnit LA::LexicalAnalyzer::Lexer()
 		int strLength{ m_currentIndex - tokenStartIndex };
 		lexeme = std::string(m_source.substr(tokenStartIndex, strLength));
 		return LA::LexicalUnit{ token, tokenString, lexeme };
+	}
+	else
+	{
+		token = LA::eToken::UNKNOWN;
+		tokenString = TOKEN_TO_STRING_MAP.at(token);
+		int strLength{ m_currentIndex - tokenStartIndex };
+		lexeme = std::string(m_source.substr(tokenStartIndex, strLength));
+		return LA::LexicalUnit{ token, tokenString, lexeme };
+		 
 	}
 }
 
