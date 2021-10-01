@@ -7,6 +7,11 @@ LA::LexicalAnalyzer::LexicalAnalyzer(std::string sourceRef)
 }
 
 // Call Lexer to recieve next token
+/* **********************Lexer()*********************
+// ** 
+
+
+*/
 LA::LexicalUnit LA::LexicalAnalyzer::Lexer()
 {
 	if (IsEOF())
