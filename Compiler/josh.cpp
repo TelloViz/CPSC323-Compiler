@@ -5,7 +5,7 @@
 
 
 std::string SOURCE{
-	"if  "
+	"  if  "
 };
 
 LA::LexicalAnalyzer lex(SOURCE);
@@ -14,9 +14,9 @@ LA::LexicalAnalyzer lex(SOURCE);
 int main()
 {
 	std::cout << "    Token    |    Lexeme    \n" << std::setfill('-') << std::setw(29) << '\n';
-	while (!lex.IsEOF())
+	LA::LexicalUnit lexUnit;
+	while (lex.Lexer(lexUnit))
 	{
-		LA::LexicalUnit lexUnit = lex.Lexer();
 		std::cout << std::setw(12) << lexUnit.tokenString << "|" << std::setw(12) << lexUnit.lexeme << '\n';
 	}
 	

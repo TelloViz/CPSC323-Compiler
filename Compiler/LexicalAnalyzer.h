@@ -63,20 +63,25 @@ namespace LA // Lexical Analysis
 		explicit LexicalAnalyzer(std::string sourceRef);
 
 		LexicalUnit Lexer();
-		bool IsEOF() const { return (m_currentIndex + 1) >= m_source.length(); }
+		bool Lexer(LexicalUnit& lexUnit);
+		
 
 	private:
 
+		bool IsEOF() const
+		{
+			return m_currentIndex >= static_cast<int>(m_source.length());
+		}
 
-		bool IsBlank(char ch) const { return isspace(m_source.at(m_currentIndex)); }
-		bool IsDelimiter(char ch) const;
+		bool IsBlank(char ch) const { return isspace(ch); }
+		bool IsDelimiter(std::string ch) const;
 		bool IsAccepted() const;
 		bool IsKeyword(const std::string kw) const;
 
 
 		void IncrementSourceIndex() { ++m_currentIndex; }
 
-		eInputType InputType(const char ch) const;
+		eInputType InputType(char ch) const;
 
 	private:
 
@@ -84,17 +89,30 @@ namespace LA // Lexical Analysis
 		eStates m_currentState;
 		std::string m_source;
 
-		std::list<char> m_delimiters{ ';', ' ', '\t', '\n', '{', '}', '(', ')'};
+		std::list<std::string> m_delimiters
+		{ 
+			";", " ", "\t", "\n", "{", "}", "(", ")"
+		};
+
 		std::list <std::string> m_keywords
 		{
 			"true",	 "function",	"integer",	"false",	
 			"boolean", "real",		"if",		"endif",
-			"<=",	 "else",		"return",		"put",	
-			"get",	 "while",		"+",			"}",
-			"{",		 ", ",		"; ",		"-",
-			"#",		 "*",		"/",			">",
-			"<",		 "=>",		"!=",		"="
+			"else",	 "return",	"put",		"get",	 "while"
 			
+		};
+
+		std::list <std::string> m_operators
+		{
+			"<=",	 "+",		"-", 	"*",		
+			"/",		 ">",		"<",		"=>",
+			"!=",	 "="
+		};
+
+		std::list<std::string> m_separators
+		{
+			"}",		"{",		"(",		")",
+			",",	";",		
 		};
 
 		std::list <eStates> m_acceptStates
