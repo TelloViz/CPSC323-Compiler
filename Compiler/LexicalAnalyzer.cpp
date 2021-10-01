@@ -12,35 +12,65 @@ LA::LexicalAnalyzer::LexicalAnalyzer(std::string sourceRef)
 
 
 */
-LA::LexicalUnit LA::LexicalAnalyzer::Lexer()
-{
-	LexicalUnit lexUnit;
-	if (!IsEOF())
-	{
-		LA::eInputType inType = InputType(m_source.at(m_currentIndex));
-		LA::eStates nextState = StateTable[static_cast<int>(m_currentState)][static_cast<int>(inType)];
-	}
-	else
-	{
-		lexUnit.token = LA::eToken::NO_TOKEN;
-		lexUnit.tokenString = TOKEN_TO_STRING_MAP.at(lexUnit.token);
-		lexUnit.lexeme = "EOF";
-		return lexUnit;
-	}
-
-	return lexUnit;
-}
+//LA::LexicalUnit LA::LexicalAnalyzer::Lexer()
+//{
+//	LexicalUnit lexUnit;
+//	if (!IsEOF())
+//	{
+//		LA::eInputType inType = InputType(m_source.at(m_currentIndex));
+//		LA::eStates nextState = StateTable[static_cast<int>(m_currentState)][static_cast<int>(inType)];
+//	}
+//	else
+//	{
+//		lexUnit.token = LA::eToken::NO_TOKEN;
+//		lexUnit.tokenString = TOKEN_TO_STRING_MAP.at(lexUnit.token);
+//		lexUnit.lexeme = "EOF";
+//		return lexUnit;
+//	}
+//
+//	return lexUnit;
+//}
 
 bool LA::LexicalAnalyzer::Lexer(LexicalUnit& lexUnit)
 {
 
-	while (!IsEOF() && IsBlank(m_source.at(m_currentIndex)))
+	char inputChar= ' ';
+
+#pragma region Skip White Space and Position Source Index
+	if (IsEOF(m_currentIndex))
 	{
-		++m_currentIndex;
-		if (IsEOF()) return false;
-	}
+		return false;
+	} // end if(IsEOF())
+	else if (!IsEOF())
+	{
+		inputChar = m_source.at(m_currentIndex);
+		while (!IsEOF(m_currentIndex) && IsBlank(inputChar))
+		{
+			++m_currentIndex;
+		}
+
+		// If we've skipped all white space
+		// and have reached end of file
+		if (IsEOF(m_currentIndex))
+		{
+			return false;
+		}
+	} // end else if (!IsEOF())
+#pragma endregion
 
 
+	// By this point m_currentIndex should be 
+	// the index of a valid non blank and non-EOF character
+	int nextIndex = m_currentIndex;
+	do
+	{
+		m_currentIndex = nextIndex;
+		eStates nextState = StateTable[static_cast<int>(m_currentState)][static_cast<int>(InputType(inputChar))];
+		nextIndex = m_currentIndex + 1;
+
+	} while (!IsEOF(nextIndex) && !IsDelimiter(inputChar));
+
+	
 
 }
 
@@ -55,7 +85,7 @@ bool LA::LexicalAnalyzer::IsAccepted() const
 	bool isFound = std::find(m_acceptStates.begin(), m_acceptStates.end(), m_currentState) != m_acceptStates.end();
 	return isFound;
 }
-bool LA::LexicalAnalyzer::IsDelimiter(std::string ch) const 
+bool LA::LexicalAnalyzer::IsDelimiter(char ch) const 
 {
 	bool isFound = std::find(m_delimiters.begin(), m_delimiters.end(), ch) != m_delimiters.end();
 	return isFound;

@@ -73,8 +73,13 @@ namespace LA // Lexical Analysis
 			return m_currentIndex >= static_cast<int>(m_source.length());
 		}
 
+		bool IsEOF(int sourceIndex) const
+		{
+			return sourceIndex >= static_cast<int>(m_source.length());
+		}
+
 		bool IsBlank(char ch) const { return isspace(ch); }
-		bool IsDelimiter(std::string ch) const;
+		bool IsDelimiter(char ch) const;
 		bool IsAccepted() const;
 		bool IsKeyword(const std::string kw) const;
 
@@ -89,9 +94,9 @@ namespace LA // Lexical Analysis
 		eStates m_currentState;
 		std::string m_source;
 
-		std::list<std::string> m_delimiters
+		std::list<char> m_delimiters
 		{ 
-			";", " ", "\t", "\n", "{", "}", "(", ")"
+			';', ' ', '\t', '\n', '{', '}', '(', ')'
 		};
 
 		std::list <std::string> m_keywords
@@ -127,7 +132,7 @@ namespace LA // Lexical Analysis
 		{
 			/*                                                         Input                                           */
 
-			/*               Start                              Letter		               Digit               Period(.)				Space( ) */
+			/*               Start                              Letter		               Digit               Period(.)				Space( )			Separator */
 			/* State 0 */	  eStates::START,			eStates::IDENTIFIER,	   eStates::INTEGER,	 eStates::UNKNOWN,		eStates::START,
 			/* State 1 */	  eStates::IDENTIFIER,		eStates::IDENTIFIER,	   eStates::IDENTIFIER,   eStates::UNKNOWN,		eStates::IDENTIFIER,
 			/* State 2 */	  eStates::INTEGER,			eStates::UNKNOWN,		   eStates::INTEGER,	 eStates::INCOMPLETE_REAL, eStates::INTEGER,
