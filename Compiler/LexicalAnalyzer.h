@@ -49,12 +49,12 @@ namespace LA // Lexical Analysis
 		LETTER_INPUT=1, 
 		DIGIT_INPUT=2, 
 		PERIOD_INPUT=3, 
-		BLANK_INPUT, 
+		BLANK_INPUT=4, 
 		UNKNOWN_INPUT
 	};
 
 	const int NUM_STATES{ 6 };
-	const int NUM_INPUTS{ 3 };
+	const int NUM_INPUTS{ 4 };
 
 	class LexicalAnalyzer
 		// Main class of the lexer phase. This is the LexicalAnalyzer itself.
@@ -100,13 +100,13 @@ namespace LA // Lexical Analysis
 		{
 			/*                                                         Input                                           */
 
-			/*               Start                              Letter		               Digit               Period(.)                           */
-			/* State 0 */	  eStates::START,			eStates::IDENTIFIER,	   eStates::INTEGER,	 eStates::UNKNOWN,
-			/* State 1 */	  eStates::IDENTIFIER,		eStates::IDENTIFIER,	   eStates::IDENTIFIER,   eStates::UNKNOWN,
-			/* State 2 */	  eStates::INTEGER,			eStates::UNKNOWN,		   eStates::INTEGER,	 eStates::INCOMPLETE_REAL,
-			/* State 3 */	  eStates::INCOMPLETE_REAL,   eStates::UNKNOWN,		   eStates::REAL,		 eStates::UNKNOWN,
-			/* State 4 */	  eStates::REAL,			eStates::UNKNOWN,	        eStates::REAL,		 eStates::UNKNOWN,
-			/* State 5 */	  eStates::UNKNOWN,			eStates::UNKNOWN,		   eStates::UNKNOWN,	 eStates::UNKNOWN
+			/*               Start                              Letter		               Digit               Period(.)				Space( ) */
+			/* State 0 */	  eStates::START,			eStates::IDENTIFIER,	   eStates::INTEGER,	 eStates::UNKNOWN,		eStates::START,
+			/* State 1 */	  eStates::IDENTIFIER,		eStates::IDENTIFIER,	   eStates::IDENTIFIER,   eStates::UNKNOWN,		eStates::IDENTIFIER,
+			/* State 2 */	  eStates::INTEGER,			eStates::UNKNOWN,		   eStates::INTEGER,	 eStates::INCOMPLETE_REAL, eStates::INTEGER,
+			/* State 3 */	  eStates::INCOMPLETE_REAL,   eStates::UNKNOWN,		   eStates::REAL,		 eStates::UNKNOWN,		eStates::UNKNOWN,
+			/* State 4 */	  eStates::REAL,			eStates::UNKNOWN,	        eStates::REAL,		 eStates::UNKNOWN,		eStates::REAL,
+			/* State 5 */	  eStates::UNKNOWN,			eStates::UNKNOWN,		   eStates::UNKNOWN,	 eStates::UNKNOWN,		eStates::UNKNOWN
 		};
 
 		std::unordered_map<LA::eStates, LA::eToken> STATE_TO_TOKEN_MAP

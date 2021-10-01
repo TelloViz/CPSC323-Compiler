@@ -5,7 +5,7 @@
 
 
 std::string SOURCE{
-	"4.23"
+	"123.321"
 };
 
 LA::LexicalAnalyzer lex(SOURCE);
@@ -17,7 +17,7 @@ int main()
 	while (!lex.IsEOF())
 	{
 		LA::LexicalUnit lexUnit = lex.Lexer();
-		std::cout << std::setw(13) << lexUnit.tokenString << "|" << std::setw(14) << lexUnit.lexeme << '\n';
+		std::cout << std::setw(12) << lexUnit.tokenString << "|" << std::setw(12) << lexUnit.lexeme << '\n';
 	}
 	
 	return 0;

@@ -39,12 +39,16 @@ LA::LexicalUnit LA::LexicalAnalyzer::Lexer()
 	int currStateEnumAsIndex{};
 	int inputEnumAsIndex{};
 
+	bool isCommentUnresolved;
+
 	// Increment source index to next non-blank character
 	while (!IsEOF() && IsBlank(currCh))
 	{
 		IncrementSourceIndex();
+		++tokenStartIndex;
 		currCh = m_source.at(m_currentIndex);
 	}
+
 
 	/* This while loop should grab each subsequent character
 	 as long as it is not a Delimiter or EOF */
@@ -62,6 +66,7 @@ LA::LexicalUnit LA::LexicalAnalyzer::Lexer()
 
 	if (IsAccepted())
 	{
+		m_currentIndex;
 		token = STATE_TO_TOKEN_MAP.at(m_currentState);
 		tokenString = TOKEN_TO_STRING_MAP.at(token);
 		int strLength{ m_currentIndex - tokenStartIndex };
