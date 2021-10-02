@@ -11,6 +11,10 @@
 *.recipe
 *.ilk
 
+josh.cpp
+*.txt
+
+
 
 
 # Prerequisites
