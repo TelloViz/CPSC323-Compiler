@@ -66,30 +66,31 @@ namespace LA // Lexical Analysis
 	private:
 
 		bool IsEOF() const;
-
 		bool IsEOF(int sourceIndex) const;
-
 		bool IsBlank(char ch) const { return isspace(ch); }
 		bool IsDelimiter(char ch) const;
 		bool IsAccepted(eStates) const;
 		bool IsKeyword(const std::string kw) const;
-
-
 		void IncrementSourceIndex() { ++m_currentIndex; }
-
 		eInputType InputType(char ch) const;
 
 	private:
 
-		int m_currentIndex;
-		eStates m_currentState;
-		std::string m_source;
+		int m_currentIndex;			// current position in the context of the source string
+		eStates m_currentState;		// state that the DFSM is currently in
+		std::string m_source;		// local object for holding the provided string source
 
+		/// <summary>
+		/// List of the Rat21F delimeters
+		/// </summary>
 		std::list<char> m_delimiters
 		{ 
 			';', ' ', '\t', '\n', '{', '}', '(', ')'
 		};
 
+		/// <summary>
+		/// List of the Rat21F keywords
+		/// </summary>
 		std::list <std::string> m_keywords
 		{
 			"true",	 "function",	"integer",	"false",	
@@ -98,6 +99,9 @@ namespace LA // Lexical Analysis
 			
 		};
 
+		/// <summary>
+		/// List of the Rat21F operators
+		/// </summary>
 		std::list <std::string> m_operators
 		{
 			"<=",	 "+",		"-", 	"*",		
@@ -105,12 +109,18 @@ namespace LA // Lexical Analysis
 			"!=",	 "="
 		};
 
+		/// <summary>
+		/// List of the Rat21F separators
+		/// </summary>
 		std::list<std::string> m_separators
 		{
 			"}",		"{",		"(",		")",
 			",",	";",		
 		};
 
+		/// <summary>
+		/// List of the Rat21F accept states
+		/// </summary>
 		std::list <eStates> m_acceptStates
 		{
 			LA::eStates::IDENTIFIER,
@@ -119,6 +129,9 @@ namespace LA // Lexical Analysis
 			LA::eStates::UNKNOWN
 		};
 
+		/// <summary>
+		/// Rat21F DFSM
+		/// </summary>
 		eStates StateTable[NUM_STATES][NUM_INPUTS+1] = 
 		{
 			/*                                                         Input                                           */
@@ -133,6 +146,9 @@ namespace LA // Lexical Analysis
 			/* State 6 */	  eStates::BACKUP,			eStates::UNKNOWN,		   eStates::UNKNOWN,      eStates::UNKNOWN,       eStates::BACKUP
 		};
 
+		/// <summary>
+		/// Conversion map between State enum and Token enum
+		/// </summary>
 		std::unordered_map<LA::eStates, LA::eToken> STATE_TO_TOKEN_MAP
 		{
 			{eStates::IDENTIFIER, eToken::IDENTIFIER},
@@ -141,6 +157,9 @@ namespace LA // Lexical Analysis
 			{eStates::UNKNOWN, eToken::UNKNOWN}
 		};
 
+		/// <summary>
+		/// Conversion map between token enum and token string
+		/// </summary>
 		const std::unordered_map<eToken, std::string> TOKEN_TO_STRING_MAP
 			// Map used to convert eToken enumerated values into string values for output
 		{
