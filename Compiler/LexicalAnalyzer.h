@@ -15,7 +15,8 @@ namespace LA // Lexical Analysis
 		INTEGER = 2,
 		INCOMPLETE_REAL = 3,
 		REAL = 4,
-		UNKNOWN = 5
+		UNKNOWN = 5,
+		BACKUP = 6
 	};
 
 	
@@ -53,7 +54,7 @@ namespace LA // Lexical Analysis
 		UNKNOWN_INPUT
 	};
 
-	const int NUM_STATES{ 6 };
+	const int NUM_STATES{ 7 };
 	const int NUM_INPUTS{ 4 };
 
 	class LexicalAnalyzer
@@ -62,7 +63,7 @@ namespace LA // Lexical Analysis
 	public:
 		explicit LexicalAnalyzer(std::string sourceRef);
 
-		LexicalUnit Lexer();
+		//LexicalUnit Lexer();
 		bool Lexer(LexicalUnit& lexUnit);
 		
 
@@ -80,7 +81,7 @@ namespace LA // Lexical Analysis
 
 		bool IsBlank(char ch) const { return isspace(ch); }
 		bool IsDelimiter(char ch) const;
-		bool IsAccepted() const;
+		bool IsAccepted(eStates) const;
 		bool IsKeyword(const std::string kw) const;
 
 
@@ -134,11 +135,12 @@ namespace LA // Lexical Analysis
 
 			/*               Start                              Letter		               Digit               Period(.)				Space( )			Separator */
 			/* State 0 */	  eStates::START,			eStates::IDENTIFIER,	   eStates::INTEGER,	 eStates::UNKNOWN,		eStates::START,
-			/* State 1 */	  eStates::IDENTIFIER,		eStates::IDENTIFIER,	   eStates::IDENTIFIER,   eStates::UNKNOWN,		eStates::IDENTIFIER,
-			/* State 2 */	  eStates::INTEGER,			eStates::UNKNOWN,		   eStates::INTEGER,	 eStates::INCOMPLETE_REAL, eStates::INTEGER,
+			/* State 1 */	  eStates::IDENTIFIER,		eStates::IDENTIFIER,	   eStates::IDENTIFIER,   eStates::UNKNOWN,		eStates::BACKUP,
+			/* State 2 */	  eStates::INTEGER,			eStates::UNKNOWN,		   eStates::INTEGER,	 eStates::INCOMPLETE_REAL, eStates::BACKUP,
 			/* State 3 */	  eStates::INCOMPLETE_REAL,   eStates::UNKNOWN,		   eStates::REAL,		 eStates::UNKNOWN,		eStates::UNKNOWN,
-			/* State 4 */	  eStates::REAL,			eStates::UNKNOWN,	        eStates::REAL,		 eStates::UNKNOWN,		eStates::REAL,
-			/* State 5 */	  eStates::UNKNOWN,			eStates::UNKNOWN,		   eStates::UNKNOWN,	 eStates::UNKNOWN,		eStates::UNKNOWN
+			/* State 4 */	  eStates::REAL,			eStates::UNKNOWN,	        eStates::REAL,		 eStates::UNKNOWN,		eStates::BACKUP,
+			/* State 5 */	  eStates::UNKNOWN,			eStates::UNKNOWN,		   eStates::UNKNOWN,	 eStates::UNKNOWN,		eStates::BACKUP,
+			/* State 6 */	  eStates::BACKUP,			eStates::UNKNOWN,		   eStates::UNKNOWN,      eStates::UNKNOWN,       eStates::BACKUP
 		};
 
 		std::unordered_map<LA::eStates, LA::eToken> STATE_TO_TOKEN_MAP

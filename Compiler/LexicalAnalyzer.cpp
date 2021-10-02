@@ -1,4 +1,5 @@
 #include "LexicalAnalyzer.h"
+#include <stack>
 
 
 LA::LexicalAnalyzer::LexicalAnalyzer(std::string sourceRef)
@@ -42,12 +43,13 @@ bool LA::LexicalAnalyzer::Lexer(LexicalUnit& lexUnit)
 	{
 		return false;
 	} // end if(IsEOF())
-	else if (!IsEOF())
+	else if (!IsEOF(m_currentIndex))
 	{
 		inputChar = m_source.at(m_currentIndex);
 		while (!IsEOF(m_currentIndex) && IsBlank(inputChar))
 		{
 			++m_currentIndex;
+			inputChar = m_source.at(m_currentIndex);
 		}
 
 		// If we've skipped all white space
@@ -67,23 +69,48 @@ bool LA::LexicalAnalyzer::Lexer(LexicalUnit& lexUnit)
 	int endIndex = m_currentIndex;
 	m_currentState = eStates::START;
 	eStates nextState = m_currentState;
+	std::stack<LA::eStates> stateStack;
 	do
 	{
+		stateStack.push(m_currentState);
 		m_currentState = nextState;
 		m_currentIndex = nextIndex;
+		inputChar = m_source.at(m_currentIndex);
 		nextState = StateTable[static_cast<int>(m_currentState)][static_cast<int>(InputType(inputChar))];
 		nextIndex = m_currentIndex + 1;
+
 		endIndex = m_currentIndex;
 
 	} while (!IsEOF(nextIndex) && !IsDelimiter(inputChar));
 
-	if (IsAccepted())
+	while (stateStack.top() == LA::eStates::BACKUP)
 	{
-		lexUnit.token = STATE_TO_TOKEN_MAP.at(m_currentState);
-		lexUnit.tokenString = TOKEN_TO_STRING_MAP.at(lexUnit.token);
+		stateStack.pop();
+	}
+
+	if (IsAccepted(stateStack.top()))
+	{
 		int strLength{ endIndex - startIndex };
 		lexUnit.lexeme = std::string(m_source.substr(startIndex, strLength));
-		m_currentIndex = endIndex;
+
+		if (stateStack.top() == eStates::IDENTIFIER)
+		{
+			if (IsKeyword(lexUnit.lexeme))
+			{
+				lexUnit.token = eToken::KEYWORD;
+			}
+			else
+			{
+				lexUnit.token = eToken::IDENTIFIER;
+			}
+		}
+		else
+		{
+			lexUnit.token = STATE_TO_TOKEN_MAP.at(m_currentState);
+		}
+		
+		lexUnit.tokenString = TOKEN_TO_STRING_MAP.at(lexUnit.token);		
+		m_currentIndex = endIndex+1;
 	}
 	
 
@@ -95,9 +122,9 @@ bool LA::LexicalAnalyzer::IsKeyword(const std::string kw) const
 	return isFound;
 }
 
-bool LA::LexicalAnalyzer::IsAccepted() const 
+bool LA::LexicalAnalyzer::IsAccepted(eStates st) const 
 { 
-	bool isFound = std::find(m_acceptStates.begin(), m_acceptStates.end(), m_currentState) != m_acceptStates.end();
+	bool isFound = std::find(m_acceptStates.begin(), m_acceptStates.end(), st) != m_acceptStates.end();
 	return isFound;
 }
 bool LA::LexicalAnalyzer::IsDelimiter(char ch) const 
