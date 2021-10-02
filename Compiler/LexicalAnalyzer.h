@@ -7,7 +7,9 @@
 
 namespace LA // Lexical Analysis 
 {
-
+	/// <summary>
+	/// Enumerated States
+	/// </summary>
 	enum class eStates
 	{
 		START = 0,
@@ -18,7 +20,9 @@ namespace LA // Lexical Analysis
 		UNKNOWN = 5,
 		BACKUP = 6
 	};	
-
+	/// <summary>
+	/// Enumerated Tokens
+	/// </summary>
 	enum class eToken
 		// Valid Rat21F tokens
 	{
@@ -32,7 +36,9 @@ namespace LA // Lexical Analysis
 		UNKNOWN
 		
 	};	
-
+	/// <summary>
+	/// The type provided to the lexer and altered upon token recognition
+	/// </summary>
 	struct LexicalUnit
 	// A data struct holding token and lexeme information for returning to parser
 	{
@@ -40,7 +46,9 @@ namespace LA // Lexical Analysis
 		std::string tokenString;
 		std::string lexeme;
 	};
-
+	/// <summary>
+	/// Enumerated input types
+	/// </summary>
 	enum class eInputType
 	{
 		LETTER_INPUT=1, 
@@ -49,10 +57,13 @@ namespace LA // Lexical Analysis
 		BLANK_INPUT=4, 
 		UNKNOWN_INPUT
 	};
+	const int NUM_STATES{ 7 }; // Must be at a static or global scope in order to use as Array initilaztion sizes
+	const int NUM_INPUTS{ 4 }; // see above
 
-	const int NUM_STATES{ 7 };
-	const int NUM_INPUTS{ 4 };
-
+	/// <summary>
+	/// The main class of the Lexical Analyzer portion of the compiler. only 1 method is exposed to public and this is Lexer(). 
+	/// 	Construct Lexical Analyzer with source string, then repeatedly call Lexer(LexicalUnit&) until it returns false, signaling EOF
+	/// </summary>
 	class LexicalAnalyzer
 		// Main class of the lexer phase. This is the LexicalAnalyzer itself.
 	{
