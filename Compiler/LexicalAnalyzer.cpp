@@ -35,6 +35,7 @@ bool LA::LexicalAnalyzer::Lexer(LexicalUnit& lexUnit)
 {
 
 	char inputChar= ' ';
+	
 
 #pragma region Skip White Space and Position Source Index
 	if (IsEOF(m_currentIndex))
@@ -62,14 +63,28 @@ bool LA::LexicalAnalyzer::Lexer(LexicalUnit& lexUnit)
 	// By this point m_currentIndex should be 
 	// the index of a valid non blank and non-EOF character
 	int nextIndex = m_currentIndex;
+	int startIndex = m_currentIndex;
+	int endIndex = m_currentIndex;
+	m_currentState = eStates::START;
+	eStates nextState = m_currentState;
 	do
 	{
+		m_currentState = nextState;
 		m_currentIndex = nextIndex;
-		eStates nextState = StateTable[static_cast<int>(m_currentState)][static_cast<int>(InputType(inputChar))];
+		nextState = StateTable[static_cast<int>(m_currentState)][static_cast<int>(InputType(inputChar))];
 		nextIndex = m_currentIndex + 1;
+		endIndex = m_currentIndex;
 
 	} while (!IsEOF(nextIndex) && !IsDelimiter(inputChar));
 
+	if (IsAccepted())
+	{
+		lexUnit.token = STATE_TO_TOKEN_MAP.at(m_currentState);
+		lexUnit.tokenString = TOKEN_TO_STRING_MAP.at(lexUnit.token);
+		int strLength{ endIndex - startIndex };
+		lexUnit.lexeme = std::string(m_source.substr(startIndex, strLength));
+		m_currentIndex = endIndex;
+	}
 	
 
 }

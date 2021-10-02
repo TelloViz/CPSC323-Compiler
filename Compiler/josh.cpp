@@ -45,9 +45,11 @@ int main(int argc, char** argv)
 
 
          // string(InputIterator first, InputIterator last);          // Overloaded std::String ctor
-          std::string file_text((
-               std::istreambuf_iterator<char>(in_stream)),            // First
-               std::istreambuf_iterator<char>());                     // Last
+          //std::string file_text((
+          //     std::istreambuf_iterator<char>(in_stream)),            // First
+          //     std::istreambuf_iterator<char>());                     // Last
+
+          std::string file_text = "Some temp file text"; // TODO delete this and uncomment above
 
           of_stream.open("output.txt");       // open a file to write in
 
@@ -69,11 +71,15 @@ int main(int argc, char** argv)
           LA::LexicalAnalyzer lex(file_text);
           LA::LexicalUnit lexUnit;
 
-          of_stream << "    Token    |    Lexeme    \n" << std::setfill('-') << std::setw(29) << '\n';
+          //of_stream << "    Token    |    Lexeme    \n" << std::setfill('-') << std::setw(29) << '\n';
+          std::cout << "    Token    |    Lexeme    \n" << std::setfill('-') << std::setw(29) << '\n';
+
           // loop through entire string of text   
           while (lex.Lexer(lexUnit)) // this is where you call Lex.Lexer();
           {
-               of_stream << std::setw(13) << lexUnit.tokenString << "|" << std::setw(14) << lexUnit.lexeme << '\n';
+               //of_stream << std::setw(13) << lexUnit.tokenString << "|" << std::setw(14) << lexUnit.lexeme << '\n';
+               std::cout << std::setw(13) << lexUnit.tokenString << "|" << std::setw(14) << lexUnit.lexeme << '\n';
+
           }
      }
 

@@ -1,0 +1,3 @@
+    Token    |    Lexeme    
+----------------------------
+---identifier|Some temp file tex
