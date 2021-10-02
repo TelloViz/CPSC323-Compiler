@@ -17,9 +17,7 @@ namespace LA // Lexical Analysis
 		REAL = 4,
 		UNKNOWN = 5,
 		BACKUP = 6
-	};
-
-	
+	};	
 
 	enum class eToken
 		// Valid Rat21F tokens
@@ -33,9 +31,7 @@ namespace LA // Lexical Analysis
 		BLANK, 
 		UNKNOWN
 		
-	};
-
-	
+	};	
 
 	struct LexicalUnit
 	// A data struct holding token and lexeme information for returning to parser
@@ -69,15 +65,9 @@ namespace LA // Lexical Analysis
 
 	private:
 
-		bool IsEOF() const
-		{
-			return m_currentIndex >= static_cast<int>(m_source.length());
-		}
+		bool IsEOF() const;
 
-		bool IsEOF(int sourceIndex) const
-		{
-			return sourceIndex >= static_cast<int>(m_source.length());
-		}
+		bool IsEOF(int sourceIndex) const;
 
 		bool IsBlank(char ch) const { return isspace(ch); }
 		bool IsDelimiter(char ch) const;
