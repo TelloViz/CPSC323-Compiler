@@ -7,7 +7,17 @@
 int main()
 {
 
-	std::string source{"This is some source that\nBleeds over multiple\nLines\n\nDid the stripper...\n\n\n\n...do its job."};
+	std::string source{
+		"This is some source that\n" \
+		"Bleeds over multiple\n" \
+		"Lines\n" \
+		"\n" \
+		"Did the stripper...\n" \
+		"\n" \
+		"\n" \
+		"\n" \
+		"...do its job."
+	};
 	std::vector<std::string> sourceLines =  Utility::SplitStringByLine(source);
 
 
