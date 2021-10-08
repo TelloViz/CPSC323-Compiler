@@ -1,7 +1,6 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <algorithm>
 #include "../Include/SourceStripper.hpp"
 
 
