@@ -1,19 +1,16 @@
 #include "..\Include\SourceStripper.hpp"
+#include <iostream>
+#include <sstream>
 
-std::vector<std::string> Utility::split_string(const std::string& str, const std::string& delimiter)
+std::vector<std::string> Utility::SplitStringByLine(const std::string& str)
 {
-     std::vector<std::string> strings;
+	std::stringstream inSS(str);
+	std::vector<std::string> returnVec{};
 
-     std::string::size_type pos = 0;
-     std::string::size_type prev = 0;
-     while ((pos = str.find(delimiter, prev)) != std::string::npos)
-     {
-          strings.push_back(str.substr(prev, pos - prev));
-          prev = pos + 1;
-     }
-
-     // To get the last substring (or only, if delimiter is not found)
-     strings.push_back(str.substr(prev));
-
-     return strings;
+	std::string line;
+	while (std::getline(inSS, line))
+	{
+		if(line.size()) returnVec.push_back(line);
+	}
+	return returnVec;
 }
