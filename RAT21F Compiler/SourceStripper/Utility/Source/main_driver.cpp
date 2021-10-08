@@ -1,8 +1,10 @@
+#include <sstream>
 #include <iostream>
 #include <string>
 #include <vector>
-#include "../Include/SourceStripper.hpp"
 
+
+std::vector<std::string> SplitStringByLine(const std::string& str);
 
 int main()
 {
@@ -18,7 +20,7 @@ int main()
 		"\n" \
 		"...do its job."
 	};
-	std::vector<std::string> sourceLines =  Utility::SplitStringByLine(source);
+	std::vector<std::string> sourceLines =  SplitStringByLine(source);
 
 
 	for (auto iter : sourceLines)
@@ -28,4 +30,19 @@ int main()
 	}
 
 	return 0;
+}
+
+
+
+std::vector<std::string> SplitStringByLine(const std::string& str)
+{
+	std::stringstream inSS(str);
+	std::vector<std::string> returnVec{};
+
+	std::string line;
+	while (std::getline(inSS, line))
+	{
+		if (line.size()) returnVec.push_back(line);
+	}
+	return returnVec;
 }
