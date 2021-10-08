@@ -1,5 +1,4 @@
 #include "..\Include\SourceStripper.hpp"
-#include <iostream>
 #include <sstream>
 
 std::vector<std::string> Utility::SplitStringByLine(const std::string& str)
