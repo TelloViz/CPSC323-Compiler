@@ -44,7 +44,7 @@ int main(int argc, char** argv)
 	{
 		try // Try loading input source stream
 		{
-			if (isSourceInputSuccess = LoadInputFile(inStream, "test.txt", SOURCE)) {}
+			if (isSourceInputSuccess = LoadInputFile(inStream, argv[1], SOURCE)) {}
 		}
 		catch (const std::exception&)
 		{
@@ -54,7 +54,9 @@ int main(int argc, char** argv)
 #pragma endregion
 
 #pragma region Lexical Analysis
-	LexicalAnalyzer LA(); // Instantiate Lexical Analyzer object with source code string
+	LexicalAnalyzer LA(SOURCE); // Instantiate Lexical Analyzer object with source code string
+	LexicalUnit lexUnit;
+	while(LA.lexer())
 #pragma endregion
 
 #pragma region Stream Output
