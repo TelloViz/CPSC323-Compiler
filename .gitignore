@@ -391,3 +391,5 @@ FodyWeavers.xsd
 *.vcxproj
 
 *.RAT21F
+
+*.txt
