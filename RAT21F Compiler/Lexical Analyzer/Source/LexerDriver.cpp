@@ -6,11 +6,14 @@
 
 #define DEBUG_ON
 
+#pragma region File IO Function Signatures
 void ECHO_CLI_ARGS(int argc, char** argv);
 bool ConfirmInputArgSuccess(int argCount);
 bool ConfirmOutputArgSuccess(int argCount);
 bool LoadInputFile(std::filebuf&, std::string);
-bool OutputResultData(std::string, std::filebuf&, std::string );
+bool OutputResultData(std::string, std::filebuf&, std::string);
+#pragma endregion
+
 
 
 
@@ -29,9 +32,11 @@ int main(int argc, char** argv)
 	bool is_CLI_Output_Arg{ false };
 #pragma endregion	
 
+#pragma region DEBUG Code
 #ifdef DEBUG_ON
 	ECHO_CLI_ARGS(argc, argv);
 #endif // DEBUG_ON
+#pragma endregion
 
 #pragma region Stream Input
 	if (ConfirmInputArgSuccess(argc))
