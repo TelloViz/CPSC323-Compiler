@@ -56,7 +56,16 @@ int main(int argc, char** argv)
 #pragma region Lexical Analysis
 	LexicalAnalyzer LA(SOURCE); // Instantiate Lexical Analyzer object with source code string
 	LexicalUnit lexUnit;
-	while(LA.lexer())
+	std::string OutputString
+	{
+		"Token\t\tLexeme\n" \
+		"------------------\n" \
+
+	}
+	while (LA.Lexer(lexUnit))
+	{
+
+	}
 #pragma endregion
 
 #pragma region Stream Output
