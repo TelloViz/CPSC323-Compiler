@@ -23,10 +23,10 @@ bool LexicalAnalyzer::Lexer(LexicalUnit& lexUnit)
 		resultString.push_back(*m_currCharIter);
 
 		// 3) Find out character input type
-		StateTable::eInputType inputType = FindInputType(m_currCharIter);
+		eInputType inputType = FindInputType(m_currCharIter);
 
 		// 4) Query table for next state based on input type and current state	
-		int nextStateID = m_stateTable.GetNextState(m_currentStateID, inputType);
+		m_nextStateID = GetNextState(m_currentStateID, inputType);
 
 
 		m_prevCharIter = m_currCharIter;
@@ -44,15 +44,20 @@ bool LexicalAnalyzer::Lexer(LexicalUnit& lexUnit)
 	
 }
 
-StateTable::eInputType LexicalAnalyzer::FindInputType(std::string::iterator testInput) const
+LexicalAnalyzer::eInputType LexicalAnalyzer::FindInputType(std::string::iterator testInput) const
 {
 	char testChar = *testInput;
-	StateTable::eInputType inType{ StateTable::eInputType::UNKNOWN };
+	eInputType inType{ LexicalAnalyzer::eInputType::UNKNOWN };
 
 	if (testChar >= 48 && testChar <= 57) 
-		inType = StateTable::eInputType::DIGIT;
+		inType = LexicalAnalyzer::eInputType::DIGIT;
 	else if ((testChar >= 97 && testChar <= 122) || (testChar >= 65 && testChar <= 90)) 
-		inType = StateTable::eInputType::LETTER;
+		inType = LexicalAnalyzer::eInputType::LETTER;
 
 	return inType;
+}
+
+int LexicalAnalyzer::GetNextState(int currentState, eInputType inputType)
+{
+	return m_stateTable[currentState][inputType];
 }

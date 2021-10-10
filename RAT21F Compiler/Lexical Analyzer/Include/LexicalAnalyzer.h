@@ -17,19 +17,27 @@ public:
 	bool Lexer(LexicalUnit& lexUnit);
 private:
 
-	StateTable::eInputType FindInputType(std::string::iterator testInput) const;
+	enum eInputType{LETTER=0, DIGIT, UNDERSCORE, PERIOD, BLANK, UNKNOWN};
+	eInputType FindInputType(std::string::iterator testInput) const;
+	int GetNextState(int currentState, eInputType inputType);
 	
 	std::string m_source;
 	bool m_isEOF{ false };
 
+	int m_stateTable[5][5]
+	{
+		0,	1,	2,	-1, -1,
+		1,	1,	1,	 1, -1,
+		2,  -1,	2,   -1,  3,
+		3,  -1,   4,   -1, -1,
+		4,  -1,	4	-1, -1
+	};
 	
 	
 	
-	
-	StateTable m_stateTable{ m_stateVec };
-	int m_currentStateID{ m_stateVec[0].ID() };
-	int m_prevStateID{ m_stateVec[0].ID() };
-	int m_nextStateID{ m_stateVec[0].ID() };
+	int m_currentStateID{ 0 };
+	int m_prevStateID{ -1 };
+	int m_nextStateID{ -1 };
 
 	std::string::iterator m_currCharIter;
 	std::string::iterator m_prevCharIter;
