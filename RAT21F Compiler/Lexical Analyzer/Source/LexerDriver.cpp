@@ -21,7 +21,7 @@ bool OutputResultData(std::string, std::filebuf&, std::string);
 int main(int argc, char** argv)
 {
 #pragma region Init CLI arg and stream data
-	std::string SOURCE{ "This is my \n Source \n\nCode. Thre are a few lines\n in it" };
+	std::string SOURCE{ "" };
 	std::string formattedOutputString
 	{
 		"Token\t\tLexeme\n" \

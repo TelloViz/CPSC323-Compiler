@@ -22,14 +22,7 @@ private:
 	std::string m_source;
 	bool m_isEOF{ false };
 
-	std::vector<State> m_stateVec
-	{ 
-		State(0, false), 
-		State(1, true), 
-		State(2, true), 
-		State(3, false), 
-		State(4, true) 
-	};
+	
 	
 	
 	
