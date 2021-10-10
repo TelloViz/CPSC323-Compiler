@@ -6,5 +6,9 @@ LexicalAnalyzer::LexicalAnalyzer(std::string sourceString)
 
 bool LexicalAnalyzer::Lexer(LexicalUnit& lexUnit)
 {
-	return false;
+	static int sInt{ 0 };
+	sInt++;
+	lexUnit.sLexeme = "Test Lexeme " + std::to_string(sInt);
+	if (sInt == 1) return true;
+	else return false;
 }
