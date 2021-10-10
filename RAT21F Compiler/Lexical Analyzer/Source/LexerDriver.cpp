@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include "../Include/Utility/SourceStripper.hpp"
+#include "../Include/LexicalAnalyzer.h"
 
 #define DEBUG_ON
 
@@ -10,7 +11,7 @@
 void ECHO_CLI_ARGS(int argc, char** argv);
 bool ConfirmInputArgSuccess(int argCount);
 bool ConfirmOutputArgSuccess(int argCount);
-bool LoadInputFile(std::filebuf&, std::string);
+bool LoadInputFile(std::filebuf&, std::string, std::string&);
 bool OutputResultData(std::string, std::filebuf&, std::string);
 #pragma endregion
 
@@ -43,7 +44,7 @@ int main(int argc, char** argv)
 	{
 		try // Try loading input source stream
 		{
-			if (isSourceInputSuccess = LoadInputFile(inStream, "test.txt")) {}
+			if (isSourceInputSuccess = LoadInputFile(inStream, "test.txt", SOURCE)) {}
 		}
 		catch (const std::exception&)
 		{
@@ -53,7 +54,7 @@ int main(int argc, char** argv)
 #pragma endregion
 
 #pragma region Lexical Analysis
-	// TODO implement Lexer here
+	LexicalAnalyzer LA(); // Instantiate Lexical Analyzer object with source code string
 #pragma endregion
 
 #pragma region Stream Output
@@ -61,7 +62,7 @@ int main(int argc, char** argv)
 	{
 		try // Try outputting results to stream
 		{
-			if (isSourceOutputSuccess = OutputResultData(formattedOutputString,outStream, "FilenameParam.RAT21F")) {}
+			if (isSourceOutputSuccess = OutputResultData(formattedOutputString,outStream, argv[2])) {}
 		}
 		catch (const std::exception&)
 		{
@@ -90,14 +91,14 @@ bool ConfirmOutputArgSuccess(int argCount)
 {
 	return argCount >= 3; // True means there are at least 3 args, the 3rd being the output filepath. Ignore any args past 3.
 }
-bool LoadInputFile(std::filebuf& fBuffer, std::string fileName)
+bool LoadInputFile(std::filebuf& fBuffer, std::string fileName, std::string& sourceStringRef)
 {
 	bool openedSuccess{ false };
 	if (openedSuccess = fBuffer.open(fileName, std::ios::in))
 	{
 		std::istream is(&fBuffer);
 		while (is)
-			std::cout << char(is.get());
+			sourceStringRef.push_back(char(is.get()));
 		fBuffer.close();
 	}
 	return openedSuccess;
