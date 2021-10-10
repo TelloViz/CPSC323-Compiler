@@ -389,3 +389,5 @@ FodyWeavers.xsd
 *.filters
 
 *.vcxproj
+
+*.RAT21F
