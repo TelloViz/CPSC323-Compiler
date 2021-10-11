@@ -14,6 +14,7 @@ bool LexicalAnalyzer::Lexer(LexicalUnit& lexUnit)
 	bool isEndofToken{ false };
 	std::string::iterator startOfToken{ m_currCharIter };
 		
+#ifdef DEBUG
 	if (m_isEOF) // If you've called Lexer() in EOF state
 	{
 		if (isFirstCallToLexer) // And its the first time you've called lexer
@@ -25,6 +26,7 @@ bool LexicalAnalyzer::Lexer(LexicalUnit& lexUnit)
 			std::cout << "Looks like your last call to lexer was the EOF..." << std::endl;
 		}
 	}	
+#endif // DEBUG
 
 	while (!isEndofToken && !m_isEOF)
 	{
