@@ -1,5 +1,6 @@
 #include "../Include/LexicalAnalyzer.h"
 #include <iostream>
+#include <stack>
 
 LexicalAnalyzer::LexicalAnalyzer(std::string sourceString) : m_source{sourceString}
 {
@@ -13,6 +14,11 @@ bool LexicalAnalyzer::Lexer(LexicalUnit& lexUnit)
 	static bool isFirstCallToLexer{ true };
 	bool isEndofToken{ false };
 	std::string::iterator startOfToken{ m_currCharIter };
+	eInputType inputType{eInputType::UNKNOWN};
+
+	std::stack<char> inputValueHistoryStack;
+	std::stack<eInputType> inputHistoryStack;
+	std::stack<int> stateHistoryStack;
 		
 #ifdef DEBUG
 	if (m_isEOF) // If you've called Lexer() in EOF state
@@ -33,34 +39,41 @@ bool LexicalAnalyzer::Lexer(LexicalUnit& lexUnit)
 		if (!isFirstCallToLexer)
 		{
 			m_currCharIter = m_nextCharIter;
+			m_nextCharIter = m_currCharIter + 1; 
+			m_currentStateID = m_nextStateID;
+			m_prevStateID = m_currentStateID;									
 		}
 
-		//Find out character input type
-		eInputType inputType = FindInputType(m_currCharIter);
+		//Find out character input type and push it to history stack
+		inputHistoryStack.push(inputType = FindInputType(m_currCharIter));
+		inputValueHistoryStack.push(*m_currCharIter);
 
-		// Push_back current char into temp building string
-		lexUnit.sLexeme.push_back(*m_currCharIter);
+		// This is the transition function essentially.
+		// We supply current state ID and the input type we discovered it to be
+		m_nextStateID = GetNextState(m_currentStateID, inputType);				
 
-		// Query table for next state based on input type and current state	
-		m_nextStateID = GetNextState(m_currentStateID, inputType);
 
-		m_prevCharIter = m_currCharIter;
-		if (++m_currCharIter == m_source.end())
+		
+
+		if (FindInputType(m_nextCharIter) == eInputType::BLANK ||
+			FindInputType(m_nextCharIter) == eInputType::UNKNOWN)
+		{
+			isEndofToken = true;
+		}
+
+		if (	m_nextCharIter == m_source.end())
 		{
 			m_isEOF = true;
+			isEndofToken = true;
 		}
+		else m_prevCharIter = m_currCharIter;
 
-		m_prevStateID = m_currentStateID; // Next iteration our current state will be the previous state
-		m_currentStateID = m_nextStateID; // next iteration our next state will be our new current state
+	} // END ::  while (!isEndofToken && !m_isEOF)
 
-		if (isEndofToken && acceptStates[m_currentStateID])
-		{
-			lexUnit.sToken = std::string(startOfToken, m_currCharIter);
-		}
-			
-		}
-
-
+	if (isEndofToken && acceptStates[m_currentStateID])
+	{
+		lexUnit.sToken = std::string(startOfToken, m_currCharIter);
+	}
 
 	return m_isEOF;
 	

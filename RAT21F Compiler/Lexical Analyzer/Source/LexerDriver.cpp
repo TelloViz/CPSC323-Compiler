@@ -38,7 +38,7 @@ int main(int argc, char** argv)
 	bool is_CLI_Output_Arg{ false };
 #pragma endregion	
 
-#pragma region DEBUG Code
+#pragma region dEBUG Code
 #ifdef DEBUG_ON
 	ECHO_CLI_ARGS(argc, argv);
 #endif // DEBUG_ON
