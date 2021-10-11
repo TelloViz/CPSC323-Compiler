@@ -3,7 +3,7 @@
 #include "../StateTable.h"
 #include <vector>
 
-#define DEBUG;
+#define DEBUG
 
 struct LexicalUnit
 {
