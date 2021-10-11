@@ -13,13 +13,11 @@ bool LexicalAnalyzer::Lexer(LexicalUnit& lexUnit)
 	std::string::iterator startOfToken{ m_currCharIter };
 
 	 
-	
-	do
-	{
-		// 1) Check End of File flag
-		if (m_isEOF) return false;
+	if (m_currCharIter == m_source.end())
+		m_isEOF = true;
 
-		
+	while (!isEndofToken && !m_isEOF)
+	{	
 
 		// 4) Find out character input type
 		eInputType inputType = FindInputType(m_currCharIter);
@@ -27,11 +25,16 @@ bool LexicalAnalyzer::Lexer(LexicalUnit& lexUnit)
 		if (inputType == eInputType::BLANK)
 		{
 			isEndofToken = true;
+			m_currCharIter = m_prevCharIter;
 		}
 		else
 		{
-			// 3) Push_back current char into temp building string
-			lexUnit.sLexeme.push_back(*m_currCharIter);
+			if (inputType != eInputType::BLANK)
+			{
+				// 3) Push_back current char into temp building string
+				lexUnit.sLexeme.push_back(*m_currCharIter);
+			}
+			
 			// 4) Query table for next state based on input type and current state	
 			m_nextStateID = GetNextState(m_currentStateID, inputType);
 
@@ -44,9 +47,16 @@ bool LexicalAnalyzer::Lexer(LexicalUnit& lexUnit)
 
 			m_prevStateID = m_currentStateID; // Next iteration our current state will be the previous state
 			m_currentStateID = m_nextStateID; // next iteration our next state will be our new current state
+
+			if (isEndofToken && acceptStates[m_currentStateID])
+			{
+				lexUnit.sToken = std::string(startOfToken, m_currCharIter);
+			}
 		}
 
-	} while (!isEndofToken && !m_isEOF);
+	}
+
+
 
 	return m_isEOF;
 	

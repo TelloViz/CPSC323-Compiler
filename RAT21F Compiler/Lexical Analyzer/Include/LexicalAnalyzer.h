@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "../StateTable.h"
+#include <vector>
 
 struct LexicalUnit
 {
@@ -33,7 +34,7 @@ private:
 		4,  -1,	4	-1, -1
 	};
 	
-	
+	std::vector<bool> acceptStates = { false, true, true, false, true };
 	
 	int m_currentStateID{ 0 };
 	int m_prevStateID{ -1 };
