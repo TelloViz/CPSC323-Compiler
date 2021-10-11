@@ -3,6 +3,8 @@
 #include "../StateTable.h"
 #include <vector>
 
+#define DEBUG;
+
 struct LexicalUnit
 {
 	enum EnumeratedToken{INTEGER, UNKNOWN};
