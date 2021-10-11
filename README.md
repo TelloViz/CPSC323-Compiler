@@ -3,9 +3,10 @@ Project for CPSC323 Compilers at CSUF for James Choi's class
 
 ---
 
-# Assignment 1       
+# Assignment 1 
 ## CS323 Due dates:    Softcopy   by  10/3   (Sunday),   11:59 pm
 
+[Cover Page Document](https://github.com/TelloVisionGames/CPSC323-Compiler/blob/main/RAT21F%20Compiler/Lexical%20Analyzer/Docs/Project1_CoverPage.md)
 ---
 
 ## **1) Problem Statement**
