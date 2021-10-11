@@ -9,8 +9,8 @@ LexicalAnalyzer::LexicalAnalyzer(std::string sourceString) : m_source{sourceStri
 
 bool LexicalAnalyzer::Lexer(LexicalUnit& lexUnit)
 {
-	std::string resultString;
 	bool isEndofToken{ false };
+	std::string::iterator startOfToken{ m_currCharIter };
 
 	 
 	
@@ -19,24 +19,32 @@ bool LexicalAnalyzer::Lexer(LexicalUnit& lexUnit)
 		// 1) Check End of File flag
 		if (m_isEOF) return false;
 
-		// 2) Push_back current char into temp building string
-		resultString.push_back(*m_currCharIter);
+		
 
-		// 3) Find out character input type
+		// 4) Find out character input type
 		eInputType inputType = FindInputType(m_currCharIter);
 
-		// 4) Query table for next state based on input type and current state	
-		m_nextStateID = GetNextState(m_currentStateID, inputType);
-
-
-		m_prevCharIter = m_currCharIter;
-		if (++m_currCharIter == m_source.end())
+		if (inputType == eInputType::BLANK)
 		{
-			m_isEOF = true;
+			isEndofToken = true;
 		}
+		else
+		{
+			// 3) Push_back current char into temp building string
+			lexUnit.sLexeme.push_back(*m_currCharIter);
+			// 4) Query table for next state based on input type and current state	
+			m_nextStateID = GetNextState(m_currentStateID, inputType);
 
-		m_prevStateID = m_currentStateID; // Next iteration our current state will be the previous state
-		m_currentStateID = m_nextStateID; // next iteration our next state will be our new current state
+
+			m_prevCharIter = m_currCharIter;
+			if (++m_currCharIter == m_source.end())
+			{
+				m_isEOF = true;
+			}
+
+			m_prevStateID = m_currentStateID; // Next iteration our current state will be the previous state
+			m_currentStateID = m_nextStateID; // next iteration our next state will be our new current state
+		}
 
 	} while (!isEndofToken && !m_isEOF);
 
@@ -49,10 +57,11 @@ LexicalAnalyzer::eInputType LexicalAnalyzer::FindInputType(std::string::iterator
 	char testChar = *testInput;
 	eInputType inType{ LexicalAnalyzer::eInputType::UNKNOWN };
 
-	if (testChar >= 48 && testChar <= 57) 
+	if (testChar >= 48 && testChar <= 57)
 		inType = LexicalAnalyzer::eInputType::DIGIT;
-	else if ((testChar >= 97 && testChar <= 122) || (testChar >= 65 && testChar <= 90)) 
+	else if ((testChar >= 97 && testChar <= 122) || (testChar >= 65 && testChar <= 90))
 		inType = LexicalAnalyzer::eInputType::LETTER;
+	else if (isspace(testChar)) inType = LexicalAnalyzer::eInputType::BLANK;
 
 	return inType;
 }
