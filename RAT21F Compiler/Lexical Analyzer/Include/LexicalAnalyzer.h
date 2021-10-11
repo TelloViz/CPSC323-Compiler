@@ -42,6 +42,7 @@ private:
 
 	std::string::iterator m_currCharIter;
 	std::string::iterator m_prevCharIter;
+	std::string::iterator m_nextCharIter;
 	
 };
 

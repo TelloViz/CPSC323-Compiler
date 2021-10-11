@@ -1,60 +1,62 @@
 #include "../Include/LexicalAnalyzer.h"
+#include <iostream>
 
 LexicalAnalyzer::LexicalAnalyzer(std::string sourceString) : m_source{sourceString}
 {
 	m_currCharIter = m_source.begin();
 	m_prevCharIter = m_source.end();
-	if (m_currCharIter == m_prevCharIter) m_isEOF = true;
+	if (m_currCharIter == m_source.end()) m_isEOF = true;
 }
 
 bool LexicalAnalyzer::Lexer(LexicalUnit& lexUnit)
 {
+	static bool isFirstCallToLexer{ true };
 	bool isEndofToken{ false };
 	std::string::iterator startOfToken{ m_currCharIter };
-
-	 
-	if (m_currCharIter == m_source.end())
-		m_isEOF = true;
+		
+	if (m_isEOF) // If you've called Lexer() in EOF state
+	{
+		if (isFirstCallToLexer) // And its the first time you've called lexer
+		{
+			std::cout << "Lexer called for first time but already EOF..." << std::endl;
+		}
+		else // Any other call beside first
+		{
+			std::cout << "Looks like your last call to lexer was the EOF..." << std::endl;
+		}
+	}	
 
 	while (!isEndofToken && !m_isEOF)
-	{	
+	{
+		if (!isFirstCallToLexer)
+		{
+			m_currCharIter = m_nextCharIter;
+		}
 
-		// 4) Find out character input type
+		//Find out character input type
 		eInputType inputType = FindInputType(m_currCharIter);
 
-		if (inputType == eInputType::BLANK)
+		// Push_back current char into temp building string
+		lexUnit.sLexeme.push_back(*m_currCharIter);
+
+		// Query table for next state based on input type and current state	
+		m_nextStateID = GetNextState(m_currentStateID, inputType);
+
+		m_prevCharIter = m_currCharIter;
+		if (++m_currCharIter == m_source.end())
 		{
-			isEndofToken = true;
-			m_currCharIter = m_prevCharIter;
+			m_isEOF = true;
 		}
-		else
+
+		m_prevStateID = m_currentStateID; // Next iteration our current state will be the previous state
+		m_currentStateID = m_nextStateID; // next iteration our next state will be our new current state
+
+		if (isEndofToken && acceptStates[m_currentStateID])
 		{
-			if (inputType != eInputType::BLANK)
-			{
-				// 3) Push_back current char into temp building string
-				lexUnit.sLexeme.push_back(*m_currCharIter);
-			}
+			lexUnit.sToken = std::string(startOfToken, m_currCharIter);
+		}
 			
-			// 4) Query table for next state based on input type and current state	
-			m_nextStateID = GetNextState(m_currentStateID, inputType);
-
-
-			m_prevCharIter = m_currCharIter;
-			if (++m_currCharIter == m_source.end())
-			{
-				m_isEOF = true;
-			}
-
-			m_prevStateID = m_currentStateID; // Next iteration our current state will be the previous state
-			m_currentStateID = m_nextStateID; // next iteration our next state will be our new current state
-
-			if (isEndofToken && acceptStates[m_currentStateID])
-			{
-				lexUnit.sToken = std::string(startOfToken, m_currCharIter);
-			}
 		}
-
-	}
 
 
 
