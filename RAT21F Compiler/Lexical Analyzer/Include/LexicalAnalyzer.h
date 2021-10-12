@@ -3,7 +3,7 @@
 #include "../StateTable.h"
 #include <vector>
 
-#define DEBUG
+//#define DEBUG
 
 struct LexicalUnit
 {
@@ -20,7 +20,7 @@ public:
 	bool Lexer(LexicalUnit& lexUnit);
 private:
 
-	enum eInputType{LETTER=0, DIGIT, UNDERSCORE, PERIOD, BLANK, UNKNOWN};
+	enum eInputType{BLANK=0, LETTER=1, DIGIT=2, UNDERSCORE=3, PERIOD=4, UNKNOWN=6, END_OF_FILE=-1};
 	eInputType FindInputType(std::string::iterator testInput) const;
 	int GetNextState(int currentState, eInputType inputType);
 	
@@ -29,11 +29,11 @@ private:
 
 	int m_stateTable[5][5]
 	{
-		0,	1,	2,	-1, -1,
-		1,	1,	1,	 1, -1,
-		2,  -1,	2,   -1,  3,
-		3,  -1,   4,   -1, -1,
-		4,  -1,	4	-1, -1
+		0,	1,	2,	 0,  0,
+		1,	1,	1,	 1,  0,
+		2,   0,	2,    0,  3,
+		3,   0,   4,    0,  0,
+		4,   0,	4,	 0,  0
 	};
 	
 	std::vector<bool> acceptStates = { false, true, true, false, true };

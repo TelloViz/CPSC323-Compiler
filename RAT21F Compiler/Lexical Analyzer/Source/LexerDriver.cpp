@@ -12,7 +12,8 @@ void ECHO_CLI_ARGS(int argc, char** argv);
 bool ConfirmInputArgSuccess(int argCount);
 bool ConfirmOutputArgSuccess(int argCount);
 bool LoadInputFile(std::filebuf&, std::string, std::string&);
-bool OutputResultData(std::string, std::filebuf&, std::string);
+bool OutputResultData(std::string, std::string);
+std::string FormatOutputString(std::vector<LexicalUnit> lexVec);
 #pragma endregion
 
 
@@ -29,7 +30,6 @@ int main(int argc, char** argv)
 	};
 
 	std::filebuf inStream;
-	std::filebuf outStream;
 
 
 	bool isSourceInputSuccess{ false };
@@ -38,11 +38,13 @@ int main(int argc, char** argv)
 	bool is_CLI_Output_Arg{ false };
 #pragma endregion	
 
-#pragma region dEBUG Code
+#pragma region Debug Code
+
 #ifdef DEBUG_ON
 	ECHO_CLI_ARGS(argc, argv);
 #endif // DEBUG_ON
-#pragma endregion
+
+#pragma endregion // END Debug Code Region
 
 #pragma region Stream Input
 	if (ConfirmInputArgSuccess(argc))
@@ -56,31 +58,33 @@ int main(int argc, char** argv)
 			std::cout << "Error Loading Input File..." << std::endl;
 		}
 	}
-#pragma endregion
+#pragma endregion // End Stream Input Region
 
 #pragma region Lexical Analysis
 	LexicalAnalyzer LA(SOURCE); // Instantiate Lexical Analyzer object with source code string
 	LexicalUnit lexUnit;
 	
-	while (LA.Lexer(lexUnit))
+	bool isEOF{ false };
+	while (!isEOF)
 	{
-		formattedOutputString.append("\n" + lexUnit.sToken + "\t\t" + lexUnit.sLexeme);
+		isEOF = LA.Lexer(lexUnit);
+		if(!isEOF) formattedOutputString.append("\n" + lexUnit.sToken + "\t\t" + lexUnit.sLexeme);
 	}
-#pragma endregion
+#pragma endregion // End Lexical Analysis Region
 
 #pragma region Stream Output
 	if (ConfirmOutputArgSuccess(argc))
 	{
 		try // Try outputting results to stream
 		{
-			if (isSourceOutputSuccess = OutputResultData(formattedOutputString,outStream, argv[2])) {}
+			if (isSourceOutputSuccess = OutputResultData(formattedOutputString,argv[2])) {}
 		}
 		catch (const std::exception&)
 		{
 			std::cout << "Error Outputting Results to Stream..." << std::endl;
 		}
 	}
-#pragma endregion
+#pragma endregion // End Stream Output Region
 
 	return 0;
 }
@@ -114,8 +118,9 @@ bool LoadInputFile(std::filebuf& fBuffer, std::string fileName, std::string& sou
 	}
 	return openedSuccess;
 }
-bool OutputResultData(std::string outString, std::filebuf& outStream, std::string outFilename = "output.RAT12F")
+bool OutputResultData(std::string outString, std::string outFilename = "output.RAT12F")
 {
+	std::filebuf outStream;
 	bool openedSuccess{ false };
 	if (openedSuccess = outStream.open(outFilename, std::ios::out))
 	{
@@ -126,4 +131,5 @@ bool OutputResultData(std::string outString, std::filebuf& outStream, std::strin
 	}
 	return false;
 }
-#pragma endregion
+
+#pragma endregion // END file i/o function region
