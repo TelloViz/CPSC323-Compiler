@@ -122,7 +122,6 @@ bool Lexer(std::string& token, std::string& lexeme)
 		else if ((++currCharIter) != source.end())
 		{
 			if(inputType != eInputType::SPACE)
-			PrintGraphIteration(currentState, currCharCopy);
 			currCharCopy = *currCharIter;
 			currentState = destState;
 		}
@@ -153,12 +152,10 @@ int main()
 {
 	std::string myToken, myLexeme;
 	
-	do
+	while (!Lexer(myToken, myLexeme))
 	{
-		std::cout << "\n" << std::string(100, '-');
 		std::cout << "\nToken: " << myToken << "\nLexeme: " << myLexeme << "\n\n\n";
-
-	} while (!Lexer(myToken, myLexeme));
+	}
 	
 	std::cout << std::string(20,'\n') ;
 	return 0;
