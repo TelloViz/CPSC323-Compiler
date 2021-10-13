@@ -7,6 +7,7 @@
 #include <map>
 #include <stack>
 
+
 #define PrintStatePath
 
 
@@ -137,16 +138,12 @@ bool Lexer(std::string& token, std::string& lexeme)
 			token = foundTokenString;
 			lexeme = std::string(tokenStartIter, currCharIter);
 		}
-		else if ((currCharIter+1) != source.end()) // TODO trace the program and check thsi function. I don't think this seems sound
-		{
-			/*if (inputType != eInputType::SPACE)
-			{
-				currCharCopy = *currCharIter;
-			}*/
+		//else if ((currCharIter+1) != source.end()) // TODO trace the program and check thsi function. I don't think this seems sound
+		//{
 
-			currentState = destState;
-			currCharCopy = *(++currCharIter); // 
-		}
+		//	currentState = destState;
+		//	currCharCopy = *(++currCharIter); // 
+		//}
 		else
 		{
 			if (isAcceptState[currentState])
@@ -160,7 +157,13 @@ bool Lexer(std::string& token, std::string& lexeme)
 				lexeme = std::string(tokenStartIter, currCharIter);
 			}
 			isEOF = true;
-		}		
+		}	
+
+		if ((currCharIter + 1) != source.end())
+		{
+			currentState = destState;
+			currCharCopy = *(++currCharIter);
+		}
 
 	}
 	std::cout << foundTokenString;
