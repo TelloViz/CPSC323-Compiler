@@ -56,18 +56,18 @@ enum eTokenType { IDENTIFIER, INTEGER, REAL, SEPARATOR, OPERATOR, NONE };
 // from our current state
 
 int stateTable[11][6] =
-{/*			   L  D  _  .  Sp */
-	/*S0*/    0, 1, 2, 8, 8, 0,		// Starting State	 <Accept>	
-	/*S1*/	1, 1, 1, 1, 5, 5,		// In Identifier	 <Accept>	
-	/*S2*/	2, 6, 2, 6, 3,	6,		// In Number		 <Accept>
-	/*S3*/	3, 9, 4, 9, 9,	9,		// Incomplete Real		
-	/*S4*/	4, 6, 4, 7, 7,	7,		// In Real		 <Accept>	
-	/*S5*/	5, 0, 0, 0, 0,	0,		// End of Identifier <Accept>	[Back Up]
-	/*S6*/    6, 0, 0, 0, 0, 0,        // End Number		 <Accept>	[Back Up]
-	/*S7*/    7, 0, 0, 0, 0, 0,		// End Real		 <Accept>	[Back Up]
-	/*S8*/	8, 10, 10, 10, 10, 10,	// In Unknown result <Accept>
-	/*S9*/	9, 0, 0, 0, 0, 0,		// Reals Invalid			[Double Back up]
-	/*S10*/  10, 0, 0, 0, 0, 0		// End Unknown		<Accept>  [Back up]		
+{/*			    L   D   _  .  Sp */
+	/*S0*/    0,  1,  2,  8,  8,  0,		// Starting State	 <Accept>	
+	/*S1*/	1,  1,  1,  1,  5,  5,		// In Identifier	 <Accept>	
+	/*S2*/	2,  6,  2,  6,  3,	6,		// In Number		 <Accept>
+	/*S3*/	3,  9,  4,  9,  9,	9,		// Incomplete Real		
+	/*S4*/	4,  6,  4,  7,  7,	7,		// In Real		 <Accept>	
+	/*S5*/	5,  0,  0,  0,  0, 	0,		// End of Identifier <Accept>	 [Back Up]
+	/*S6*/    6,  0,  0,  0,  0,  0,        // End Number		 <Accept>	 [Back Up]
+	/*S7*/    7,  0,  0,  0,  0,  0,		// End Real		 <Accept>	 [Back Up]
+	/*S8*/	8, 10, 10, 10, 10, 10,		// In Unknown result <Accept>
+	/*S9*/	9,  0,  0,  0,  0,  0,		// Reals Invalid			 [Double Back up]
+	/*S10*/  10,  0,  0,  0,  0,  0		// End Unknown		 <Accept>  [Back up]		
 };
 
 //								    s0    s1     s2     s3     s4     s5     s6     s7     s8    s9	 s10
