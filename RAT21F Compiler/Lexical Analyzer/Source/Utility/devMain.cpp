@@ -253,11 +253,13 @@ bool isComma(char ch) { return ch == ','; }
 #pragma endregion
 
 
+
+
 // These enumerations need to correspond with the column of the particular input character
 enum eInputType { LETTER = 1, DIGIT = 2, UNDERSCORE = 3, PERIOD = 4, SPACE = 5, UNKNOWN = 8 };
 eInputType GetInputType(char ch);
 
-enum eTokenType { IDENTIFIER, INTEGER, REAL, NONE };
+enum eTokenType { IDENTIFIER, INTEGER, REAL, SEPARATOR, OPERATOR, NONE };
 
 #pragma region State Table
 // This table maps fairly intuitively.
@@ -285,7 +287,7 @@ std::vector<bool> isAcceptState = { false, true,  true,  false, true,  true,  tr
 std::vector<bool> isBackupState = { false, false, false, false, false, true,  true, true,   false, false };
 std::vector<eTokenType> eTokenLookUp = { NONE, IDENTIFIER, INTEGER, NONE, REAL, IDENTIFIER, INTEGER, REAL, NONE };
 
-std::map<eTokenType, std::string> Token_To_String_Map{ {IDENTIFIER, "identifier"}, {INTEGER, "integer"}, {REAL, "real"}, {NONE, "none"} };
+std::map<eTokenType, std::string> Token_To_String_Map{ {IDENTIFIER, "identifier"}, {INTEGER, "integer"}, {REAL, "real"}, {SEPARATOR, "separator"}, {OPERATOR, "operator"}, {NONE, "none"}};
 
 #pragma endregion
 
@@ -297,7 +299,7 @@ void PrintGraphIteration(int currentState, char inputChar)
 
 void PrintInt(int num) { std::cout << num; }
 
-std::string source{ "    Josh James Lollis        " };
+std::string source{ "J7_7L" };
 
 std::string::iterator currCharIter{ source.begin() };
 std::string::iterator tokenStartIter{ source.begin() };
@@ -307,7 +309,6 @@ std::stack<int> stateHistoryQ;
 
 bool Lexer(std::string& token, std::string& lexeme);
 
-std::string SOURCE{ "Some Code" };
 int main()
 {
 
