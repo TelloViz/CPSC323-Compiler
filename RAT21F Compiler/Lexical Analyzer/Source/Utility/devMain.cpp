@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <iterator>
 #include <unordered_map>
+#include <map>
+#include <stack>
 
 #define PrintStatePath
 
@@ -31,6 +33,13 @@ bool isSemiColon(char ch) { return ch == ';'; }
 bool isComma(char ch) { return ch == ','; }
 #pragma endregion
 
+
+// These enumerations need to correspond with the column of the particular input character
+enum eInputType { LETTER = 1, DIGIT = 2, UNDERSCORE = 3, PERIOD = 4, SPACE = 5, UNKNOWN = 8 };
+eInputType GetInputType(char ch);
+
+enum eTokenType { IDENTIFIER, INTEGER, REAL, NONE};
+
 #pragma region State Table
 // This table maps fairly intuitively.
 // Starting from the top left corner on [0][0]...
@@ -41,7 +50,7 @@ bool isComma(char ch) { return ch == ','; }
 
 int stateTable[9][6] =
 {/*			   L  D  _  .  Sp */
-	/*S0*/    0, 1, 2, 8, 8, 1,		// Starting State		
+	/*S0*/    0, 1, 2, 8, 8, 0,		// Starting State		
 	/*S1*/	1, 1, 1, 1, 5, 5,		// In Identifier	 <Accept>	
 	/*S2*/	2, 6, 2, 6, 3,	6,		// In Number		 <Accept>
 	/*S3*/	3, 8, 4, 8, 8,	8,		// Incomplete Real		
@@ -52,23 +61,31 @@ int stateTable[9][6] =
 	/*S8*/	8, 8, 8, 8, 8, 8		// Unknown result
 };
 
-//							s0     s1     s2     s3     s4     s5     s6     s7     s8
-std::vector<bool> isAcceptState = {false, true,  true,  false, true,  true, true, true,  false, false};
+//							  s0     s1     s2     s3     s4     s5     s6     s7     s8    s9
+std::vector<bool> isAcceptState = { false, true,  true,  false, true,  true,  true, true,   false, false};
 std::vector<bool> isBackupState = { false, false, false, false, false, true,  true, true,   false, false };
+std::vector<eTokenType> eTokenLookUp = { NONE, IDENTIFIER, INTEGER, NONE, REAL, IDENTIFIER, INTEGER, REAL, NONE };
 
+std::map<eTokenType, std::string> Token_To_String_Map{ {IDENTIFIER, "identifier"}, {INTEGER, "integer"}, {REAL, "real"}, {NONE, "none"} };
 
 #pragma endregion
 
-// These enumerations need to correspond with the column of the particular input character
-enum eInputType{LETTER=1, DIGIT=2, UNDERSCORE=3, PERIOD=4, SPACE=5, UNKNOWN = 8};
-eInputType GetInputType(char ch);
 
+void PrintGraphIteration(int currentState, char inputChar)
+{
+	std::cout << "(" << currentState << ")--" << inputChar << "-->";
+}
 
 void PrintInt(int num) { std::cout << num; }
 
-std::string source{ "abc" };
+std::string source{ "Josh James Lollis" }; // TODO there is an issue where multiple spaces before hand of a file end up showing upi the first lexeme printout
+
 std::string::iterator currCharIter{ source.begin() };
 std::string::iterator tokenStartIter{ source.begin() };
+
+std::stack<std::string::iterator> inputHistoryQ;
+std::stack<int> stateHistoryQ;
+
 
 bool Lexer(std::string& token, std::string& lexeme)
 {
@@ -78,50 +95,54 @@ bool Lexer(std::string& token, std::string& lexeme)
 	bool isEOT{ false };
 
 
-	char currCharCopy{ *currCharIter };
+	char currCharCopy;
+	if(!isEOF) currCharCopy =  *currCharIter ;
 	int currentState{ 0 };
-	
-	PrintInt(currentState);
+
 
 	std::string foundToken;
+	std::string foundTokenString;
+	eTokenType foundTokenType;
 	while (!isEOF && !isEOT)
-	{
-		
+	{		
 		eInputType inputType = GetInputType(currCharCopy);
-		int destState = stateTable[currentState][inputType];
+		int destState = stateTable[currentState][inputType];		
 		
 		// If the destination is a backup state, 
 		// we can just stay here and accept this as it is in this state
 		if (isBackupState.at(destState))
-		{
-			//PrintInt(currentState);
-
-			lexeme = std::string(tokenStartIter, currCharIter);
+		{			
 			isEOT = true;
+			foundTokenType = eTokenLookUp[destState];
+			foundTokenString = Token_To_String_Map.at(foundTokenType);
+			
+			token = foundTokenString;
+			lexeme = std::string(tokenStartIter, currCharIter);
 		}
 		else if ((++currCharIter) != source.end())
 		{
-			//PrintInt(currentState);
-
+			if(inputType != eInputType::SPACE)
+			PrintGraphIteration(currentState, currCharCopy);
 			currCharCopy = *currCharIter;
 			currentState = destState;
 		}
 		else
 		{
-			//PrintInt(currentState);
-
 			if (isAcceptState[currentState])
 			{
+				
+				isEOT = true;
+				foundTokenType = eTokenLookUp[currentState];
+				foundTokenString = Token_To_String_Map.at(foundTokenType);
+				
+				token = foundTokenString;
 				lexeme = std::string(tokenStartIter, currCharIter);
 			}
 			isEOF = true;
-		}
-
-		std::cout << " --" << currCharCopy << "-->"; // TODO left off here, doesn't quite print right but works prettty good actually
-		PrintInt(currentState);
+		}		
 
 	}
-	
+	std::cout << foundTokenString;
 	return isEOF;
 }
 
@@ -131,15 +152,17 @@ bool Lexer(std::string& token, std::string& lexeme)
 int main()
 {
 	std::string myToken, myLexeme;
-	Lexer(myToken, myLexeme);
+	
+	do
+	{
+		std::cout << "\n" << std::string(100, '-');
+		std::cout << "\nToken: " << myToken << "\nLexeme: " << myLexeme << "\n\n\n";
 
-	std::cout << "\nToken: " << myToken << " Lexeme: " << myLexeme << std::endl;
-
-
-
-
+	} while (!Lexer(myToken, myLexeme));
+	
+	std::cout << std::string(20,'\n') ;
 	return 0;
-}
+}// TODO I DON"T THINK STEP BACK IS QUITE WORKING RIGHT
 
 eInputType GetInputType(char ch)
 {
