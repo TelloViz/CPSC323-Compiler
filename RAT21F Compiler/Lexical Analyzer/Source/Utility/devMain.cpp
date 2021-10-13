@@ -301,9 +301,8 @@ void PrintGraphIteration(int currentState, char inputChar)
 	std::cout << "(" << currentState << ")--" << inputChar << "-->";
 }
 
-void PrintInt(int num) { std::cout << num; }
 
-std::string source{ "24..35" };
+std::string source{ " 24 ...35  " };
 
 std::string::iterator currCharIter{ source.begin() };
 std::string::iterator tokenStartIter{ source.begin() };
@@ -322,7 +321,11 @@ int main()
 	while (!isEOF)
 	{
 		isEOF = Lexer(myToken, myLexeme);
-		std::cout << "\nToken: " << myToken << "\nLexeme: " << myLexeme << "\n\n\n";
+		if (myToken.empty() || myLexeme.empty())
+		{
+
+		}
+		else	std::cout << "\nToken: " << myToken << "\nLexeme: " << myLexeme << "\n\n\n";
 	}
 
 	std::cout << std::string(20, '\n');
