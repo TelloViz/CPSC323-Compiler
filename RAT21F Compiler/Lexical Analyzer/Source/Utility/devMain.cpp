@@ -78,7 +78,7 @@ void PrintGraphIteration(int currentState, char inputChar)
 
 void PrintInt(int num) { std::cout << num; }
 
-std::string source{ "Josh James Lollis" }; // TODO there is an issue where multiple spaces before hand of a file end up showing upi the first lexeme printout
+std::string source{ "    Josh James Lollis" }; 
 
 std::string::iterator currCharIter{ source.begin() };
 std::string::iterator tokenStartIter{ source.begin() };
@@ -105,25 +105,47 @@ bool Lexer(std::string& token, std::string& lexeme)
 	eTokenType foundTokenType;
 	while (!isEOF && !isEOT)
 	{		
-		eInputType inputType = GetInputType(currCharCopy);
+
+		eInputType inputType = GetInputType(currCharCopy);		// Get the current input chars eInputType (enum)
+
+
+
+		// currState:inputType->destState 
+		// (The state the table will be in with the given state and input
 		int destState = stateTable[currentState][inputType];		
 		
+
+
+
+
+
 		// If the destination is a backup state, 
 		// we can just stay here and accept this as it is in this state
 		if (isBackupState.at(destState))
-		{			
+		{	
+			/*NOTE: At this point destState will be index to the Backup State
+					currState will be the state the machine was in just prior to the backup state */
+
 			isEOT = true;
-			foundTokenType = eTokenLookUp[destState];
+			
+			foundTokenType = eTokenLookUp[destState];		// look up token type assert(could use destState or currState interchangeably here) 
+													//	See vector tables above
+			
+			
 			foundTokenString = Token_To_String_Map.at(foundTokenType);
 			
 			token = foundTokenString;
 			lexeme = std::string(tokenStartIter, currCharIter);
 		}
-		else if ((++currCharIter) != source.end())
+		else if ((currCharIter+1) != source.end()) // TODO trace the program and check thsi function. I don't think this seems sound
 		{
-			if(inputType != eInputType::SPACE)
-			currCharCopy = *currCharIter;
+			/*if (inputType != eInputType::SPACE)
+			{
+				currCharCopy = *currCharIter;
+			}*/
+
 			currentState = destState;
+			currCharCopy = *(++currCharIter); // 
 		}
 		else
 		{
@@ -152,8 +174,10 @@ int main()
 {
 	std::string myToken, myLexeme;
 	
-	while (!Lexer(myToken, myLexeme))
+	bool isEOF{ false };
+	while (!isEOF)
 	{
+		isEOF = Lexer(myToken, myLexeme);
 		std::cout << "\nToken: " << myToken << "\nLexeme: " << myLexeme << "\n\n\n";
 	}
 	
