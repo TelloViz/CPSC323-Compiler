@@ -64,7 +64,7 @@ int stateTable[11][6] =
 	/*S4*/	4,  6,  4,  7,  7,	7,		// In Real		 <Accept>	
 	/*S5*/	5,  0,  0,  0,  0, 	0,		// End of Identifier <Accept>	 [Back Up]
 	/*S6*/    6,  0,  0,  0,  0,  0,        // End Number		 <Accept>	 [Back Up]
-	/*S7*/    7,  0,  0,  0,  0,  0,		// End Real		 <Accept>	 [Back Up]
+	/*S7*/    7,  0,  0,  0,  9,  0,		// End Real		 <Accept>	 [Back Up]
 	/*S8*/	8, 10, 10, 10, 10, 10,		// In Unknown result <Accept>
 	/*S9*/	9,  0,  0,  0,  0,  0,		// Reals Invalid			 [Double Back up]
 	/*S10*/  10,  0,  0,  0,  0,  0		// End Unknown		 <Accept>  [Back up]		
@@ -72,7 +72,7 @@ int stateTable[11][6] =
 
 //								    s0    s1     s2     s3     s4     s5     s6     s7     s8    s9	 s10
 std::vector<bool> isAcceptState =		{ true, true,  true,  false, true,  true,  true, true,  true, false, true };
-std::vector<bool> isBackupState =		{ false, false, false, false, false, true,  true, true,  true, true, true };
+std::vector<bool> isBackupState =		{ false, false, false, false, false, true,  true, true,  false, true, true };
 std::vector<bool> isDoubleBackupState = { false, false, false, false, false, false, false,false, false, true, false };
 std::vector<eTokenType> eTokenLookUp = { NONE, IDENTIFIER, INTEGER, NONE, REAL, IDENTIFIER, INTEGER, REAL, NONE, NONE, NONE };
 
@@ -81,13 +81,7 @@ std::map<eTokenType, std::string> Token_To_String_Map{ {IDENTIFIER, "identifier"
 #pragma endregion
 
 
-void PrintGraphIteration(int currentState, char inputChar)
-{
-	std::cout << "(" << currentState << ")--" << inputChar << "-->";
-}
-
-
-std::string source{ " 24 ...35  " };
+std::string source{ "3j" }; // TODO left off here. recognizing as an integer incorrectly
 
 std::string::iterator currCharIter{ source.begin() };
 std::string::iterator tokenStartIter{ source.begin() };
@@ -120,22 +114,9 @@ int main()
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 bool Lexer(std::string& token, std::string& lexeme)
 {
-
+	eInputType inputType;
 	lexeme = "";
 	token = "";
 
@@ -190,7 +171,13 @@ bool Lexer(std::string& token, std::string& lexeme)
 
 	while (!isEOT && !isEOF)
 	{
-
+		if (currCharIter == source.end())
+		{
+			isEOF = true;
+			isEOT = true;
+			
+		}
+		if (isEOF) break;
 		// NOTE:
 
 		/*     currState:inputType->destState     */
@@ -198,21 +185,21 @@ bool Lexer(std::string& token, std::string& lexeme)
 		//STATE_STACK.push(currentState);
 		//LEXEME_QUEUE.push(currCharCopy);
 
-		eInputType inputType = GetInputType(currCharCopy);	// Get the current input chars eInputType (enum)	
-		INPUT_STACK.push(currCharCopy);
+		//eInputType inputType = GetInputType(currCharCopy);	// Get the current input chars eInputType (enum)	
+		//INPUT_STACK.push(currCharCopy);
 
 		
 
+		/*STATE_STACK.push(currentState);
+		LEXEME_QUEUE.push(currCharCopy);*/
 		STATE_STACK.push(currentState);
-		LEXEME_QUEUE.push(currCharCopy);
-
 		if (isBackupState.at(currentState))
 		{
 
 			isEOT = true;
 			STATE_STACK.pop();
 			LEXEME_QUEUE.pop();
-			//--currCharIter;
+			--currCharIter;
 
 			if (isDoubleBackupState.at(currentState))
 			{
@@ -231,19 +218,31 @@ bool Lexer(std::string& token, std::string& lexeme)
 		else
 		{
 
-			auto next = currCharIter + 1;
+			/*auto next = currCharIter + 1;
 			if (next == source.end())
 			{
 				isEOF = true;
 				isEOT = true;
-			}
-			else
-			{
+			}*/
+			//else
+			//{
+
+
+				//STATE_STACK.push(currentState);
+				LEXEME_QUEUE.push(currCharCopy);
+
+				inputType  = GetInputType(currCharCopy);	// Get the current input chars eInputType (enum)	
+				INPUT_STACK.push(currCharCopy);
+
 				currCharIter++;
-				int destState = stateTable[currentState][inputType]; // Get resulting destination state
-				currentState = destState;
-				currCharCopy = *currCharIter;
-			}
+				if (currCharIter == source.end()) {}
+				else {
+					int destState = stateTable[currentState][inputType]; // Get resulting destination state
+					currentState = destState;
+					currCharCopy = *currCharIter;
+				}
+				
+			//}
 			
 			
 
