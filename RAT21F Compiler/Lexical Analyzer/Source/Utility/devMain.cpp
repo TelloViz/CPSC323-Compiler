@@ -126,7 +126,7 @@ int stateTable[47][21] =
 	/*S38*/  38,   0,	0,   0,   0,   0,    0,    0,   0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0, // (S38)END <=			[Back Up]			<Accept>
 	/*S39*/  39,  40,  40,  40,  40,  40,   40,   40,  40,   40,   40,   40,   40,   40,   40,   40,   40,   40,   40,   40,   40, // (S39)IN ;								<Accept>
 	/*S40*/  40,   0,	0,   0,   0,   0,    0,    0,   0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0, // (S40)END ;			[Back Up]			<Accept>
-	/*S41*/  41,  42,  42,  42,  42,  42,   42,   42,  42,   42,   42,   42,   42,   42,   42,   42,   42,   42,   42,   42,   42, // (S41)IN ,								<Accept>
+	/*S41*/  41,  42,  42,  42,  42,  42,   42,   42,  42,   42,   42,   42,   42,   42,   42,   45,   42,   42,   42,   42,   42, // (S41)IN ,								<Accept>
 	/*S42*/  42,   0,	0,   0,   0,   0,    0,    0,   0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0, // (S42)END ,			[Back Up]			<Accept>
 	/*S43*/  43,  44,  44,  44,  44,  44,   44,   44,  44,   44,   44,   44,   44,   44,   44,   45,   44,   44,   44,   44,   44, // (S43)IN !								<Accept>
 	/*S44*/  44,   0,	0,   0,   0,   0,    0,    0,   0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0, // (S44)END !			[Back Up]			<Accept>
@@ -161,7 +161,7 @@ std::vector<std::string> compoundOperatorsVec{ "==", "!=", "<=", "=>" };
 #pragma endregion
 
 
-std::string source{ "<=" }; // TODO left off here. recognizing as an integer incorrectly
+std::string source{ "  == , != ,  <=, = > " }; // TODO left off here. recognizing as an integer incorrectly
 
 std::string::iterator currCharIter{ source.begin() };
 std::string::iterator tokenStartIter{ source.begin() };
@@ -427,10 +427,6 @@ bool Lexer(std::string& token, std::string& lexeme)
 			eTokenType tokType = eTokenLookUp.at(STATE_STACK.top());
 			token = Token_To_String_Map.at(tokType);
 
-
-		}
-		else if (isAcceptState.at(STATE_STACK.top()))
-		{
 
 		}
 
