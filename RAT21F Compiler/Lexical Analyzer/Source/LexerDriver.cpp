@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include "../Include/Utility/SourceStripper.hpp"
+#include "../Include/LexicalAnalyzer.h"
 
 #define DEBUG_ON
 
@@ -10,8 +11,9 @@
 void ECHO_CLI_ARGS(int argc, char** argv);
 bool ConfirmInputArgSuccess(int argCount);
 bool ConfirmOutputArgSuccess(int argCount);
-bool LoadInputFile(std::filebuf&, std::string);
-bool OutputResultData(std::string, std::filebuf&, std::string);
+bool LoadInputFile(std::filebuf&, std::string, std::string&);
+bool OutputResultData(std::string, std::string);
+std::string FormatOutputString(std::vector<LexicalUnit> lexVec);
 #pragma endregion
 
 
@@ -20,10 +22,14 @@ bool OutputResultData(std::string, std::filebuf&, std::string);
 int main(int argc, char** argv)
 {
 #pragma region Init CLI arg and stream data
-	std::string SOURCE{ "This is my \n Source \n\nCode. Thre are a few lines\n in it" };
-	std::string formattedOutputString{ "This is placeholder text for the actual outputted token/lexeme pair table" };
+	std::string SOURCE{ "" };
+	std::string formattedOutputString
+	{
+		"Token\t\tLexeme\n" \
+		"------------------\n"
+	};
+
 	std::filebuf inStream;
-	std::filebuf outStream;
 
 
 	bool isSourceInputSuccess{ false };
@@ -32,43 +38,53 @@ int main(int argc, char** argv)
 	bool is_CLI_Output_Arg{ false };
 #pragma endregion	
 
-#pragma region DEBUG Code
+#pragma region Debug Code
+
 #ifdef DEBUG_ON
 	ECHO_CLI_ARGS(argc, argv);
 #endif // DEBUG_ON
-#pragma endregion
+
+#pragma endregion // END Debug Code Region
 
 #pragma region Stream Input
 	if (ConfirmInputArgSuccess(argc))
 	{
 		try // Try loading input source stream
 		{
-			if (isSourceInputSuccess = LoadInputFile(inStream, "test.txt")) {}
+			if (isSourceInputSuccess = LoadInputFile(inStream, argv[1], SOURCE)) {}
 		}
 		catch (const std::exception&)
 		{
 			std::cout << "Error Loading Input File..." << std::endl;
 		}
 	}
-#pragma endregion
+#pragma endregion // End Stream Input Region
 
 #pragma region Lexical Analysis
-	// TODO implement Lexer here
-#pragma endregion
+	LexicalAnalyzer LA(SOURCE); // Instantiate Lexical Analyzer object with source code string
+	LexicalUnit lexUnit;
+	
+	bool isEOF{ false };
+	while (!isEOF)
+	{
+		isEOF = LA.Lexer(lexUnit);
+		if(!isEOF) formattedOutputString.append("\n" + lexUnit.sToken + "\t\t" + lexUnit.sLexeme);
+	}
+#pragma endregion // End Lexical Analysis Region
 
 #pragma region Stream Output
 	if (ConfirmOutputArgSuccess(argc))
 	{
 		try // Try outputting results to stream
 		{
-			if (isSourceOutputSuccess = OutputResultData(formattedOutputString,outStream, "FilenameParam.RAT21F")) {}
+			if (isSourceOutputSuccess = OutputResultData(formattedOutputString,argv[2])) {}
 		}
 		catch (const std::exception&)
 		{
 			std::cout << "Error Outputting Results to Stream..." << std::endl;
 		}
 	}
-#pragma endregion
+#pragma endregion // End Stream Output Region
 
 	return 0;
 }
@@ -90,20 +106,21 @@ bool ConfirmOutputArgSuccess(int argCount)
 {
 	return argCount >= 3; // True means there are at least 3 args, the 3rd being the output filepath. Ignore any args past 3.
 }
-bool LoadInputFile(std::filebuf& fBuffer, std::string fileName)
+bool LoadInputFile(std::filebuf& fBuffer, std::string fileName, std::string& sourceStringRef)
 {
 	bool openedSuccess{ false };
 	if (openedSuccess = fBuffer.open(fileName, std::ios::in))
 	{
 		std::istream is(&fBuffer);
 		while (is)
-			std::cout << char(is.get());
+			sourceStringRef.push_back(char(is.get()));
 		fBuffer.close();
 	}
 	return openedSuccess;
 }
-bool OutputResultData(std::string outString, std::filebuf& outStream, std::string outFilename = "output.RAT12F")
+bool OutputResultData(std::string outString, std::string outFilename = "output.RAT12F")
 {
+	std::filebuf outStream;
 	bool openedSuccess{ false };
 	if (openedSuccess = outStream.open(outFilename, std::ios::out))
 	{
@@ -114,4 +131,5 @@ bool OutputResultData(std::string outString, std::filebuf& outStream, std::strin
 	}
 	return false;
 }
-#pragma endregion
+
+#pragma endregion // END file i/o function region
