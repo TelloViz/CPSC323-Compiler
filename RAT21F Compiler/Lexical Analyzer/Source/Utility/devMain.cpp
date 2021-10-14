@@ -20,6 +20,7 @@ bool isAlpha(char ch) { return std::isalpha(ch); }
 bool isDigit(char ch) { return std::isdigit(ch); }
 bool isUnderScore(char ch) { return ch == '_'; }
 bool isPeriod(char ch) { return ch == '.'; }
+bool isExcl(char ch) { return ch == '!'; }
 bool isSpace(char ch) { return ch == ' '; }
 bool isReturn(char ch) { return ch == '\n'; }
 bool isTab(char ch) { return ch == '\t'; }
@@ -47,7 +48,7 @@ enum eInputType
 	LETTER = 1,	DIGIT = 2,	UNDERSCORE = 3, PERIOD = 4,	  SPACE = 5, 
 	OPEN_PAREN=6,	CLOSE_PAREN=7, UNKNOWN = 8,	 OPEN_BRACKET=9, CLOSE_BRACKET=10, 
 	PLUS=11,		MINUS=12,		MULTIPLY=13,	 DIVIDE=14,	  EQUAL=15, 
-	LEFT_ANGLE, 	RIGHT_ANGLE,	SEMI_COLON,	COMMA 
+	LEFT_ANGLE, 	RIGHT_ANGLE,	SEMI_COLON,	COMMA, EXCLAMATION 
 
 };
 eInputType GetInputType(char ch);
@@ -95,6 +96,10 @@ std::map<eTokenType, std::string> Token_To_String_Map{ {IDENTIFIER, "identifier"
 
 #pragma region Keywords
 std::vector<std::string> keywordVec{ "if", "endif", "else", "put", "get", "true", "integer", "boolean", "real", "function", "return", "while", "false"};
+#pragma endregion
+
+#pragma region Operators
+std::vector<std::string> compoundOperatorsVec{ "==", "!=", "<=", "=>" };
 #pragma endregion
 
 
