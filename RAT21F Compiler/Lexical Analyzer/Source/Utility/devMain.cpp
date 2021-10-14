@@ -42,8 +42,16 @@ bool isComma(char ch) { return ch == ','; }
 
 
 // These enumerations need to correspond with the column of the particular input character
-enum eInputType { LETTER = 1, DIGIT = 2, UNDERSCORE = 3, PERIOD = 4, SPACE = 5, OPEN_PAREN=6, CLOSE_PAREN=7, UNKNOWN = 8 };
+enum eInputType 
+{ 
+	LETTER = 1,	DIGIT = 2,	UNDERSCORE = 3, PERIOD = 4,	  SPACE = 5, 
+	OPEN_PAREN=6,	CLOSE_PAREN=7, UNKNOWN = 8,	 OPEN_BRACKET=9, CLOSE_BRACKET=10, 
+	PLUS=11,		MINUS=12,		MULTIPLY=13,	 DIVIDE=14,	  EQUAL=15, 
+	LEFT_ANGLE, 	RIGHT_ANGLE,	SEMI_COLON,	COMMA 
+
+};
 eInputType GetInputType(char ch);
+
 
 enum eTokenType { IDENTIFIER, INTEGER, REAL, SEPARATOR, OPERATOR, NONE };
 
@@ -55,7 +63,7 @@ enum eTokenType { IDENTIFIER, INTEGER, REAL, SEPARATOR, OPERATOR, NONE };
 // This number is our resulting state of that particular input
 // from our current state
 
-int stateTable[15][8] =
+int stateTable[15][8] = // TODO add ; semi-colon to table next, run current source and you'll see why
 {/*			    L   D   _   .   Sp   (    )										*/
 	/*S0*/    0,  1,  2,  8,  8,  0,  11,  13,		// Starting State	 <Accept>	
 	/*S1*/	1,  1,  1,  1,  5,  5,  5,   5,		// In Identifier	 <Accept>	
@@ -85,7 +93,12 @@ std::map<eTokenType, std::string> Token_To_String_Map{ {IDENTIFIER, "identifier"
 #pragma endregion
 
 
-std::string source{ "while (fahr <= upper ) a = 23.00; /* this is sample */" }; // TODO left off here. recognizing as an integer incorrectly
+#pragma region Keywords
+std::vector<std::string> keywordVec{ "if", "endif", "else", "put", "get", "true", "integer", "boolean", "real", "function", "return", "while", "false"};
+#pragma endregion
+
+
+std::string source{ " <= upper ) a = 23.00; /* this is sample */" }; // TODO left off here. recognizing as an integer incorrectly
 
 std::string::iterator currCharIter{ source.begin() };
 std::string::iterator tokenStartIter{ source.begin() };
@@ -169,8 +182,89 @@ bool Lexer(std::string& token, std::string& lexeme)
 		else currCharCopy = *currCharIter;
 	}
 
-
-	// Check up front for potential EOF
+	// Before we start processing, simply check if the character is a simple operator or separator
+	// If so we can skip the state table altogether.
+	eInputType precheckInputType = GetInputType(currCharCopy);
+	bool isPreChecked{ false };
+	switch (precheckInputType)
+	{
+	case UNDERSCORE:
+		isEOT = true;
+		isPreChecked = true;
+		lexeme = "_";
+		token = Token_To_String_Map.at(NONE);
+		break;
+	case PERIOD:
+		isEOT = true;
+		isPreChecked = true;
+		lexeme = ".";
+		token = Token_To_String_Map.at(NONE);
+		break;
+	//case SPACE:
+	//	//do nothing
+	//	isEOT = true;
+	//	break;
+	case OPEN_PAREN:
+		isEOT = true;
+		isPreChecked = true;
+		lexeme = "(";
+		token = Token_To_String_Map.at(SEPARATOR);
+		break;
+	case CLOSE_PAREN:
+		isEOT = true;
+		isPreChecked = true;
+		lexeme = ")";
+		token = Token_To_String_Map.at(SEPARATOR);
+		break;
+	case UNKNOWN:
+		isEOT = true;
+		isPreChecked = true;
+		break;
+	case OPEN_BRACKET:
+		isEOT = true;
+		isPreChecked = true;
+		lexeme = "{";
+		token = Token_To_String_Map.at(SEPARATOR);
+		break;
+	case CLOSE_BRACKET:
+		isEOT = true;
+		isPreChecked = true;
+		lexeme = "}";
+		token = Token_To_String_Map.at(SEPARATOR);
+		break;;
+	case PLUS:
+		break;
+	case MINUS:
+		break;
+	case MULTIPLY:
+		break;
+	case DIVIDE:
+		break;
+	case EQUAL: // TODO this one is only here for debugging the rest, this is a special case needinging handling elswhere
+		isEOT = true;
+		isPreChecked = true;
+		lexeme = "=";
+		token = Token_To_String_Map.at(OPERATOR);
+		break;
+	case LEFT_ANGLE:
+		isEOT = true;
+		isPreChecked = true;
+		lexeme = "<";
+		token = Token_To_String_Map.at(OPERATOR);
+		break;
+	case RIGHT_ANGLE:
+		break;
+	case SEMI_COLON:
+		isEOT = true;
+		isPreChecked = true;
+		lexeme = ";";
+		token = Token_To_String_Map.at(SEPARATOR);
+		break;
+	case COMMA:
+		break;
+	default:
+		break;
+	}
 
 
 	while (!isEOT && !isEOF)
@@ -259,7 +353,7 @@ bool Lexer(std::string& token, std::string& lexeme)
 
 	if (isEOT)
 	{
-		if (isAcceptState.at(STATE_STACK.top()))
+		if (!isPreChecked && isAcceptState.at(STATE_STACK.top()))
 		{
 			
 			while (!LEXEME_QUEUE.empty()) // Use LEXEME_QUEUE to populate param Lexeme string
@@ -269,10 +363,15 @@ bool Lexer(std::string& token, std::string& lexeme)
 			}
 			std::reverse(lexeme.begin(), lexeme.end());
 
-				eTokenType tokType = eTokenLookUp.at(STATE_STACK.top());
+			eTokenType tokType = eTokenLookUp.at(STATE_STACK.top());
 			token = Token_To_String_Map.at(tokType);
 
 
+		}
+
+		if (isPreChecked)
+		{
+			++currCharIter;
 		}
 	}
 
@@ -282,6 +381,17 @@ bool Lexer(std::string& token, std::string& lexeme)
 
 eInputType GetInputType(char ch)
 {
+	if (isOpenBracket(ch)) return eInputType::OPEN_BRACKET;
+	if (iscloseBracket(ch)) return eInputType::CLOSE_BRACKET;	
+	if (isPlus(ch)) return eInputType::PLUS;
+	if (isMinus(ch)) return eInputType::MINUS;
+	if (isAsterisk(ch)) return eInputType::MULTIPLY;
+	if (isDivide(ch)) return eInputType::DIVIDE;
+	if (isEqualSign(ch)) return eInputType::EQUAL;
+	if (isLeftAngle(ch)) return eInputType::LEFT_ANGLE;
+	if (isRightAngle(ch)) return eInputType::RIGHT_ANGLE;
+	if (isSemiColon(ch)) return eInputType::SEMI_COLON;
+	if (isComma(ch)) return eInputType::COMMA;
 	if (isOpenParen(ch)) return eInputType::OPEN_PAREN;
 	if (isCloseParen(ch)) return eInputType::CLOSE_PAREN;
 	if (isAlpha(ch)) return eInputType::LETTER;
