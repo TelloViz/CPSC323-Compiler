@@ -161,7 +161,7 @@ std::vector<std::string> compoundOperatorsVec{ "==", "!=", "<=", "=>" };
 #pragma endregion
 
 
-std::string source{ "  == , != ,  <=, = > " }; // TODO left off here. recognizing as an integer incorrectly
+std::string source{ "while (fahr <= upper) a = 23.00; /* this is sample */" }; // TODO left off here. recognizing as an integer incorrectly
 
 std::string::iterator currCharIter{ source.begin() };
 std::string::iterator tokenStartIter{ source.begin() };
@@ -184,7 +184,7 @@ int main()
 		{
 
 		}
-		else	std::cout << "\nToken: " << myToken << "\nLexeme: " << myLexeme << "\n\n\n";
+		else	std::cout << "\nToken: " << myToken << "\nLexeme: " << myLexeme << "\n";
 	}
 
 	std::cout << std::string(20, '\n');
