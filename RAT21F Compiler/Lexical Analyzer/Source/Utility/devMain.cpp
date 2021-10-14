@@ -131,13 +131,13 @@ int stateTable[47][21] =
 	/*S43*/  43,  44,  44,  44,  44,  44,   44,   44,  44,   44,   44,   44,   44,   44,   44,   45,   44,   44,   44,   44,   44, // (S43)IN !
 	/*S44*/  44,   0,	0,   0,   0,   0,    0,    0,   0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0, // (S44)END !			[Back Up]			<Accept>
 	/*S45*/  45,  46,  46,  46,  46,  46,   46,   46,  46,   46,   46,   46,   46,   46,   46,   46,   46,   46,   46,   46,   46, // (S45)IN !=
-	/*S46*/  46,   0,	0,   0,   0,   0,    0,    0,   0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0, // (S46)END !=			[Back Up]			 <Accept>
+	/*S46*/  46,   0,	0,   0,   0,   0,    0,    0,   0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0, // (S46)END !=			[Back Up]			<Accept>
 }
 
-//								    s0    s1      s2       s3     s4     s5     s6    s7     s8     s9    s10   s11   s12     s13    s14	  s15    s16    s17  s18     s19    s20    s21    s22    s23   s24     s25    s26    s27    s28     s29   s30     s31   s32     s33   s34     s35   s36     s37   s38     s39    s40    s41    s42     s43    s44    s45   s46
-std::vector<bool> isAcceptState =		{ false, false,  false,  false, false,  true,  true, true,  false, true, true, false, true,  false,  true, false, true, false,true , false, true , false, true , false, true , false, true , false,  true , false, true , false, true , false, true , false, true , false, true , false, true , false, true ,  false, true , false, true};
-std::vector<bool> isBackupState =		{ false, false, false, false, false, true,  true, true,  false, true, true, false, true, false, true };
-std::vector<bool> isDoubleBackupState = { false, false, false, false, false, false, false,false, false, true, false, false, false, false, false };
+//								    s0    s1      s2       s3     s4     s5     s6     s7     s8     s9    s10   s11   s12     s13     s14	  s15    s16    s17    s18     s19     s20    s21    s22    s23   s24     s25    s26    s27    s28     s29   s30     s31   s32     s33   s34     s35   s36     s37   s38     s39    s40    s41    s42     s43    s44    s45   s46
+std::vector<bool> isAcceptState =		{ false, false, false,   false, false,  true,  true,  true,  false, true, true,  false, true,  false,  true,  false,  true,  false,  true , false,  true ,  false, true , false, true , false, true , false,  true , false, true , false, true , false, true , false, true , false, true , false, true , false, true ,  false, true , false, true};
+std::vector<bool> isBackupState =		{ false, false, false,   false, false,  true,  true,  true,  false, true, true,  false, true,  false,  true,  false,  true,  false,  true,  false,  true,   false, true,  false, true,  false, true,  false,  true,  false, true,  false, true,  false, true,  false, true,  false, true,  false, true , false, true ,  false, true , false, true };
+std::vector<bool> isDoubleBackupState = { false, false, false,   false, false,  false, false, false, false, true, false, false, false, false,  false, false,  false, false,  false, false,  false,  false, false, false, false, false, false, false,  false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,  false, false, false, false,  };
 std::vector<eTokenType> eTokenLookUp = {  NONE, IDENTIFIER, INTEGER, NONE, REAL, IDENTIFIER, INTEGER, REAL, NONE, NONE, NONE, SEPARATOR, SEPARATOR, SEPARATOR, SEPARATOR };
 
 std::map<eTokenType, std::string> Token_To_String_Map{ {IDENTIFIER, "identifier"}, {INTEGER, "integer"}, {REAL, "real"}, {SEPARATOR, "separator"}, {OPERATOR, "operator"}, {NONE, "none"} };
