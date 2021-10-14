@@ -42,7 +42,7 @@ bool isComma(char ch) { return ch == ','; }
 
 
 // These enumerations need to correspond with the column of the particular input character
-enum eInputType { LETTER = 1, DIGIT = 2, UNDERSCORE = 3, PERIOD = 4, SPACE = 5, UNKNOWN = 8 };
+enum eInputType { LETTER = 1, DIGIT = 2, UNDERSCORE = 3, PERIOD = 4, SPACE = 5, OPEN_PAREN=6, UNKNOWN = 8 };
 eInputType GetInputType(char ch);
 
 enum eTokenType { IDENTIFIER, INTEGER, REAL, SEPARATOR, OPERATOR, NONE };
@@ -55,33 +55,35 @@ enum eTokenType { IDENTIFIER, INTEGER, REAL, SEPARATOR, OPERATOR, NONE };
 // This number is our resulting state of that particular input
 // from our current state
 
-int stateTable[11][6] =
-{/*			    L   D   _  .  Sp */
-	/*S0*/    0,  1,  2,  8,  8,  0,		// Starting State	 <Accept>	
-	/*S1*/	1,  1,  1,  1,  5,  5,		// In Identifier	 <Accept>	
-	/*S2*/	2,  6,  2,  6,  3,	6,		// In Number		 <Accept>
-	/*S3*/	3,  9,  4,  9,  9,	9,		// Incomplete Real		
-	/*S4*/	4,  6,  4,  7,  7,	7,		// In Real		 <Accept>	
-	/*S5*/	5,  0,  0,  0,  0, 	0,		// End of Identifier <Accept>	 [Back Up]
-	/*S6*/    6,  0,  0,  0,  0,  0,        // End Number		 <Accept>	 [Back Up]
-	/*S7*/    7,  0,  0,  0,  9,  0,		// End Real		 <Accept>	 [Back Up]
-	/*S8*/	8, 10, 10, 10, 10, 10,		// In Unknown result <Accept>
-	/*S9*/	9,  0,  0,  0,  0,  0,		// Reals Invalid			 [Double Back up]
-	/*S10*/  10,  0,  0,  0,  0,  0		// End Unknown		 <Accept>  [Back up]		
+int stateTable[13][7] =
+{/*			    L   D   _   .   Sp   (   */
+	/*S0*/    0,  1,  2,  8,  8,  0,  11,		// Starting State	 <Accept>	
+	/*S1*/	1,  1,  1,  1,  5,  5,  5,	// In Identifier	 <Accept>	
+	/*S2*/	2,  6,  2,  6,  3,	6,  6,	// In Number		 <Accept>
+	/*S3*/	3,  9,  4,  9,  9,	9,  9,		// Incomplete Real		
+	/*S4*/	4,  6,  4,  7,  7,	7,  7,		// In Real		 <Accept>	
+	/*S5*/	5,  0,  0,  0,  0, 	0,  0,		// End of Identifier <Accept>	 [Back Up]
+	/*S6*/    6,  0,  0,  0,  0,  0,  0,      // End Number		 <Accept>	 [Back Up]
+	/*S7*/    7,  0,  0,  0,  9,  0,  0,		// End Real		 <Accept>	 [Back Up]
+	/*S8*/	8, 10, 10, 10, 10, 10,  10,		// In Unknown result <Accept>
+	/*S9*/	9,  0,  0,  0,  0,  0,  0,		// Reals Invalid			 [Double Back up]
+	/*S10*/  10,  0,  0,  0,  0,  0,  0,		// End Unknown		 <Accept>  [Back up]		
+	/*S11*/  11,  12,  12,  12,  12,  12,  12,		// In (			 <Accept>  
+	/*S12*/  12,  0,   0,    0,   0,  0,   0	// End (			 <Accept>	 [Back up]
 };
 
-//								    s0    s1     s2     s3     s4     s5     s6     s7     s8    s9	 s10
-std::vector<bool> isAcceptState =		{ true, true,  true,  false, true,  true,  true, true,  true, false, true };
-std::vector<bool> isBackupState =		{ false, false, false, false, false, true,  true, true,  false, true, true };
-std::vector<bool> isDoubleBackupState = { false, false, false, false, false, false, false,false, false, true, false };
-std::vector<eTokenType> eTokenLookUp = { NONE, IDENTIFIER, INTEGER, NONE, REAL, IDENTIFIER, INTEGER, REAL, NONE, NONE, NONE };
+//								    s0    s1     s2     s3     s4     s5     s6     s7     s8    s9	 s10  s11
+std::vector<bool> isAcceptState =		{ true, true,  true,  false, true,  true,  true, true,  true, false, true, true, true};
+std::vector<bool> isBackupState =		{ false, false, false, false, false, true,  true, true,  false, true, true, false, true };
+std::vector<bool> isDoubleBackupState = { false, false, false, false, false, false, false,false, false, true, false, false, false };
+std::vector<eTokenType> eTokenLookUp = { NONE, IDENTIFIER, INTEGER, NONE, REAL, IDENTIFIER, INTEGER, REAL, NONE, NONE, NONE, SEPARATOR };
 
 std::map<eTokenType, std::string> Token_To_String_Map{ {IDENTIFIER, "identifier"}, {INTEGER, "integer"}, {REAL, "real"}, {SEPARATOR, "separator"}, {OPERATOR, "operator"}, {NONE, "none"} };
 
 #pragma endregion
 
 
-std::string source{ "3j" }; // TODO left off here. recognizing as an integer incorrectly
+std::string source{ "while (fahr <= upper) a = 23.00; /* this is sample */" }; // TODO left off here. recognizing as an integer incorrectly
 
 std::string::iterator currCharIter{ source.begin() };
 std::string::iterator tokenStartIter{ source.begin() };
@@ -278,6 +280,7 @@ bool Lexer(std::string& token, std::string& lexeme)
 
 eInputType GetInputType(char ch)
 {
+	if (isOpenParen(ch)) return eInputType::OPEN_PAREN;
 	if (isAlpha(ch)) return eInputType::LETTER;
 	if (isDigit(ch)) return eInputType::DIGIT;
 	if (isUnderScore(ch)) return eInputType::UNDERSCORE;
