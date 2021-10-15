@@ -20,7 +20,7 @@ bool LexicalAnalyzer::Lexer(std::string& token, std::string& lexeme)
 
 	std::stack<char> INPUT_STACK;
 	std::stack<int> STATE_STACK;
-	std::stack<char> LEXEME_QUEUE;
+	std::stack<char> LEXEME_STACK;
 
 
 
@@ -182,17 +182,17 @@ bool LexicalAnalyzer::Lexer(std::string& token, std::string& lexeme)
 
 			isEOT = true;
 			STATE_STACK.pop();
-			LEXEME_QUEUE.pop();
+			LEXEME_STACK.pop();
 			--currCharIter;
 
 			if (isDoubleBackupState.at(currentState))
 			{
 				assert(!STATE_STACK.empty());
 				STATE_STACK.pop();
-				assert(!LEXEME_QUEUE.empty());
-				LEXEME_QUEUE.pop();
-				assert(!LEXEME_QUEUE.empty());
-				LEXEME_QUEUE.pop();
+				assert(!LEXEME_STACK.empty());
+				LEXEME_STACK.pop();
+				assert(!LEXEME_STACK.empty());
+				LEXEME_STACK.pop();
 				--currCharIter;
 				--currCharIter;
 			}
@@ -213,7 +213,7 @@ bool LexicalAnalyzer::Lexer(std::string& token, std::string& lexeme)
 
 
 				//STATE_STACK.push(currentState);
-			LEXEME_QUEUE.push(currCharCopy);
+			LEXEME_STACK.push(currCharCopy);
 
 			inputType = GetInputType(currCharCopy);	// Get the current input chars eInputType (enum)	
 			INPUT_STACK.push(currCharCopy);
@@ -243,10 +243,10 @@ bool LexicalAnalyzer::Lexer(std::string& token, std::string& lexeme)
 		if (!isPreChecked && isAcceptState.at(STATE_STACK.top()))
 		{
 
-			while (!LEXEME_QUEUE.empty()) // Use LEXEME_QUEUE to populate param Lexeme string
+			while (!LEXEME_STACK.empty()) // Use LEXEME_QUEUE to populate param Lexeme string
 			{
-				lexeme.push_back(LEXEME_QUEUE.top());
-				LEXEME_QUEUE.pop();
+				lexeme.push_back(LEXEME_STACK.top());
+				LEXEME_STACK.pop();
 			}
 			std::reverse(lexeme.begin(), lexeme.end());
 
