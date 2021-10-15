@@ -2,7 +2,6 @@
 //#include <iostream>
 //#include <fstream>
 //#include <string>
-//#include "../Include/Utility/SourceStripper.hpp"
 //#include "../Include/LexicalAnalyzer.h"
 //
 //#define DEBUG_ON
@@ -28,6 +27,7 @@
 //		"Token\t\tLexeme\n" \
 //		"------------------\n"
 //	};
+//	std::string myToken, myLexeme;
 //
 //	std::filebuf inStream;
 //
@@ -38,13 +38,6 @@
 //	bool is_CLI_Output_Arg{ false };
 //#pragma endregion	
 //
-//#pragma region Debug Code
-//
-//#ifdef DEBUG_ON
-//	ECHO_CLI_ARGS(argc, argv);
-//#endif // DEBUG_ON
-//
-//#pragma endregion // END Debug Code Region
 //
 //#pragma region Stream Input
 //	if (ConfirmInputArgSuccess(argc))
@@ -62,13 +55,12 @@
 //
 //#pragma region Lexical Analysis
 //	LexicalAnalyzer LA(SOURCE); // Instantiate Lexical Analyzer object with source code string
-//	LexicalUnit lexUnit;
-//	
+//
 //	bool isEOF{ false };
 //	while (!isEOF)
 //	{
-//		isEOF = LA.Lexer(lexUnit);
-//		if(!isEOF) formattedOutputString.append("\n" + lexUnit.sToken + "\t\t" + lexUnit.sLexeme);
+//		isEOF = LA.Lexer(myToken, myLexeme);
+//		if (!isEOF) formattedOutputString.append("\n" + myToken + "\t\t" + myLexeme);
 //	}
 //#pragma endregion // End Lexical Analysis Region
 //
@@ -77,7 +69,7 @@
 //	{
 //		try // Try outputting results to stream
 //		{
-//			if (isSourceOutputSuccess = OutputResultData(formattedOutputString,argv[2])) {}
+//			if (isSourceOutputSuccess = OutputResultData(formattedOutputString, argv[2])) {}
 //		}
 //		catch (const std::exception&)
 //		{
