@@ -113,13 +113,25 @@ private:
 		/*S46*/  46,   0,	0,   0,   0,   0,    0,    0,   0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0, // (S46)END !=			[Back Up]			<Accept>
 	};
 
-	//								    s0    s1      s2       s3     s4     s5     s6     s7     s8     s9    s10   s11   s12     s13     s14	  s15    s16    s17    s18     s19     s20    s21    s22    s23   s24     s25    s26    s27    s28     s29   s30     s31   s32     s33   s34     s35   s36     s37   s38     s39    s40    s41    s42     s43    s44    s45   s46
-	std::vector<bool> isAcceptState = { true, true,    true,   false,  true,  true,  true,  true,  true,  true, true,  true, true,   true,  true,    true,  true,  true,  true ,  true,   true ,  true, true , true, true ,  true,   true , true,   true , true,  true , true,  true , true,  true , true, true ,  true, true , true,   true , true, true ,  false, true , true, true };
-	std::vector<bool> isBackupState = { false, false, false,   false, false,  true,  true,  true,  false, true, true,  false, true,  false,  true,  false,  true,  false,  true,  false,  true,   false, true,  false, true,  false, true,  false,  true,  false, true,  false, true,  false, true,  false, true,  false, true,  false, true , false, true ,  false, true , false, true };
-	std::vector<bool> isDoubleBackupState = { false, false, false,   false, false,  false, false, false, false, true, false, false, false, false,  false, false,  false, false,  false, false,  false,  false, false, false, false, false, false, false,  false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,  false, false, false, false, };
+	//								   s0     s1     s2      s3    s4     s5     s6     s7     s8    s9    s10   s11     s12     s13   s14	  s15    s16    s17   s18     s19     s20    s21    s22    s23   s24     s25    s26    s27    s28     s29   s30     s31   s32     s33   s34     s35   s36     s37   s38     s39    s40    s41    s42     s43    s44    s45   s46
+	std::vector<bool> isAcceptState = {       true,  true,  true,  false, true,  true,  true,  true,  true,  true, true,  true,  true,  true,  true,  true,  true,  true,  true,  true,   true,  true, true , true, true ,  true,   true , true,   true , true,  true , true,  true , true,  true , true, true ,  true, true , true,   true , true, true ,  false, true , true, true };
+	std::vector<bool> isBackupState = {       false, false, false, false, false, true,  true,  true,  false, true, true,  false, true,  false, true,  false, true,  false, true,  false,  true,   false, true,  false, true,  false, true,  false,  true,  false, true,  false, true,  false, true,  false, true,  false, true,  false, true , false, true ,  false, true , false, true };
+	std::vector<bool> isDoubleBackupState = { false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false,  false,  false, false, false, false, false, false, false,  false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,  false, false, false, false, };
 
-	std::vector<eTokenType> eTokenLookUp = { NONE, IDENTIFIER, INTEGER, NONE, REAL, IDENTIFIER, INTEGER, REAL, NONE, NONE, NONE, SEPARATOR, SEPARATOR, SEPARATOR, SEPARATOR, NONE,  SEPARATOR, NONE, SEPARATOR, OPERATOR, OPERATOR, OPERATOR, OPERATOR, OPERATOR, OPERATOR, OPERATOR, OPERATOR , OPERATOR, OPERATOR , OPERATOR, OPERATOR, OPERATOR, OPERATOR, OPERATOR, OPERATOR, OPERATOR, OPERATOR, OPERATOR, OPERATOR, SEPARATOR, SEPARATOR, SEPARATOR, SEPARATOR, OPERATOR, OPERATOR, OPERATOR, OPERATOR };
-	//								   s0     s1          s2      s3    s4     s5          s6      s7    s8    s9    s10   s11         s12        s13        s14	      s15     s16      s17     s18         s19       s20      s21       s22       s23        s24      s25        s26       s27       s28        s29       s30       s31       s32        s33       s34       s35       s36       s37       s38     s39      s40     s41    s42       s43      s44      s45   s46
+
+	std::vector<eTokenType> eTokenLookUp = {
+		
+	//    s0     s1          s2      s3    s4     s5          s6      s7    s8    s9    s10   s11         s12        s13        s14	      s15     s16      s17     s18         s19       s20
+		NONE, IDENTIFIER, INTEGER, NONE, REAL, IDENTIFIER, INTEGER, REAL, NONE, NONE, NONE, SEPARATOR, SEPARATOR, SEPARATOR, SEPARATOR, NONE,  SEPARATOR, NONE, SEPARATOR, OPERATOR, OPERATOR, 
+		
+		
+	//      s21       s22       s23        s24      s25        s26       s27       s28        s29       s30       s31       s32        s33       s34       s35       s36       s37       s38     s39      s40     
+
+		OPERATOR, OPERATOR, OPERATOR, OPERATOR, OPERATOR, OPERATOR , OPERATOR, OPERATOR , OPERATOR, OPERATOR, OPERATOR, OPERATOR, OPERATOR, OPERATOR, OPERATOR, OPERATOR, OPERATOR, OPERATOR, SEPARATOR, SEPARATOR, 
+		
+	//s      41         s42       s43      s44      s45         s46
+		
+		SEPARATOR, SEPARATOR, OPERATOR, OPERATOR, OPERATOR, OPERATOR };
 
 
 
@@ -137,7 +149,7 @@ private:
 #pragma endregion
 
 
-	std::string source; // TODO left off here. recognizing as an integer incorrectly
+	std::string source;
 
 	std::string::iterator currCharIter{ /*source.begin()*/};
 	std::string::iterator tokenStartIter{ /*source.begin()*/ };
