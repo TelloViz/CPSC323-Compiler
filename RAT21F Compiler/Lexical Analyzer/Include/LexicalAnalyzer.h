@@ -165,6 +165,8 @@ private:
 	std::string::iterator currCharIter{ /*source.begin()*/};
 	std::string::iterator tokenStartIter{ /*source.begin()*/ };
 
+	bool isFirstRun{ true };
+
 	
 	
 

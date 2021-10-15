@@ -4,11 +4,16 @@
 
 LexicalAnalyzer::LexicalAnalyzer(std::string sourceString) : source{ sourceString }
 {
-	currCharIter = source.begin();
-	tokenStartIter = source.begin();
 }
 bool LexicalAnalyzer::Lexer(std::string& token, std::string& lexeme)
 {
+
+	if (isFirstRun)
+	{
+		currCharIter = source.begin();
+		tokenStartIter = source.begin();
+		isFirstRun = false;
+	}
 	eInputType inputType;
 	lexeme = "";
 	token = "";
@@ -27,6 +32,11 @@ bool LexicalAnalyzer::Lexer(std::string& token, std::string& lexeme)
 	// just a copy of the character at the current source position
 	char currCharCopy;
 
+	if (currCharIter == source.end())
+	{
+		isEOF = true;
+		isEOT = true;
+	}
 	// Verify iterator validity then copy value pointed to by iterator 
 	if (!isEOF) currCharCopy = *currCharIter;
 
@@ -62,84 +72,87 @@ bool LexicalAnalyzer::Lexer(std::string& token, std::string& lexeme)
 	// If so we can skip the state table altogether.
 	eInputType precheckInputType = GetInputType(currCharCopy);
 	bool isPreChecked{ false };
-	switch (precheckInputType)
+	if (!isEOF)
 	{
-	case UNDERSCORE:
-		isEOT = true;
-		isPreChecked = true;
-		lexeme = "_";
-		token = Token_To_String_Map.at(NONE);
-		break;
-	case PERIOD:
-		isEOT = true;
-		isPreChecked = true;
-		lexeme = ".";
-		token = Token_To_String_Map.at(NONE);
-		break;
-	case OPEN_PAREN:
-		isEOT = true;
-		isPreChecked = true;
-		lexeme = "(";
-		token = Token_To_String_Map.at(SEPARATOR);
-		break;
-	case CLOSE_PAREN:
-		isEOT = true;
-		isPreChecked = true;
-		lexeme = ")";
-		token = Token_To_String_Map.at(SEPARATOR);
-		break;
-	case UNKNOWN:
-		isEOT = true;
-		isPreChecked = true;
-		token = Token_To_String_Map.at(NONE);
-		break;
-	case OPEN_BRACKET:
-		isEOT = true;
-		isPreChecked = true;
-		lexeme = "{";
-		token = Token_To_String_Map.at(SEPARATOR);
-		break;
-	case CLOSE_BRACKET:
-		isEOT = true;
-		isPreChecked = true;
-		lexeme = "}";
-		token = Token_To_String_Map.at(SEPARATOR);
-		break;
-	case PLUS:
-		isEOT = true;
-		isPreChecked = true;
-		lexeme = "+";
-		token = Token_To_String_Map.at(OPERATOR);
-		break;
-	case MINUS:
-		isEOT = true;
-		isPreChecked = true;
-		lexeme = "-";
-		token = Token_To_String_Map.at(OPERATOR);
-		break;
-	case MULTIPLY:
-		isEOT = true;
-		isPreChecked = true;
-		lexeme = "*";
-		token = Token_To_String_Map.at(OPERATOR);
-		break;
-	case SEMI_COLON:
-		isEOT = true;
-		isPreChecked = true;
-		lexeme = ";";
-		token = Token_To_String_Map.at(SEPARATOR);
-		break;
-	case COMMA:
-		isEOT = true;
-		isPreChecked = true;
-		lexeme = ",";
-		token = Token_To_String_Map.at(SEPARATOR);
-		break;
-	default:
-		break;
+
+		switch (precheckInputType)
+		{
+		case UNDERSCORE:
+			isEOT = true;
+			isPreChecked = true;
+			lexeme = "_";
+			token = Token_To_String_Map.at(NONE);
+			break;
+		case PERIOD:
+			isEOT = true;
+			isPreChecked = true;
+			lexeme = ".";
+			token = Token_To_String_Map.at(NONE);
+			break;
+		case OPEN_PAREN:
+			isEOT = true;
+			isPreChecked = true;
+			lexeme = "(";
+			token = Token_To_String_Map.at(SEPARATOR);
+			break;
+		case CLOSE_PAREN:
+			isEOT = true;
+			isPreChecked = true;
+			lexeme = ")";
+			token = Token_To_String_Map.at(SEPARATOR);
+			break;
+		case UNKNOWN:
+			isEOT = true;
+			isPreChecked = true;
+			token = Token_To_String_Map.at(NONE);
+			break;
+		case OPEN_BRACKET:
+			isEOT = true;
+			isPreChecked = true;
+			lexeme = "{";
+			token = Token_To_String_Map.at(SEPARATOR);
+			break;
+		case CLOSE_BRACKET:
+			isEOT = true;
+			isPreChecked = true;
+			lexeme = "}";
+			token = Token_To_String_Map.at(SEPARATOR);
+			break;
+		case PLUS:
+			isEOT = true;
+			isPreChecked = true;
+			lexeme = "+";
+			token = Token_To_String_Map.at(OPERATOR);
+			break;
+		case MINUS:
+			isEOT = true;
+			isPreChecked = true;
+			lexeme = "-";
+			token = Token_To_String_Map.at(OPERATOR);
+			break;
+		case MULTIPLY:
+			isEOT = true;
+			isPreChecked = true;
+			lexeme = "*";
+			token = Token_To_String_Map.at(OPERATOR);
+			break;
+		case SEMI_COLON:
+			isEOT = true;
+			isPreChecked = true;
+			lexeme = ";";
+			token = Token_To_String_Map.at(SEPARATOR);
+			break;
+		case COMMA:
+			isEOT = true;
+			isPreChecked = true;
+			lexeme = ",";
+			token = Token_To_String_Map.at(SEPARATOR);
+			break;
+		default:
+			break;
+		}
+
 	}
-
-
 	while (!isEOT && !isEOF)
 	{
 		if (currCharIter == source.end())
@@ -246,6 +259,11 @@ bool LexicalAnalyzer::Lexer(std::string& token, std::string& lexeme)
 		if (isPreChecked)
 		{
 			++currCharIter;
+			if (currCharIter == source.end())
+			{
+				isEOF = true;
+				isEOT = true;
+			}
 		}
 	}
 
