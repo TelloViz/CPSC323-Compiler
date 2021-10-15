@@ -1,13 +1,6 @@
 #pragma once
-
-
-#include <cctype>
-#include <iostream>
 #include <string>
 #include <vector>
-#include <algorithm>
-#include <iterator>
-#include <unordered_map>
 #include <map>
 #include <stack>
 #include <cassert>
@@ -19,7 +12,10 @@ public:
 
 	LexicalAnalyzer(std::string sourceString);
 	bool Lexer(std::string& token, std::string& lexeme);
+
 private:
+
+
 #pragma region Boolean Utility Functions
 	bool isAlpha(char ch) { return std::isalpha(ch); }
 	bool isDigit(char ch) { return std::isdigit(ch); }
@@ -65,25 +61,6 @@ private:
 	// Note the number stored at the position of your desired input.
 	// This number is our resulting state of that particular input
 	// from our current state
-
-	//int stateTable[15][8] = // TODO add ; semi-colon to table next, run current source and you'll see why
-	//{/*			    L   D   _   .   Sp   (    )										*/
-	//	/*S0*/    0,  1,  2,  8,  8,  0,  11,  13,		// Starting State	 <Accept>	
-	//	/*S1*/	1,  1,  1,  1,  5,  5,  5,   5,		// In Identifier	 <Accept>	
-	//	/*S2*/	2,  6,  2,  6,  3,	6,  6,   6,		// In Number		 <Accept>
-	//	/*S3*/	3,  9,  4,  9,  9,	9,  9,   9,		// Incomplete Real		
-	//	/*S4*/	4,  6,  4,  7,  7,	7,  7,   7,		// In Real		 <Accept>	
-	//	/*S5*/	5,  0,  0,  0,  0, 	0,  0,   0,		// End of Identifier <Accept>	 [Back Up]
-	//	/*S6*/    6,  0,  0,  0,  0,  0,  0,   0,		// End Number		 <Accept>	 [Back Up]
-	//	/*S7*/    7,  0,  0,  0,  9,  0,  0,   0,		// End Real		 <Accept>	 [Back Up]
-	//	/*S8*/	8,  10, 10, 10, 10, 10, 10,  10,		// In Unknown result <Accept>
-	//	/*S9*/	9,  0,  0,  0,  0,  0,  0,   0,		// Reals Invalid			 [Double Back up]
-	//	/*S10*/  10,  0,  0,  0,  0,  0,  0,   0,		// End Unknown		 <Accept>  [Back up]		
-	//	/*S11*/  11,  12, 12, 12, 12, 12, 12,  12,		// In (			 <Accept>  
-	//	/*S12*/  12,  0,  0,  0,  0,  0,  0,   0,		// End (			 <Accept>	 [Back up]
-	//	/*S13*/  13,  14, 14, 14, 14, 14, 14,  14,		// In )			 <Accept>  
-	//	/*S14*/  14,  0,  0,  0,  0,  0,  0,   0		// End )			 <Accept>	 [Back up]
-	//};
 
 	int stateTable[47][21] =
 	{//                 L    D    _    .    SP   (     )    UNK   {      }    +     -     *     /     =     <     >     ;     ,     !
