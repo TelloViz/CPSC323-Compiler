@@ -82,7 +82,7 @@ Project for CPSC323 Compilers at CSUF for James Choi's class
 | + | - | * | / |
 | = | . | > | < |
 | { | } | ( | ) |
-| ; | , |   |   |
+| ; | , |   | ! |
 ---
 
 ## Compound Operators
