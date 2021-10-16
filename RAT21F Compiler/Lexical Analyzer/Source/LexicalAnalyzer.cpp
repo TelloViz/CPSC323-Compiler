@@ -1,5 +1,5 @@
 #include "../Include/LexicalAnalyzer.h"
-
+#include <algorithm>
 
 
 LexicalAnalyzer::LexicalAnalyzer(std::string sourceString) : source{ sourceString }
@@ -156,7 +156,7 @@ bool LexicalAnalyzer::Lexer(std::string& token, std::string& lexeme)
 	}
 	while (!isEOT && !isEOF)
 	{
-		if (currCharIter == source.end())
+		if (currCharIter == source.end() || *currCharIter < 0)
 		{
 			isEOF = true;
 			isEOT = true;
@@ -167,16 +167,7 @@ bool LexicalAnalyzer::Lexer(std::string& token, std::string& lexeme)
 
 		/*     currState:inputType->destState     */
 
-		//STATE_STACK.push(currentState);
-		//LEXEME_QUEUE.push(currCharCopy);
-
-		//eInputType inputType = GetInputType(currCharCopy);	// Get the current input chars eInputType (enum)	
-		//INPUT_STACK.push(currCharCopy);
-
-
-
-		/*STATE_STACK.push(currentState);
-		LEXEME_QUEUE.push(currCharCopy);*/
+		
 		STATE_STACK.push(currentState);
 		if (isBackupState.at(currentState))
 		{
@@ -202,18 +193,6 @@ bool LexicalAnalyzer::Lexer(std::string& token, std::string& lexeme)
 		}
 		else
 		{
-
-			/*auto next = currCharIter + 1;
-			if (next == source.end())
-			{
-				isEOF = true;
-				isEOT = true;
-			}*/
-			//else
-			//{
-
-
-				//STATE_STACK.push(currentState);
 			LEXEME_STACK.push(currCharCopy);
 
 			inputType = GetInputType(currCharCopy);	// Get the current input chars eInputType (enum)	
@@ -227,9 +206,6 @@ bool LexicalAnalyzer::Lexer(std::string& token, std::string& lexeme)
 				currentState = destState;
 				currCharCopy = *currCharIter;
 			}
-
-			//}
-
 
 
 		}
@@ -253,6 +229,13 @@ bool LexicalAnalyzer::Lexer(std::string& token, std::string& lexeme)
 
 			eTokenType tokType = eTokenLookUp.at(STATE_STACK.top());
 			token = Token_To_String_Map.at(tokType);
+
+
+			auto kwIdx = std::find(keywordVec.begin(), keywordVec.end(), lexeme);
+			if (kwIdx != keywordVec.end())
+			{
+				token = "keyword";
+			}
 
 
 		}
