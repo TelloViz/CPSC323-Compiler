@@ -40,6 +40,21 @@ private:
 	bool isComma(char ch) { return ch == ','; }
 #pragma endregion
 
+
+	std::string RemoveComments(std::string source, std::string oSym, std::string cSym)
+	{
+		size_t oIdx = source.find(oSym);
+		size_t cIdx = source.find(cSym);
+		std::string endHalf, foreHalf;
+		if (oIdx != std::string::npos && cIdx != std::string::npos)
+		{
+
+			foreHalf = source.substr(0, oIdx);
+			endHalf = source.substr(cIdx + 2, source.size());
+		}
+		return std::string(foreHalf + endHalf);
+	}
+
 	// These enumerations need to correspond with the column of the particular input character
 	enum eInputType
 	{

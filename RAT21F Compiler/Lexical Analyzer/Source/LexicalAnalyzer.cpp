@@ -4,6 +4,7 @@
 
 LexicalAnalyzer::LexicalAnalyzer(std::string sourceString) : source{ sourceString }
 {
+	source = RemoveComments(source, "/*", "*/");
 }
 bool LexicalAnalyzer::Lexer(std::string& token, std::string& lexeme)
 {
