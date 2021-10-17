@@ -1,39 +1,54 @@
+// LexicalAnalyzer.cpp
+
+// this file holds the definitions to the functions declared in the LexicalAnalyzer.h file
+// Functions used here are documented in header file with comment headers on each signature.
+
+// Author: Joshua Lollis
+// Last Edited: 10/16/21
+// CPSC 323 James Choi, Fall 2021
+// Assignment 1 Lexical Analyzer
+
 #include "../Include/LexicalAnalyzer.h"
 #include <algorithm>
 
 
 LexicalAnalyzer::LexicalAnalyzer(std::string sourceString) : source{ sourceString }
 {
-	source = RemoveComments(source, "/*", "*/");
+	source = RemoveComments(source, "/*", "*/"); // removal of comments in our local copy
 }
+
 bool LexicalAnalyzer::Lexer(std::string& token, std::string& lexeme)
 {
 
-	if (isFirstRun)
+	if (isFirstRun) // Initalizes the iterators on the first calling
 	{
 		currCharIter = source.begin();
 		tokenStartIter = source.begin();
 		isFirstRun = false;
 	}
-	eInputType inputType;
+
+	// clearing out token/lexeme pair on each calling
 	lexeme = "";
 	token = "";
 
+
+	// Local data initialization
+	eInputType inputType;
 	std::stack<char> INPUT_STACK;
 	std::stack<int> STATE_STACK;
 	std::stack<char> LEXEME_STACK;
 
 
 
-	// End of Token :: true means the end of a token has been discovered
-	bool isEOT{ false };
-	bool isEOF{ false };
+	
+	bool isEOT{ false }; // End of Token :: true means the end of a token has been discovered
+	bool isEOF{ false }; // End of File :: true means the end of a file has been discovered
 
 
 	// just a copy of the character at the current source position
 	char currCharCopy;
 
-	if (currCharIter == source.end())
+	if (currCharIter == source.end()) // if the current position is the end, set the flags
 	{
 		isEOF = true;
 		isEOT = true;
@@ -64,7 +79,6 @@ bool LexicalAnalyzer::Lexer(std::string& token, std::string& lexeme)
 		if (currCharIter == source.end())
 		{
 			isEOF = true;
-			//isEOT = true;
 		}
 		else currCharCopy = *currCharIter;
 	}
@@ -154,11 +168,14 @@ bool LexicalAnalyzer::Lexer(std::string& token, std::string& lexeme)
 		}
 
 	}
+
+	// This while loop is where the actual state traversal and analysis happens
 	while (!isEOT && !isEOF)
 	{
+		// Safety check to ensure good iterator access
 		if (currCharIter == source.end() || *currCharIter < 0)
 		{
-			isEOF = true;
+			isEOF = true; // otherwise set flags
 			isEOT = true;
 
 		}
@@ -167,8 +184,10 @@ bool LexicalAnalyzer::Lexer(std::string& token, std::string& lexeme)
 
 		/*     currState:inputType->destState     */
 
-		
+		// Push current state onto state stack
 		STATE_STACK.push(currentState);
+
+		// are we at a backup state? if so we're done and need to back up
 		if (isBackupState.at(currentState))
 		{
 
@@ -177,6 +196,8 @@ bool LexicalAnalyzer::Lexer(std::string& token, std::string& lexeme)
 			LEXEME_STACK.pop();
 			--currCharIter;
 
+			// I also have one double backup state that is supposed to recover invalid reals to useable tokens 
+			// by backing up the iterator to the integer portion before a double period:: Not sure its working correctly
 			if (isDoubleBackupState.at(currentState))
 			{
 				assert(!STATE_STACK.empty());
@@ -191,18 +212,23 @@ bool LexicalAnalyzer::Lexer(std::string& token, std::string& lexeme)
 
 
 		}
+
+		// Else not a backup state, then keep processing
 		else
 		{
-			LEXEME_STACK.push(currCharCopy);
+			LEXEME_STACK.push(currCharCopy); // Push current lexeme being built char by char
 
 			inputType = GetInputType(currCharCopy);	// Get the current input chars eInputType (enum)	
-			INPUT_STACK.push(currCharCopy);
+			INPUT_STACK.push(currCharCopy);	// push current input onto stack, these are used for debugging as well as some operations throughout
+
 			int destState = stateTable[currentState][inputType]; // Get resulting destination state
 
+			// increment our source position
 			currCharIter++;
+			// verify EOF
 			if (currCharIter == source.end()) { STATE_STACK.push(destState); }
 			else {
-
+				// Increment for next loop
 				currentState = destState;
 				currCharCopy = *currCharIter;
 			}
@@ -214,12 +240,15 @@ bool LexicalAnalyzer::Lexer(std::string& token, std::string& lexeme)
 
 	} // END OF LEXER WHILE LOOP
 
-
+	// Are we at the end of a token? As indicated by isEOT flag
 	if (isEOT)
 	{
+		// if we prechecked before the loop then we need
+		// to take special consideraton of our iterators and things
 		if (!isPreChecked && isAcceptState.at(STATE_STACK.top()))
 		{
 
+			//loop through lexeme stack popping to lexeme string, then reverse for correct order
 			while (!LEXEME_STACK.empty()) // Use LEXEME_QUEUE to populate param Lexeme string
 			{
 				lexeme.push_back(LEXEME_STACK.top());
@@ -227,10 +256,12 @@ bool LexicalAnalyzer::Lexer(std::string& token, std::string& lexeme)
 			}
 			std::reverse(lexeme.begin(), lexeme.end());
 
+			// Lookup type of token on top of state stack
 			eTokenType tokType = eTokenLookUp.at(STATE_STACK.top());
+			// assign discovered value
 			token = Token_To_String_Map.at(tokType);
 
-
+			// the following 5 lines cover checking Identifiers for Keyword status change
 			auto kwIdx = std::find(keywordVec.begin(), keywordVec.end(), lexeme);
 			if (kwIdx != keywordVec.end())
 			{
@@ -240,7 +271,7 @@ bool LexicalAnalyzer::Lexer(std::string& token, std::string& lexeme)
 
 		}
 
-		if (isPreChecked)
+		if (isPreChecked) // if we did a precheck go here for special considerations
 		{
 			++currCharIter;
 			if (currCharIter == source.end())
@@ -255,6 +286,8 @@ bool LexicalAnalyzer::Lexer(std::string& token, std::string& lexeme)
 
 } // END OF LEXER FUNCTION
 
+
+// The function that converts from char to input type enumeration.
 LexicalAnalyzer::eInputType LexicalAnalyzer::GetInputType(char ch)
 {
 	if (isOpenBracket(ch)) return eInputType::OPEN_BRACKET;

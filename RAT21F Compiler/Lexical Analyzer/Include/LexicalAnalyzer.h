@@ -1,3 +1,14 @@
+// LexicalAnalyzer.h
+
+// This is the header file that serves as the interface to the lexical analyzer logic
+// include this file to instantiate your own Lexical Analyzer and use the Lexer method to 
+// recieve tokens found within.
+
+// Author: Joshua Lollis
+// Last Edited: 10/16/21
+// CPSC 323 James Choi, Fall 2021
+// Assignment 1 Lexical Analyzer
+
 #pragma once
 #include <string>
 #include <vector>
@@ -10,12 +21,26 @@ class LexicalAnalyzer
 {
 public:
 
-	LexicalAnalyzer(std::string sourceString);
-	bool Lexer(std::string& token, std::string& lexeme);
+/** Constructor for the Lexical Analyzer
+ * 
+ *  @param sourceString : The source file to analyze
+ *  @return void
+ */	LexicalAnalyzer(std::string sourceString);
+
+
+/** Creates and initialises an instance of an algorithm
+ * 
+ *  @param token : as std::string reference to be loaded with found token
+ *  @param lexeme : as std::string reference to be loaded with found token 
+ *  @return bool indicating End of File (end of analysis)
+ */	bool Lexer(std::string& token, std::string& lexeme);
 
 private:
 
-
+/** Set of internal functions for clear quick character detection
+ *  @param ch : each function takes one argument which is a character to recognize
+ *  @return  Returns true if ch matches the target type
+ */
 #pragma region Boolean Utility Functions
 	bool isAlpha(char ch) { return std::isalpha(ch); }
 	bool isDigit(char ch) { return std::isdigit(ch); }
@@ -41,7 +66,13 @@ private:
 #pragma endregion
 
 
-	std::string RemoveComments(std::string source, std::string oSym, std::string cSym)
+/** Internal Utility function for removing all sets of non overlapping \/\* sets of comments \*\/ 
+ * 
+ *  @param source : as std::string
+ *  @param oSym : as std::string representing opening comment symbol
+ *  @param oSym : as std::string representing closing comment symbol
+ *  @return A comment free source string copy
+ */	std::string RemoveComments(std::string source, std::string oSym, std::string cSym)
 	{
 		size_t oIdx = source.find(oSym);
 		size_t cIdx = source.find(cSym);
@@ -60,8 +91,9 @@ private:
 		return returnString;
 	}
 
-	// These enumerations need to correspond with the column of the particular input character
-	enum eInputType
+	
+	// Enumerations representing each input type.
+	enum eInputType // These enumerations need to correspond with the column of the particular input character
 	{
 		LETTER = 1, DIGIT = 2, UNDERSCORE = 3, PERIOD = 4, SPACE = 5,
 		OPEN_PAREN = 6, CLOSE_PAREN = 7, UNKNOWN = 8, OPEN_BRACKET = 9, CLOSE_BRACKET = 10,
@@ -69,9 +101,13 @@ private:
 		LEFT_ANGLE = 16, RIGHT_ANGLE = 17, SEMI_COLON = 18, COMMA = 19, EXCLAMATION = 20
 
 	};
-	eInputType GetInputType(char ch);
 
+	/** The function that recognizes the type of input using the character checking input boolean funcs
+ *  @param ch : char representing the current input to recognize
+ *  @return A copy of the enumerated input type that was decided.
+ */	eInputType GetInputType(char ch);
 
+	// Enumations representing the types of tokens available in RAT21F
 	enum eTokenType { IDENTIFIER, INTEGER, REAL, SEPARATOR, OPERATOR, NONE };
 
 #pragma region State Table
@@ -133,12 +169,15 @@ private:
 		/*S46*/  46,   0,	0,   0,   0,   0,    0,    0,   0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0, // (S46)END !=			[Back Up]			<Accept>
 	};
 
+
+	// The following vectors of bools are flags that can be checked easily by passing a state and accessing the data at the position indexed at the value = stateID
+
 	//								   s0     s1     s2      s3    s4     s5     s6     s7     s8    s9    s10   s11     s12     s13   s14	  s15    s16    s17   s18     s19     s20    s21    s22    s23   s24     s25    s26    s27    s28     s29   s30     s31   s32     s33   s34     s35   s36     s37   s38     s39    s40    s41    s42     s43    s44    s45   s46
 	std::vector<bool> isAcceptState = {       true,  true,  true,  false, true,  true,  true,  true,  true,  true, true,  true,  true,  true,  true,  true,  true,  true,  true,  true,   true,  true, true , true, true ,  true,   true , true,   true , true,  true , true,  true , true,  true , true, true ,  true, true , true,   true , true, true ,  false, true , true, true };
 	std::vector<bool> isBackupState = {       false, false, false, false, false, true,  true,  true,  false, true, true,  false, true,  false, true,  false, true,  false, true,  false,  true,   false, true,  false, true,  false, true,  false,  true,  false, true,  false, true,  false, true,  false, true,  false, true,  false, true , false, true ,  false, true , false, true };
 	std::vector<bool> isDoubleBackupState = { false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false,  false,  false, false, false, false, false, false, false,  false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,  false, false, false, false, };
 
-
+	// A similar lookup table for what token type each state representes or NONE
 	std::vector<eTokenType> eTokenLookUp = {
 		
 	//    s0     s1          s2      s3    s4     s5          s6      s7    s8    s9    s10   s11         s12        s13        s14	      s15     s16      s17     s18         s19       s20
@@ -157,23 +196,24 @@ private:
 
 
 
-
+	// Map to ocnvert Token enumerations to strings for output purposes
 	std::map<eTokenType, std::string> Token_To_String_Map{ {IDENTIFIER, "identifier"}, {INTEGER, "integer"}, {REAL, "real"}, {SEPARATOR, "separator"}, {OPERATOR, "operator"}, {NONE, "none"} };
 
 #pragma endregion
-#pragma region Keywords
+
+	// Vectors containing keywords and compound operators for quick lookup
 	std::vector<std::string> keywordVec{ "if", "endif", "else", "put", "get", "true", "integer", "boolean", "real", "function", "return", "while", "false" };
-#pragma endregion
-#pragma region Operators
 	std::vector<std::string> compoundOperatorsVec{ "==", "!=", "<=", "=>" };
-#pragma endregion
 
-
+	// the Lexical Analyzers local copy of the source code passed in during construction. 
+	// Note: this source is not the same as the passed source. This source has comments removed.
 	std::string source;
 
+	// string iterators used for marking various points in the source during analysis
 	std::string::iterator currCharIter{ /*source.begin()*/};
 	std::string::iterator tokenStartIter{ /*source.begin()*/ };
 
+	// a boolean that alters the behavior at the beginning of lexical analysis only on the first calling
 	bool isFirstRun{ true };
 
 	
