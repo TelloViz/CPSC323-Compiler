@@ -55,9 +55,8 @@
 
 ---
 
-### Non-Lib Build yourself version
-  
-**Building:**
+ 
+## **Building:**
 
 1) Ensure that all files are present in current working directory.
    1) ```LexicalAnalyzer.h```
@@ -72,7 +71,7 @@
 5) After the command is inputted press enter.
    1) You should now have a main.exe and possibly some other files in your CWD
 
-**Running:**
+## **Running:**
 
 1) Now you can run the program.
    1) You must supply a .txt file with the code you want analyzed.
@@ -81,19 +80,6 @@
 >main.exe myText.txt output.txt(*optional*)
 3) The resulting output file in your CWD should contain the tokenized printout of your "myText.txt" or what ever you may have named it.
 
----
-
-### Statically Linked Version
-
-**Running:**
-
-1) Open windows command prompt.
-2) navigate to the directory containing the static version of the main.exe file.
-3) Ensure that you have a source file in the working directory or supply a full path for the program to find it.
-4) Run the following command to produce the Analysis output file:
-   >main.exe test.txt output.txt(*optional*)
-   1) The output path is optional and if left blank, will default to a set filename.
-5) You should now have a text file in your CWD contianing your tokenized source.
 
 ---
 
