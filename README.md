@@ -1,12 +1,7 @@
-# CPSC323-Compiler
-Project for CPSC323 Compilers at CSUF for James Choi's class
 
----
+# Assignment 1 Lexical Analysis
+## CS323 Due dates:    Softcopy   by  10/16   (Saturday),   11:59 pm
 
-# Assignment 1 
-## CS323 Due dates:    Softcopy   by  10/3   (Sunday),   11:59 pm
-
-[Cover Page Document](https://github.com/TelloVisionGames/CPSC323-Compiler/blob/main/RAT21F%20Compiler/Lexical%20Analyzer/Docs/Project1_CoverPage.md)
 ---
 
 ## **1) Problem Statement**
@@ -60,9 +55,84 @@ Project for CPSC323 Compilers at CSUF for James Choi's class
 
 ---
 
+ 
+## **Building:**
+
+1) Ensure that all files are present in current working directory.
+   1) ```LexicalAnalyzer.h```
+   2) ```LexicalAnalyzer.cpp```
+   3) ```main.cpp```
+2) Open Microsoft Visual Studio Developer Command Prompt.
+   1) ```I used Visual Studio 2019 Developer Command Prompt v16.10.0```
+3) ```cd``` to the directory mentioned in step 1.
+4) In CMD enter the following:
+   1) note: cl is a command in the Visual Studio dev CMD prompt
+>cl main.cpp LexicalAnalyzer.cpp
+5) After the command is inputted press enter.
+   1) You should now have a main.exe and possibly some other files in your CWD
+
+## **Running:**
+
+1) Now you can run the program.
+   1) You must supply a .txt file with the code you want analyzed.
+   2) Output filename is optional and will create a text file in the CWD.
+2) Run the program via:
+>main.exe myText.txt output.txt(*optional*)
+3) The resulting output file in your CWD should contain the tokenized printout of your "myText.txt" or what ever you may have named it.
+
+
+---
+
 ## **3)  Design of your program**
   
-![](https://github.com/TelloVisionGames/CPSC323-Compiler/blob/main/RAT21F%20Compiler/Lexical%20Analyzer/Docs/Assignment1Design.png)  
+  ### **Note:** 
+  >There is a folder in the project directory that is labelled graphs. This is all of the graphing and tables I made in order to solve this problem and make the Lexical Analyzer. I will label the ones that informed the design of the final build.
+
+  ---
+
+## The Design 
+
+>This lexical analyzer is developed from a set of regular expressions at its core. Using regular expressions for Identifiers, integers and Reals, I created a Non-Deterministic Finite State Automoton. Then, using techniques like Thompson Conversiona nd Subset Method, I converted the NFSM to a set of e-closures then to a Deterministic finite state automoton. This state machine only recognized Identifiers, Integers, and reals as previously stated. I used this original machine and then expanded to recognize everything from operators, separators to compound operators. Keywords are derived from checking recognized identifiers against a map of keywords. I used a lot of techniques found in the textbook for my state table including the backup method of recognizing states.
+>
+>The main file and main function handle the file IO operations involved with loading and outputing files via CLI. Supplying a source file is required at point of command line execution. The output text file is optional and will be named as default value unless a file name is also supplied for the output text.
+
+---
+
+## User Interface
+
+The Lexical Analysis logic is accessible via the class Lexical Analyzer. The client can access only 2 methods. 
+
+- LexicalAnalyzer(std::string source) :: the Constructor
+- bool Lexer(std::string& token, std::string lexeme); :: the function that returns lexical units when called
+
+---
+
+The source code is supplied to the Lexical Analyzer only at time of construction. The LA makes a copy of the source so it is not necessary for the source to persist during analysis. Lexical units are returned to the client in the form of std::string representation of the data found.
+
+---
+
+## Containers and algorithms used
+
+#### The containers used primarily are:
+
+- std::vector\<std::string\>
+- std::string
+- std::stack\<std::vector\<std::string\>\>
+
+#### Algorithms from STL used but not limited to:
+
+- std::reverse
+- std::find
+- std::string::iterator
+
+#### and some primitives like:
+- bool
+- float
+- int
+- size_t (windows defined var)
+
+
+---
 
 ## Keywords
 
@@ -83,6 +153,7 @@ Project for CPSC323 Compilers at CSUF for James Choi's class
 | = | . | > | < |
 | { | } | ( | ) |
 | ; | , |   | ! |
+|   |   |   |   |
 ---
 
 ## Compound Operators
@@ -103,6 +174,8 @@ Project for CPSC323 Compilers at CSUF for James Choi's class
 - a_b_c7
 - a7349__3
 
+
+
 *Examples of invalid identifiers:*
 - 7abc
 - _abc
@@ -112,11 +185,17 @@ Project for CPSC323 Compilers at CSUF for James Choi's class
 - __
 - 7_
 
+---
+
 ## Integers
 >*Regular Expression:* ```D+```
 
+---
+
 ## Reals
 >*Regular Expression:* ```D+.D+```
+
+---
 
 ## Grammar
 
@@ -182,9 +261,19 @@ Project for CPSC323 Compilers at CSUF for James Choi's class
 
 ## **4) Limitations**
 
+No limitations known at time of writing. However, limitations may exist depending on your hardware configuration as well as various architecture level factors possibly.
+
 ---
 
 ## **5) Shortcomings**
+
+1) I was not sure how to classify the lexical charcter '#'
+   1) it is currently ignored by the lexer
+2) I thought double period instances were handled
+   1) I had cases where the lexer could resolve to a set of valid tokens instead of a mass of unknown
+   2) Recent runnings of the program with ".." in certain positions did cause problems.
+3) The output table isn't formatted beautifully.
+   1) that being said the output is for the sake of the assignment and the actual lexer would not output strings but pass tokens as classes or enums.
 
 
 ---
