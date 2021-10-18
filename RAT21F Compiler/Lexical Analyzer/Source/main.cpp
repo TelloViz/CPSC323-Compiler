@@ -12,9 +12,12 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <ctime>
+
+
 #include "../Include/LexicalAnalyzer.h"
 
-
+bool isVerbose{ false };
 
 
 #pragma region File IO Function Signatures
@@ -25,10 +28,31 @@ bool LoadInputFile(std::filebuf&, std::string, std::string&);
 bool OutputResultData(std::string, std::string);
 #pragma endregion // End File IO function Signatures
 
+
+inline void mySleep(clock_t sec) // clock_t is a like typedef unsigned int clock_t. Use clock_t instead of integer in this context
+{
+	clock_t start_time = clock();
+	clock_t end_time = sec * 1000 + start_time;
+		while (clock() != end_time);
+}
+
+
 #pragma region Main Entry Point
 int main(int argc, char** argv)
 {
+	
 
+	for (int i = 1; i < argc; i++)
+	{
+		if (i + 1 != argc)
+		{
+			if (strcmp(argv[i], "-v") == 0) // This is your parameter name
+			{
+				isVerbose = true;
+				i++;    // Move to the next flag
+			}
+		}
+	}
 
 #pragma region Init CLI arg and stream data
 	
@@ -57,18 +81,27 @@ int main(int argc, char** argv)
 
 #pragma region Stream Input
 
-
+	if(isVerbose) std::cout << "\Checking for input file path... ";
+	if (isVerbose) mySleep(1);
 	// check if input arg exists
 	if (ConfirmInputArgSuccess(argc))
 	{
+		if (isVerbose) std::cout << "FOUND";
+		if (isVerbose) mySleep(1);
 		try // Try loading input source stream
 		{
 			if (isSourceInputSuccess = LoadInputFile(inStream, argv[1], SOURCE)) {}
 		}
 		catch (const std::exception&)
 		{
-			std::cout << "Error Loading Input File..." << std::endl;
+			if (isVerbose) std::cout << "Error Loading Input File..." << std::endl;
+			if (isVerbose) mySleep(1);
 		}
+	}
+	else
+	{
+		if (isVerbose) std::cout << "NOT FOUND";
+		if (isVerbose) mySleep(1);
 	}
 #pragma endregion // End Stream Input Region
 
@@ -83,6 +116,18 @@ int main(int argc, char** argv)
 	// instantiate and initialize EOF flag
 	bool isEOF{ false };
 
+	//system("cls");
+	if (isVerbose) {
+		if (!isEOF) std::cout << "\nBeginning Lexical Analysis...";
+		else std::cout << "\nEnd of file reached...";
+
+	}
+	
+	if (isVerbose) mySleep(1);
+
+	std::stack<std::string> tokenStack;
+	std::stack<std::string> lexemeStack;
+
 	// while not end of file, analyze source
 	while (!isEOF)
 	{
@@ -95,15 +140,33 @@ int main(int argc, char** argv)
 
 		}
 		// otherwise append to the output string
-		else formattedOutputString.append("\n" + myToken + "\t\t" + myLexeme);
+		else
+		{
+			tokenStack.push(myToken);
+			lexemeStack.push(myLexeme);
+			//system("CLS");
+			
+			
+			formattedOutputString.append("\n" + myToken + "\t\t" + myLexeme);
+		}
+		if (isVerbose) mySleep(.5);
+
 	}
+
+	if (isVerbose) std::cout << "\nAnalyzer has found:";
+	if (isVerbose) std::cout << "\nTotal Tokens: " << tokenStack.size() << "\nTotal Lexemes: " << lexemeStack.size();
+	if (isVerbose) mySleep(1);
 #pragma endregion // End Lexical Analysis Region
 
 #pragma region Stream Output
 
+	if (isVerbose) std::cout << "\nChecking for output file path... ";
+	if (isVerbose) mySleep(1);
+
 	// check for file output filename arg
 	if (ConfirmOutputArgSuccess(argc))
-	{
+	{	
+		if (isVerbose) std::cout << "FOUND";
 		try // Try outputting results to stream
 		{	
 			// if the arg exists use it
@@ -112,13 +175,14 @@ int main(int argc, char** argv)
 		}
 		catch (const std::exception&)
 		{
-			std::cout << "Error Outputting Results to Stream..." << std::endl;
+			if (isVerbose) std::cout << "Error Outputting Results to Stream..." << std::endl;
 		}
 	}
 	
 	// else use the default file output name
 	else
 	{
+		if (isVerbose) std::cout << "NOT FOUND" << "\t <Using default>";
 		(isSourceOutputSuccess = OutputResultData(formattedOutputString, defaultFileName));
 	}
 #pragma endregion // End Stream Output Region
@@ -149,28 +213,44 @@ bool ConfirmOutputArgSuccess(int argCount)
 // passing in a buffer which is actually a legacy bit of code from this project and can be edited out probably
 bool LoadInputFile(std::filebuf& fBuffer, std::string fileName, std::string& sourceStringRef)
 {
+	if (isVerbose) std::cout << "\nLoading Input File...";
+	if (isVerbose) mySleep(.5);
 	bool openedSuccess{ false };
 	if (openedSuccess = fBuffer.open(fileName, std::ios::in))
 	{
+		if (isVerbose) std::cout << "SUCCESS";
 		std::istream is(&fBuffer);
 		while (is)
 			sourceStringRef.push_back(char(is.get()));
 		fBuffer.close();
+		if (isVerbose) std::cout << "\nClosing Input File...";
+		if (isVerbose) std::cout << "SUCCESS";
 	}
+	else 
+		if (isVerbose)	std::cout << "FAILED";
 	return openedSuccess;
 }
 
 // output file results to file
 bool OutputResultData(std::string outString, std::string outFilename = "output.RAT12F")
 {
+	if (isVerbose) std::cout << "\nOpening Output File...";
+	if (isVerbose) mySleep(.5);
 	std::filebuf outStream; // see the filebuff is local in this function but passed in in the input version. I can remove the input version's param i think and make it local
 	bool openedSuccess{ false };
 	if (openedSuccess = outStream.open(outFilename, std::ios::out))
 	{
+		if (isVerbose) std::cout << "SUCCESS";
 		std::ostream os(&outStream);
 		os << outString;
 		outStream.close();
+		if (isVerbose) std::cout << "\nClosing Output File...";
+		if (isVerbose) std::cout << "SUCCESS";
 		return true;
+	}
+	else
+	{
+		if(isVerbose)	std::cout << "FAILED";
 	}
 	return false;
 }
