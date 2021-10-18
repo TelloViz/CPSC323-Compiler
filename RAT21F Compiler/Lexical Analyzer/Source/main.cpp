@@ -17,8 +17,12 @@
 
 #include "../Include/LexicalAnalyzer.h"
 
+bool isHelpFlag{ false };
+bool isVersionFlag{ false };
 bool isVerbose{ false };
 
+std::string version{ "1.0.0-alpha1" };
+enum eLastEdited { DAY = 17, MONTH = 10, YEAR = 21 };
 
 #pragma region File IO Function Signatures
 void ECHO_CLI_ARGS(int argc, char** argv);
@@ -42,17 +46,51 @@ int main(int argc, char** argv)
 {
 	
 
-	for (int i = 1; i < argc; i++)
+	for (int i = 0; i <= argc; i++)
 	{
-		if (i + 1 != argc)
+		if (i != argc)
 		{
-			if (strcmp(argv[i], "-v") == 0) // This is your parameter name
+			if (strcmp(argv[i], "-h") == 0) // This is your parameter name
+			{
+				isHelpFlag = true;
+				i++;    // Move to the next flag
+			}
+			else if (strcmp(argv[i], "-v") == 0) // This is your parameter name
 			{
 				isVerbose = true;
 				i++;    // Move to the next flag
 			}
+			else if (strcmp(argv[i], "--ver") == 0) // This is your parameter name
+			{
+				isVersionFlag = true;
+				i++;    // Move to the next flag
+			}
 		}
 	}
+
+
+
+	if (isHelpFlag)
+	{
+		std::cout << "\n\nI'm here to help...";
+		std::cout << "\n";
+		return 0;
+	}
+	
+
+	if (isVersionFlag)
+	{
+		std::cout << "\nLexical Analyzer \nAuthor: Joshua Lollis";
+		std::cout << "\nLast edited: " << MONTH << "-" << DAY << "-" << YEAR;
+		std::cout << "\nVersion: " << version;
+		std::cout << "\n\n";
+		return 0;
+	}
+
+
+
+
+
 
 #pragma region Init CLI arg and stream data
 	
