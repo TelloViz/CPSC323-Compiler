@@ -137,3 +137,44 @@ bool SyntaxAnalyzer::E()
 
 	return isE;
 }
+
+
+//	F	->	G	F'
+bool SyntaxAnalyzer::F()
+{
+	std::string rule{ "F" };
+	bool isF{ true };
+
+	if (G())
+	{
+		if (F_())
+		{
+			std::cout << "Production Rule: " << rule;
+		}
+		else isF = false;
+	}
+	else isF = false;
+
+
+	return isF;
+}
+
+//	G	->	M	H
+bool SyntaxAnalyzer::G()
+{
+	std::string rule{ "G" };
+	bool isG{ true };
+
+	if (M())
+	{
+		if (H())
+		{
+			std::cout << "Production Rule: " << rule;
+		}
+		else isG = false;
+	}
+	else isG = false;
+
+
+	return isG;
+}
