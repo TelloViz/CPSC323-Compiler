@@ -178,3 +178,154 @@ bool SyntaxAnalyzer::G()
 
 	return isG;
 }
+
+// H	->	integer	|	boolean	|	real
+bool SyntaxAnalyzer::H()
+{
+	bool isInt{ true };
+	bool isBool{ true };
+	bool isReal{ true };
+
+	if (isInt)
+	{
+		return true;
+	}
+	else if (isBool)
+	{
+		return true;
+	}
+	else if (isReal)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+//  I	->	{	N	}
+bool SyntaxAnalyzer::I()
+{
+	bool isOpenBracket{ true };
+	bool isCloseBracket{ true };
+
+	if (isOpenBracket)
+	{
+		if (N())
+		{
+			if (isCloseBracket)
+			{
+				return true;
+			}
+			else return false;
+		}
+		else return false;
+	}
+	else	return false;
+}
+
+//	J -> K | CC
+bool SyntaxAnalyzer::J()
+{
+	std::string rule{ "J" };
+	bool isJ{ true };
+
+	if (K())
+	{
+		std::cout << "Production Rule: " << rule;
+	}
+	else if (CC())
+	{
+		std::cout << "Production Rule: " << rule;
+	}
+	else
+	{
+		isJ = false;
+	}
+
+	return isJ;
+}
+
+// K	->	L	;	K'
+bool SyntaxAnalyzer::K()
+{
+	std::string rule{ "K" };
+	bool isK{ true };
+
+	if (L())
+	{
+		if (';')
+		{
+			std::cout << "Production Rule: " << rule;
+		}
+		else isK = false;
+	}
+	else isK = false;
+
+	return isK;
+}
+
+// L	->	integer	M	|	boolean	M	|	real	M
+bool SyntaxAnalyzer::L()
+{
+	bool isInt{ true };
+	bool isBool{ true };
+	bool isReal{ true };
+
+	if (isInt)
+	{
+		if(M()) return true;
+	}
+	else if (isBool)
+	{
+		if(M()) return true;
+	}
+	else if (isReal)
+	{
+		if(M()) return true;
+	}
+
+	return false;
+}
+
+
+
+//	M	->	DD	M'
+bool SyntaxAnalyzer::M()
+{
+	std::string rule{ "M" };
+	bool isM{ true };
+
+	if (DD())
+	{
+		if (M_())
+		{
+			std::cout << "Production Rule: " << rule;
+		}
+		else isM = false;
+	}
+	else isM = false;
+
+
+	return isM;
+}
+
+// N	->	O	N'
+bool SyntaxAnalyzer::N()
+{
+	std::string rule{ "N" };
+	bool isN{ true };
+
+	if (O())
+	{
+		if (N_())
+		{
+			std::cout << "Production Rule: " << rule;
+		}
+		else isN = false;
+	}
+	else isN = false;
+
+
+	return isN;
+}
+
