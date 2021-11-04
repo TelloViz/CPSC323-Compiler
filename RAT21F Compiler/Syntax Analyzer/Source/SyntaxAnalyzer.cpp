@@ -115,7 +115,6 @@ bool SyntaxAnalyzer::D()
 	return isD;
 }
 
-
 //	E	->	F	|	CC
 bool SyntaxAnalyzer::E()
 {
@@ -137,7 +136,6 @@ bool SyntaxAnalyzer::E()
 
 	return isE;
 }
-
 
 //	F	->	G	F'
 bool SyntaxAnalyzer::F()
@@ -205,14 +203,11 @@ bool SyntaxAnalyzer::H()
 //  I	->	{	N	}
 bool SyntaxAnalyzer::I()
 {
-	bool isOpenBracket{ true };
-	bool isCloseBracket{ true };
-
-	if (isOpenBracket)
+	if ('{')
 	{
 		if (N())
 		{
-			if (isCloseBracket)
+			if ('}')
 			{
 				return true;
 			}
@@ -287,8 +282,6 @@ bool SyntaxAnalyzer::L()
 	return false;
 }
 
-
-
 //	M	->	DD	M'
 bool SyntaxAnalyzer::M()
 {
@@ -327,5 +320,267 @@ bool SyntaxAnalyzer::N()
 
 
 	return isN;
+}
+
+// O	->	P	|	Q	|	R	|	S	|	T	|	U	|	V
+bool SyntaxAnalyzer::O()
+{
+	std::string rule{ "O" };
+	bool isO{ true };
+
+	if (P())
+	{
+		std::cout << "Production Rule: " << rule;
+	}
+	else if (Q()) 
+	{
+		std::cout << "Production Rule: " << rule;
+	}
+	else if (R())
+	{
+		std::cout << "Production Rule: " << rule;
+	}
+	else if (S())
+	{
+		std::cout << "Production Rule: " << rule;
+	}
+	else if (T())
+	{
+		std::cout << "Production Rule: " << rule;
+	}
+	else if (U())
+	{
+		std::cout << "Production Rule: " << rule;
+	}
+	else if (V())
+	{
+		std::cout << "Production Rule: " << rule;
+	}
+	else isO = false;
+
+
+	return isO;
+}
+
+// P	->	{	N	}
+bool SyntaxAnalyzer::P()
+{
+	std::string rule{ "P" };
+	bool isP{ true };
+	if ('{')
+	{
+		if (N())
+		{
+			if ('}')
+			{
+				std::cout << "Production Rule: " << rule;
+			}
+			else isP = false;
+		}
+		else isP = false;
+	}
+	else	isP = false;
+
+	return isP;
+}
+
+// Q	->	DD	=	Y
+bool SyntaxAnalyzer::Q()
+{
+	std::string rule{ "Q" };
+
+	bool isQ{ true };
+	if (DD())
+	{
+		if ('=')
+		{
+			if (Y())
+			{
+				std::cout << "Production Rule: " << rule;
+			}
+			else isQ = false;
+		}
+		else isQ = false;
+	}
+	else isQ = false;
+
+	return isQ;
+}
+
+// R	->	if	(	W	)	O	R'
+bool SyntaxAnalyzer::R()
+{
+	std::string rule{ "R" };
+	bool isR{ true };
+
+	return isR;
+}
+
+// S	->	return	S'
+bool SyntaxAnalyzer::S()
+{
+	std::string rule{ "S" };
+	bool isS{ true };
+
+	return isS;
+}
+
+// T	->	put	(	Y	)	;
+bool SyntaxAnalyzer::T()
+{
+	std::string rule{ "T" };
+	bool isT{ true };
+
+	return isT;
+}
+
+// U	->	get	(	M	)	;
+bool SyntaxAnalyzer::U()
+{
+	std::string rule{ "U" };
+	bool isU{ true };
+
+	return isU;
+}
+
+// V	->	while	(	W	)	O
+bool SyntaxAnalyzer::V()
+{
+	std::string rule{ "V" };
+	bool isV{ true };
+
+	return isV;
+}
+
+// W	->	Y	X	Y
+bool SyntaxAnalyzer::W()
+{
+	std::string rule{ "W" };
+	bool isW{ true };
+
+	return isW;
+}
+
+// X	->	==	|	!=	|	>	|	<	|	<=	|	=>
+bool SyntaxAnalyzer::X()
+{
+	std::string rule{ "X" };
+	bool isX{ true };
+
+	return isX;
+}
+
+// Y	->	Z	Y'
+bool SyntaxAnalyzer::Y()
+{
+	std::string rule{ "Y" };
+	bool isY{ true };
+
+	return isY;
+}
+
+// Z	->	AA	Z'
+bool SyntaxAnalyzer::Z()
+{
+	std::string rule{ "Z" };
+	bool isZ{ true };
+
+	return isZ;
+}
+
+// AA	->	-	BB	|	BB
+bool SyntaxAnalyzer::AA()
+{
+	return false;
+}
+
+// BB	->	DD	BB'	|	EE	|	(	Y	)	|	FF	|	TRUE	|	FALSE
+bool SyntaxAnalyzer::BB()
+{
+	return false;
+}
+
+// CC	->	epsilon
+bool SyntaxAnalyzer::CC()
+{
+	return false;
+}
+
+// DD -> identifier
+bool SyntaxAnalyzer::DD()
+{
+	return false;
+}
+
+// EE -> integer
+bool SyntaxAnalyzer::EE()
+{
+	return false;
+}
+
+// FF -> real
+bool SyntaxAnalyzer::FF()
+{
+	return false;
+}
+
+// Y'	->	+	Z	Y'	|	-	Z	Y'	|	epsilon
+bool SyntaxAnalyzer::Y_()
+{
+	return false;
+}
+
+// Z'	->	*	AA	Z'	|	/	AA	Z'	|	epsilon
+bool SyntaxAnalyzer::Z_()
+{
+	return false;
+}
+
+// C'	->	epsilon	|	C
+bool SyntaxAnalyzer::C_()
+{
+	return false;
+}
+
+// F'	->	epsilon	|	,	F
+bool SyntaxAnalyzer::F_()
+{
+	return false;
+}
+
+// K'	->	epsilon	|	K
+bool SyntaxAnalyzer::K_()
+{
+	return false;
+}
+
+// M'	->	epsilon	|	,	M
+bool SyntaxAnalyzer::M_()
+{
+	return false;
+}
+
+// N'	->	epsilon	|	N
+bool SyntaxAnalyzer::N_()
+{
+	return false;
+}
+
+// R'	->	endif	|	else	O	endif
+bool SyntaxAnalyzer::R_()
+{
+	return false;
+}
+
+// S'	->	;	|	Y	;
+bool SyntaxAnalyzer::S_()
+{
+	return false;
+}
+
+// BB'	->	epsilon	|	(	M	)
+bool SyntaxAnalyzer::BB_()
+{
+	return false;
 }
 
