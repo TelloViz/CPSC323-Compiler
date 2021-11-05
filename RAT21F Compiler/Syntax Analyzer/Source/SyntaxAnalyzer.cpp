@@ -2,7 +2,7 @@
 #include <string>
 #include <iostream>
 
-
+#pragma region Production Rules
 //	A	::=	B	#	J	N	#
 bool SyntaxAnalyzer::A()
 {
@@ -584,3 +584,4 @@ bool SyntaxAnalyzer::BB_()
 	return false;
 }
 
+#pragma endregion 

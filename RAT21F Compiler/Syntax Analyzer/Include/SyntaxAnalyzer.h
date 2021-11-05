@@ -6,6 +6,7 @@ class SyntaxAnalyzer
 public:
 private:
 
+#pragma region Production Rules
 	bool A();
 	bool B();
 	bool C();
@@ -48,5 +49,7 @@ private:
 	bool R_();
 	bool S_();
 	bool BB_();
+#pragma endregion
+
 
 };
