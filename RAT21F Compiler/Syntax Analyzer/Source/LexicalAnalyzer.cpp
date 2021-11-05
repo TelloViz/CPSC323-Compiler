@@ -165,6 +165,7 @@ bool LexicalAnalyzer::Lexer(std::string& token, std::string& lexeme)
 			break;
 		case HASH:
 			isEOT = true;
+			isPreChecked = true;
 			lexeme = "#";
 			token = Token_To_String_Map.at(HASH_MARK);
 			break;
