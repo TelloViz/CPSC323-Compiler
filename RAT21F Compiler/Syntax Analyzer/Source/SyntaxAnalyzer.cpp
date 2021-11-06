@@ -4,14 +4,14 @@
 
 #pragma region Production Rules
 //	A	::=	B	#	J	N	#
-bool SyntaxAnalyzer::A(std::vector<std::pair<std::string, std::string>> tokenizedSource)
+bool SyntaxAnalyzer::A()
 {
 	std::string rule{ "A" };
 	bool isA{ true };
 
 	if (B())
 	{
-		if (tokenLexPair.second == "#")
+		if (currentPair->second == "#")
 		{
 			if (J())
 			{
@@ -86,7 +86,7 @@ bool SyntaxAnalyzer::D()
 	{
 		if (DD())
 		{
-			if ('(')
+			if (currentPair->second == "(")
 			{
 				if (E())
 				{
@@ -207,7 +207,7 @@ bool SyntaxAnalyzer::I()
 	{
 		if (N())
 		{
-			if ('}')
+			if (currentPair->second == "}")
 			{
 				return true;
 			}
@@ -367,11 +367,11 @@ bool SyntaxAnalyzer::P()
 {
 	std::string rule{ "P" };
 	bool isP{ true };
-	if ('{')
+	if (currentPair->second == "{")
 	{
 		if (N())
 		{
-			if ('}')
+			if (currentPair->second == "}")
 			{
 				std::cout << "Production Rule: " << rule;
 			}
