@@ -58,5 +58,6 @@ private:
 #pragma endregion
 
 	std::vector<std::pair<std::string, std::string>> sourcePairs;
+	std::vector<std::pair<std::string, std::string>>::iterator currentPair;
 
 };
