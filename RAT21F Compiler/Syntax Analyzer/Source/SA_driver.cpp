@@ -85,7 +85,7 @@ int main(int argc, char** argv)
 	// instantiate and initialize EOF flag
 	bool isEOF{ false };
 
-	SyntaxAnalyzer SA;
+	
 	std::vector<std::pair<std::string, std::string>> tokenLexemeList;
 	// while not end of file, analyze source
 	while (!isEOF)
@@ -130,7 +130,8 @@ int main(int argc, char** argv)
 	}
 #pragma endregion // End Stream Output Region
 
-	SA.A(tokenLexemeList);
+	SyntaxAnalyzer SA(tokenLexemeList);
+	SA.Analyze();
 
 	return 0;
 }

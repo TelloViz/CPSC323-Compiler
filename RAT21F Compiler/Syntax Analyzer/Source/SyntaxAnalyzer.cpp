@@ -13,12 +13,14 @@ bool SyntaxAnalyzer::A()
 	{
 		if (currentPair->second == "#")
 		{
+			++currentPair;
 			if (J())
 			{
 				if (N())
 				{
 					if ('#')
 					{
+						++currentPair;
 						std::cout << "Production Rule: " << rule;
 					}
 					else isA = false;
@@ -81,17 +83,21 @@ bool SyntaxAnalyzer::D()
 {
 	std::string rule{ "D" };
 	bool isD{ true };
-	bool function{ true };
-	if (function) // todo this needs to be changed
+	if (currentPair->second == "function") // todo this needs to be changed
 	{
+		++currentPair;
 		if (DD())
 		{
+			
 			if (currentPair->second == "(")
 			{
+				++currentPair;
 				if (E())
 				{
-					if (')')
+					if (currentPair->second == ")")
 					{
+						++currentPair;
+
 						if (J())
 						{
 							if (I())
@@ -184,16 +190,19 @@ bool SyntaxAnalyzer::H()
 	bool isBool{ true };
 	bool isReal{ true };
 
-	if (isInt)
+	if (currentPair->second == "integer")
 	{
+		++currentPair;
 		return true;
 	}
-	else if (isBool)
+	else if (currentPair->second == "boolean")
 	{
+		++currentPair;
 		return true;
 	}
-	else if (isReal)
+	else if (currentPair->second == "real")
 	{
+		++currentPair;
 		return true;
 	}
 
@@ -203,12 +212,14 @@ bool SyntaxAnalyzer::H()
 //  I	->	{	N	}
 bool SyntaxAnalyzer::I()
 {
-	if ('{')
+	if (currentPair->second == "{")
 	{
+		++currentPair;
 		if (N())
 		{
 			if (currentPair->second == "}")
 			{
+				++currentPair;
 				return true;
 			}
 			else return false;
@@ -248,9 +259,14 @@ bool SyntaxAnalyzer::K()
 
 	if (L())
 	{
-		if (';')
+		if (currentPair->second == ";")
 		{
-			std::cout << "Production Rule: " << rule;
+			++currentPair;
+			if (K_())
+			{
+				std::cout << "Production Rule: " << rule;
+			}
+			
 		}
 		else isK = false;
 	}
@@ -266,16 +282,19 @@ bool SyntaxAnalyzer::L()
 	bool isBool{ true };
 	bool isReal{ true };
 
-	if (isInt)
+	if (currentPair->second == "integer")
 	{
+		++currentPair;
 		if(M()) return true;
 	}
-	else if (isBool)
+	else if (currentPair->second == "boolean")
 	{
+		++currentPair;
 		if(M()) return true;
 	}
-	else if (isReal)
+	else if (currentPair->second == "real")
 	{
+		++currentPair;
 		if(M()) return true;
 	}
 
@@ -369,10 +388,12 @@ bool SyntaxAnalyzer::P()
 	bool isP{ true };
 	if (currentPair->second == "{")
 	{
+		++currentPair;
 		if (N())
 		{
 			if (currentPair->second == "}")
 			{
+				++currentPair;
 				std::cout << "Production Rule: " << rule;
 			}
 			else isP = false;
@@ -392,8 +413,9 @@ bool SyntaxAnalyzer::Q()
 	bool isQ{ true };
 	if (DD())
 	{
-		if ('=')
+		if (currentPair->second == "=")
 		{
+			++currentPair;
 			if (Y())
 			{
 				std::cout << "Production Rule: " << rule;
@@ -413,6 +435,35 @@ bool SyntaxAnalyzer::R()
 	std::string rule{ "R" };
 	bool isR{ true };
 
+	if (currentPair->second == "if")
+	{
+		++currentPair;
+		if (currentPair->second == "(")
+		{
+			++currentPair;
+			if (W())
+			{
+				if (currentPair->second == ")")
+				{
+					++currentPair;
+					if (O())
+					{
+						if (R_())
+						{
+							std::cout << "Production Rule: " << rule;
+						}
+						else isR = false;
+					}
+					else isR = false;
+				}
+				else isR = false;
+			}
+			else isR = false;
+		}
+		else isR = false;
+	}
+	else isR = false;
+
 	return isR;
 }
 
@@ -421,6 +472,17 @@ bool SyntaxAnalyzer::S()
 {
 	std::string rule{ "S" };
 	bool isS{ true };
+
+	if (currentPair->second == "return")
+	{
+		++currentPair;
+		if (S_())
+		{
+			std::cout << "Production Rule: " << rule;
+		}
+		else isS = false;
+	}
+	else isS = false;
 
 	return isS;
 }
@@ -503,24 +565,41 @@ bool SyntaxAnalyzer::BB()
 // CC	->	epsilon
 bool SyntaxAnalyzer::CC()
 {
-	return false;
+	return true;
 }
 
 // DD -> identifier
 bool SyntaxAnalyzer::DD()
 {
+	if (currentPair->first == "identifier")
+	{
+		++currentPair;
+		return true;
+	}
+
 	return false;
+	
 }
 
 // EE -> integer
 bool SyntaxAnalyzer::EE()
 {
+	if (currentPair->first == "integer")
+	{
+		++currentPair;
+		return true;
+	}
 	return false;
 }
 
 // FF -> real
 bool SyntaxAnalyzer::FF()
 {
+	if (currentPair->first == "real")
+	{
+		++currentPair;
+		return true;
+	}
 	return false;
 }
 
@@ -539,25 +618,25 @@ bool SyntaxAnalyzer::Z_()
 // C'	->	epsilon	|	C
 bool SyntaxAnalyzer::C_()
 {
-	return false;
+	return true;
 }
 
 // F'	->	epsilon	|	,	F
 bool SyntaxAnalyzer::F_()
 {
-	return false;
+	return true;
 }
 
 // K'	->	epsilon	|	K
 bool SyntaxAnalyzer::K_()
 {
-	return false;
+	return true;
 }
 
 // M'	->	epsilon	|	,	M
 bool SyntaxAnalyzer::M_()
 {
-	return false;
+	return true;
 }
 
 // N'	->	epsilon	|	N
@@ -581,7 +660,7 @@ bool SyntaxAnalyzer::S_()
 // BB'	->	epsilon	|	(	M	)
 bool SyntaxAnalyzer::BB_()
 {
-	return false;
+	return true;
 }
 
 #pragma endregion 
