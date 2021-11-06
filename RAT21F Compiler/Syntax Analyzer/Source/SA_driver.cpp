@@ -14,6 +14,7 @@
 #include <string>
 #include "../Include/LexicalAnalyzer.h"
 #include "../Include/SyntaxAnalyzer.h"
+#include <list>
 
 
 
@@ -84,6 +85,8 @@ int main(int argc, char** argv)
 	// instantiate and initialize EOF flag
 	bool isEOF{ false };
 
+	SyntaxAnalyzer SA;
+	std::vector<std::pair<std::string, std::string>> tokenLexemeList;
 	// while not end of file, analyze source
 	while (!isEOF)
 	{
@@ -95,9 +98,15 @@ int main(int argc, char** argv)
 		if (myToken.empty() || myLexeme.empty())
 		{
 
+		}		
+		else// otherwise append to the output string also syntax analyze it
+		{
+			tokenLexemeList.push_back(std::pair<std::string, std::string>{ myToken, myLexeme });
+			// todo analyze token and lexeme5 u
+			formattedOutputString.append("\n" + myToken + "\t\t" + myLexeme);
+			std::pair<std::string, std::string>tempPair{ "#", "#"};
+			SA.A(tempPair);
 		}
-		// otherwise append to the output string
-		else formattedOutputString.append("\n" + myToken + "\t\t" + myLexeme);
 	}
 #pragma region Stream Output
 
