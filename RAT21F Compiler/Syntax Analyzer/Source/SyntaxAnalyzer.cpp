@@ -4,18 +4,18 @@
 
 #pragma region Production Rules
 //	A	::=	B	#	J	N	#
-bool SyntaxAnalyzer::A()
+bool SyntaxAnalyzer::A(std::pair<std::string, std::string> tokenLexPair)
 {
 	std::string rule{ "A" };
 	bool isA{ true };
 
-	if (B())
+	if (B(tokenLexPair))
 	{
-		if ('#')
+		if (tokenLexPair.second == "#")
 		{
-			if (J())
+			if (J(tokenLexPair))
 			{
-				if (N())
+				if (N(tokenLexPair))
 				{
 					if ('#')
 					{
@@ -35,16 +35,16 @@ bool SyntaxAnalyzer::A()
 }
 
 //   B ::=	C	|	CC      
-bool SyntaxAnalyzer::B() 
+bool SyntaxAnalyzer::B(std::pair<std::string, std::string> tokenLexPair) 
 {
 	std::string rule{ "B" };
 	bool isB{ true };
 
-	if (C())
+	if (C(tokenLexPair))
 	{
 		std::cout << "Production Rule: " << rule;
 	}
-	else if (CC())
+	else if (CC(tokenLexPair))
 	{
 		std::cout << "Production Rule: " << rule;
 	}
@@ -57,14 +57,14 @@ bool SyntaxAnalyzer::B()
 }
 
 //	C	->	D	C'
-bool SyntaxAnalyzer::C()
+bool SyntaxAnalyzer::C(std::pair<std::string, std::string> tokenLexPair)
 {
 	std::string rule{ "C" };
 	bool isC{ true };
 
-	if (D())
+	if (D(tokenLexPair))
 	{
-		if (C_())
+		if (C_(tokenLexPair))
 		{
 			std::cout << "Production Rule: " << rule;
 		}
@@ -77,24 +77,24 @@ bool SyntaxAnalyzer::C()
 }
 
 //	D	->	function	DD	(	E	)	J	I
-bool SyntaxAnalyzer::D()
+bool SyntaxAnalyzer::D(std::pair<std::string, std::string> tokenLexPair)
 {
 	std::string rule{ "D" };
 	bool isD{ true };
 	bool function{ true };
 	if (function) // todo this needs to be changed
 	{
-		if (DD())
+		if (DD(tokenLexPair))
 		{
 			if ('(')
 			{
-				if (E())
+				if (E(tokenLexPair))
 				{
 					if (')')
 					{
-						if (J())
+						if (J(tokenLexPair))
 						{
-							if (I())
+							if (I(tokenLexPair))
 							{
 								std::cout << "Production Rule: " << rule;
 							}
@@ -116,16 +116,16 @@ bool SyntaxAnalyzer::D()
 }
 
 //	E	->	F	|	CC
-bool SyntaxAnalyzer::E()
+bool SyntaxAnalyzer::E(std::pair<std::string, std::string> tokenLexPair)
 {
 	std::string rule{ "E" };
 	bool isE{ true };
 
-	if (F())
+	if (F(tokenLexPair))
 	{
 		std::cout << "Production Rule: " << rule;
 	}
-	else if (CC())
+	else if (CC(tokenLexPair))
 	{
 		std::cout << "Production Rule: " << rule;
 	}
@@ -138,14 +138,14 @@ bool SyntaxAnalyzer::E()
 }
 
 //	F	->	G	F'
-bool SyntaxAnalyzer::F()
+bool SyntaxAnalyzer::F(std::pair<std::string, std::string> tokenLexPair)
 {
 	std::string rule{ "F" };
 	bool isF{ true };
 
-	if (G())
+	if (G(tokenLexPair))
 	{
-		if (F_())
+		if (F_(tokenLexPair))
 		{
 			std::cout << "Production Rule: " << rule;
 		}
@@ -158,14 +158,14 @@ bool SyntaxAnalyzer::F()
 }
 
 //	G	->	M	H
-bool SyntaxAnalyzer::G()
+bool SyntaxAnalyzer::G(std::pair<std::string, std::string> tokenLexPair)
 {
 	std::string rule{ "G" };
 	bool isG{ true };
 
-	if (M())
+	if (M(tokenLexPair))
 	{
-		if (H())
+		if (H(tokenLexPair))
 		{
 			std::cout << "Production Rule: " << rule;
 		}
@@ -178,7 +178,7 @@ bool SyntaxAnalyzer::G()
 }
 
 // H	->	integer	|	boolean	|	real
-bool SyntaxAnalyzer::H()
+bool SyntaxAnalyzer::H(std::pair<std::string, std::string> tokenLexPair)
 {
 	bool isInt{ true };
 	bool isBool{ true };
@@ -201,11 +201,11 @@ bool SyntaxAnalyzer::H()
 }
 
 //  I	->	{	N	}
-bool SyntaxAnalyzer::I()
+bool SyntaxAnalyzer::I(std::pair<std::string, std::string> tokenLexPair)
 {
 	if ('{')
 	{
-		if (N())
+		if (N(tokenLexPair))
 		{
 			if ('}')
 			{
@@ -219,16 +219,16 @@ bool SyntaxAnalyzer::I()
 }
 
 //	J -> K | CC
-bool SyntaxAnalyzer::J()
+bool SyntaxAnalyzer::J(std::pair<std::string, std::string> tokenLexPair)
 {
 	std::string rule{ "J" };
 	bool isJ{ true };
 
-	if (K())
+	if (K(tokenLexPair))
 	{
 		std::cout << "Production Rule: " << rule;
 	}
-	else if (CC())
+	else if (CC(tokenLexPair))
 	{
 		std::cout << "Production Rule: " << rule;
 	}
@@ -241,12 +241,12 @@ bool SyntaxAnalyzer::J()
 }
 
 // K	->	L	;	K'
-bool SyntaxAnalyzer::K()
+bool SyntaxAnalyzer::K(std::pair<std::string, std::string> tokenLexPair)
 {
 	std::string rule{ "K" };
 	bool isK{ true };
 
-	if (L())
+	if (L(tokenLexPair))
 	{
 		if (';')
 		{
@@ -260,7 +260,7 @@ bool SyntaxAnalyzer::K()
 }
 
 // L	->	integer	M	|	boolean	M	|	real	M
-bool SyntaxAnalyzer::L()
+bool SyntaxAnalyzer::L(std::pair<std::string, std::string> tokenLexPair)
 {
 	bool isInt{ true };
 	bool isBool{ true };
@@ -268,29 +268,29 @@ bool SyntaxAnalyzer::L()
 
 	if (isInt)
 	{
-		if(M()) return true;
+		if(M(tokenLexPair)) return true;
 	}
 	else if (isBool)
 	{
-		if(M()) return true;
+		if(M(tokenLexPair)) return true;
 	}
 	else if (isReal)
 	{
-		if(M()) return true;
+		if(M(tokenLexPair)) return true;
 	}
 
 	return false;
 }
 
 //	M	->	DD	M'
-bool SyntaxAnalyzer::M()
+bool SyntaxAnalyzer::M(std::pair<std::string, std::string> tokenLexPair)
 {
 	std::string rule{ "M" };
 	bool isM{ true };
 
-	if (DD())
+	if (DD(tokenLexPair))
 	{
-		if (M_())
+		if (M_(tokenLexPair))
 		{
 			std::cout << "Production Rule: " << rule;
 		}
@@ -303,14 +303,14 @@ bool SyntaxAnalyzer::M()
 }
 
 // N	->	O	N'
-bool SyntaxAnalyzer::N()
+bool SyntaxAnalyzer::N(std::pair<std::string, std::string> tokenLexPair)
 {
 	std::string rule{ "N" };
 	bool isN{ true };
 
-	if (O())
+	if (O(tokenLexPair))
 	{
-		if (N_())
+		if (N_(tokenLexPair))
 		{
 			std::cout << "Production Rule: " << rule;
 		}
@@ -323,36 +323,36 @@ bool SyntaxAnalyzer::N()
 }
 
 // O	->	P	|	Q	|	R	|	S	|	T	|	U	|	V
-bool SyntaxAnalyzer::O()
+bool SyntaxAnalyzer::O(std::pair<std::string, std::string> tokenLexPair)
 {
 	std::string rule{ "O" };
 	bool isO{ true };
 
-	if (P())
+	if (P(tokenLexPair))
 	{
 		std::cout << "Production Rule: " << rule;
 	}
-	else if (Q()) 
+	else if (Q(tokenLexPair)) 
 	{
 		std::cout << "Production Rule: " << rule;
 	}
-	else if (R())
+	else if (R(tokenLexPair))
 	{
 		std::cout << "Production Rule: " << rule;
 	}
-	else if (S())
+	else if (S(tokenLexPair))
 	{
 		std::cout << "Production Rule: " << rule;
 	}
-	else if (T())
+	else if (T(tokenLexPair))
 	{
 		std::cout << "Production Rule: " << rule;
 	}
-	else if (U())
+	else if (U(tokenLexPair))
 	{
 		std::cout << "Production Rule: " << rule;
 	}
-	else if (V())
+	else if (V(tokenLexPair))
 	{
 		std::cout << "Production Rule: " << rule;
 	}
@@ -363,13 +363,13 @@ bool SyntaxAnalyzer::O()
 }
 
 // P	->	{	N	}
-bool SyntaxAnalyzer::P()
+bool SyntaxAnalyzer::P(std::pair<std::string, std::string> tokenLexPair)
 {
 	std::string rule{ "P" };
 	bool isP{ true };
 	if ('{')
 	{
-		if (N())
+		if (N(tokenLexPair))
 		{
 			if ('}')
 			{
@@ -385,16 +385,16 @@ bool SyntaxAnalyzer::P()
 }
 
 // Q	->	DD	=	Y
-bool SyntaxAnalyzer::Q()
+bool SyntaxAnalyzer::Q(std::pair<std::string, std::string> tokenLexPair)
 {
 	std::string rule{ "Q" };
 
 	bool isQ{ true };
-	if (DD())
+	if (DD(tokenLexPair))
 	{
 		if ('=')
 		{
-			if (Y())
+			if (Y(tokenLexPair))
 			{
 				std::cout << "Production Rule: " << rule;
 			}
@@ -408,7 +408,7 @@ bool SyntaxAnalyzer::Q()
 }
 
 // R	->	if	(	W	)	O	R'
-bool SyntaxAnalyzer::R()
+bool SyntaxAnalyzer::R(std::pair<std::string, std::string> tokenLexPair)
 {
 	std::string rule{ "R" };
 	bool isR{ true };
@@ -417,7 +417,7 @@ bool SyntaxAnalyzer::R()
 }
 
 // S	->	return	S'
-bool SyntaxAnalyzer::S()
+bool SyntaxAnalyzer::S(std::pair<std::string, std::string> tokenLexPair)
 {
 	std::string rule{ "S" };
 	bool isS{ true };
@@ -426,7 +426,7 @@ bool SyntaxAnalyzer::S()
 }
 
 // T	->	put	(	Y	)	;
-bool SyntaxAnalyzer::T()
+bool SyntaxAnalyzer::T(std::pair<std::string, std::string> tokenLexPair)
 {
 	std::string rule{ "T" };
 	bool isT{ true };
@@ -435,7 +435,7 @@ bool SyntaxAnalyzer::T()
 }
 
 // U	->	get	(	M	)	;
-bool SyntaxAnalyzer::U()
+bool SyntaxAnalyzer::U(std::pair<std::string, std::string> tokenLexPair)
 {
 	std::string rule{ "U" };
 	bool isU{ true };
@@ -444,7 +444,7 @@ bool SyntaxAnalyzer::U()
 }
 
 // V	->	while	(	W	)	O
-bool SyntaxAnalyzer::V()
+bool SyntaxAnalyzer::V(std::pair<std::string, std::string> tokenLexPair)
 {
 	std::string rule{ "V" };
 	bool isV{ true };
@@ -453,7 +453,7 @@ bool SyntaxAnalyzer::V()
 }
 
 // W	->	Y	X	Y
-bool SyntaxAnalyzer::W()
+bool SyntaxAnalyzer::W(std::pair<std::string, std::string> tokenLexPair)
 {
 	std::string rule{ "W" };
 	bool isW{ true };
@@ -462,7 +462,7 @@ bool SyntaxAnalyzer::W()
 }
 
 // X	->	==	|	!=	|	>	|	<	|	<=	|	=>
-bool SyntaxAnalyzer::X()
+bool SyntaxAnalyzer::X(std::pair<std::string, std::string> tokenLexPair)
 {
 	std::string rule{ "X" };
 	bool isX{ true };
@@ -471,7 +471,7 @@ bool SyntaxAnalyzer::X()
 }
 
 // Y	->	Z	Y'
-bool SyntaxAnalyzer::Y()
+bool SyntaxAnalyzer::Y(std::pair<std::string, std::string> tokenLexPair)
 {
 	std::string rule{ "Y" };
 	bool isY{ true };
@@ -480,7 +480,7 @@ bool SyntaxAnalyzer::Y()
 }
 
 // Z	->	AA	Z'
-bool SyntaxAnalyzer::Z()
+bool SyntaxAnalyzer::Z(std::pair<std::string, std::string> tokenLexPair)
 {
 	std::string rule{ "Z" };
 	bool isZ{ true };
@@ -489,97 +489,97 @@ bool SyntaxAnalyzer::Z()
 }
 
 // AA	->	-	BB	|	BB
-bool SyntaxAnalyzer::AA()
+bool SyntaxAnalyzer::AA(std::pair<std::string, std::string> tokenLexPair)
 {
 	return false;
 }
 
 // BB	->	DD	BB'	|	EE	|	(	Y	)	|	FF	|	TRUE	|	FALSE
-bool SyntaxAnalyzer::BB()
+bool SyntaxAnalyzer::BB(std::pair<std::string, std::string> tokenLexPair)
 {
 	return false;
 }
 
 // CC	->	epsilon
-bool SyntaxAnalyzer::CC()
+bool SyntaxAnalyzer::CC(std::pair<std::string, std::string> tokenLexPair)
 {
 	return false;
 }
 
 // DD -> identifier
-bool SyntaxAnalyzer::DD()
+bool SyntaxAnalyzer::DD(std::pair<std::string, std::string> tokenLexPair)
 {
 	return false;
 }
 
 // EE -> integer
-bool SyntaxAnalyzer::EE()
+bool SyntaxAnalyzer::EE(std::pair<std::string, std::string> tokenLexPair)
 {
 	return false;
 }
 
 // FF -> real
-bool SyntaxAnalyzer::FF()
+bool SyntaxAnalyzer::FF(std::pair<std::string, std::string> tokenLexPair)
 {
 	return false;
 }
 
 // Y'	->	+	Z	Y'	|	-	Z	Y'	|	epsilon
-bool SyntaxAnalyzer::Y_()
+bool SyntaxAnalyzer::Y_(std::pair<std::string, std::string> tokenLexPair)
 {
 	return false;
 }
 
 // Z'	->	*	AA	Z'	|	/	AA	Z'	|	epsilon
-bool SyntaxAnalyzer::Z_()
+bool SyntaxAnalyzer::Z_(std::pair<std::string, std::string> tokenLexPair)
 {
 	return false;
 }
 
 // C'	->	epsilon	|	C
-bool SyntaxAnalyzer::C_()
+bool SyntaxAnalyzer::C_(std::pair<std::string, std::string> tokenLexPair)
 {
 	return false;
 }
 
 // F'	->	epsilon	|	,	F
-bool SyntaxAnalyzer::F_()
+bool SyntaxAnalyzer::F_(std::pair<std::string, std::string> tokenLexPair)
 {
 	return false;
 }
 
 // K'	->	epsilon	|	K
-bool SyntaxAnalyzer::K_()
+bool SyntaxAnalyzer::K_(std::pair<std::string, std::string> tokenLexPair)
 {
 	return false;
 }
 
 // M'	->	epsilon	|	,	M
-bool SyntaxAnalyzer::M_()
+bool SyntaxAnalyzer::M_(std::pair<std::string, std::string> tokenLexPair)
 {
 	return false;
 }
 
 // N'	->	epsilon	|	N
-bool SyntaxAnalyzer::N_()
+bool SyntaxAnalyzer::N_(std::pair<std::string, std::string> tokenLexPair)
 {
 	return false;
 }
 
 // R'	->	endif	|	else	O	endif
-bool SyntaxAnalyzer::R_()
+bool SyntaxAnalyzer::R_(std::pair<std::string, std::string> tokenLexPair)
 {
 	return false;
 }
 
 // S'	->	;	|	Y	;
-bool SyntaxAnalyzer::S_()
+bool SyntaxAnalyzer::S_(std::pair<std::string, std::string> tokenLexPair)
 {
 	return false;
 }
 
 // BB'	->	epsilon	|	(	M	)
-bool SyntaxAnalyzer::BB_()
+bool SyntaxAnalyzer::BB_(std::pair<std::string, std::string> tokenLexPair)
 {
 	return false;
 }
