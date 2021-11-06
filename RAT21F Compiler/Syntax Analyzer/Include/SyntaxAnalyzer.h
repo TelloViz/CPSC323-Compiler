@@ -7,7 +7,9 @@ class SyntaxAnalyzer
 {
 public:
 	SyntaxAnalyzer(std::vector<std::pair<std::string, std::string>> tokenizedSource) : sourcePairs{ tokenizedSource }
-	{}
+	{
+		currentPair = sourcePairs.begin();
+	}
 	bool Analyze() { return A(); }
 	
 private:
