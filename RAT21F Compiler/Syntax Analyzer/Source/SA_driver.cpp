@@ -102,10 +102,8 @@ int main(int argc, char** argv)
 		else// otherwise append to the output string also syntax analyze it
 		{
 			tokenLexemeList.push_back(std::pair<std::string, std::string>{ myToken, myLexeme });
-			// todo analyze token and lexeme5 u
 			formattedOutputString.append("\n" + myToken + "\t\t" + myLexeme);
-			std::pair<std::string, std::string>tempPair{ "#", "#"};
-			SA.A(tempPair);
+			
 		}
 	}
 #pragma region Stream Output
@@ -132,6 +130,7 @@ int main(int argc, char** argv)
 	}
 #pragma endregion // End Stream Output Region
 
+	SA.A(tokenLexemeList);
 
 	return 0;
 }
