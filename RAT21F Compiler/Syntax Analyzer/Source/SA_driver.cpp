@@ -131,7 +131,10 @@ int main(int argc, char** argv)
 #pragma endregion // End Stream Output Region
 
 	SyntaxAnalyzer SA(tokenLexemeList);
-	SA.Analyze();
+	if (SA.Analyze())
+	{
+		std::cout << "\n\nSyntax Correct!\n\n";
+	}
 
 	return 0;
 }
