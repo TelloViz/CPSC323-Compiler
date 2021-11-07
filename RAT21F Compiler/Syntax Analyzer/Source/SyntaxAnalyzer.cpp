@@ -21,7 +21,7 @@ bool SyntaxAnalyzer::A()
 					if ('#')
 					{
 						++currentPair;
-						std::cout << "Production Rule: " << rule;
+						std::cout << "\nProduction Rule: " << rule << "\tA  ->  B  #  J  N  #";
 					}
 					else isA = false;
 				}
@@ -44,11 +44,11 @@ bool SyntaxAnalyzer::B()
 
 	if (C())
 	{
-		std::cout << "Production Rule: " << rule;
+		std::cout << "\nProduction Rule: " << rule << "\tB  -> ~C~  |  CC";
 	}
 	else if (CC())
 	{
-		std::cout << "Production Rule: " << rule;
+		std::cout << "\nProduction Rule: " << rule << "\tB  ->  C  |  ~CC~";
 	}
 	else
 	{
@@ -68,7 +68,7 @@ bool SyntaxAnalyzer::C()
 	{
 		if (C_())
 		{
-			std::cout << "Production Rule: " << rule;
+			std::cout << "\nProduction Rule: " << rule << "\tC  ->  D  C'";
 		}
 		else isC = false;
 	}
@@ -102,7 +102,7 @@ bool SyntaxAnalyzer::D()
 						{
 							if (I())
 							{
-								std::cout << "Production Rule: " << rule;
+								std::cout << "\nProduction Rule: " << rule << "\tD  ->  function  DD  (  E  )  J  I";
 							}
 							else isD = false;
 						}
@@ -129,11 +129,11 @@ bool SyntaxAnalyzer::E()
 
 	if (F())
 	{
-		std::cout << "Production Rule: " << rule;
+		std::cout << "\nProduction Rule: " << rule << "\tE  ->  ~F~  |  CC";
 	}
 	else if (CC())
 	{
-		std::cout << "Production Rule: " << rule;
+		std::cout << "\nProduction Rule: " << rule << "\tE  ->  F  |  ~CC~";
 	}
 	else
 	{
@@ -153,7 +153,7 @@ bool SyntaxAnalyzer::F()
 	{
 		if (F_())
 		{
-			std::cout << "Production Rule: " << rule;
+			std::cout << "\nProduction Rule: " << rule << "\tF  ->  G  F'";
 		}
 		else isF = false;
 	}
@@ -173,7 +173,7 @@ bool SyntaxAnalyzer::G()
 	{
 		if (H())
 		{
-			std::cout << "Production Rule: " << rule;
+			std::cout << "\nProduction Rule: " << rule << "\tG  ->  M  H";
 		}
 		else isG = false;
 	}
@@ -190,17 +190,17 @@ bool SyntaxAnalyzer::H()
 	bool isBool{ true };
 	bool isReal{ true };
 
-	if (currentPair->second == "integer")
+	if (currentPair->first == "integer")
 	{
 		++currentPair;
 		return true;
 	}
-	else if (currentPair->second == "boolean")
+	else if (currentPair->first == "boolean")
 	{
 		++currentPair;
 		return true;
 	}
-	else if (currentPair->second == "real")
+	else if (currentPair->first == "real")
 	{
 		++currentPair;
 		return true;
@@ -237,11 +237,11 @@ bool SyntaxAnalyzer::J()
 
 	if (K())
 	{
-		std::cout << "Production Rule: " << rule;
+		std::cout << "\nProduction Rule: " << rule << "\tJ -> ~K~ | CC";
 	}
 	else if (CC())
 	{
-		std::cout << "Production Rule: " << rule;
+		std::cout << "\nProduction Rule: " << rule << "\tJ -> K | ~CC~";
 	}
 	else
 	{
@@ -264,7 +264,7 @@ bool SyntaxAnalyzer::K()
 			++currentPair;
 			if (K_())
 			{
-				std::cout << "Production Rule: " << rule;
+				std::cout << "\nProduction Rule: " << rule << "\tK  ->  L  ;  K'";
 			}
 			
 		}
@@ -311,7 +311,7 @@ bool SyntaxAnalyzer::M()
 	{
 		if (M_())
 		{
-			std::cout << "Production Rule: " << rule;
+			std::cout << "\nProduction Rule: " << rule << "\tM  ->  DD M'";
 		}
 		else isM = false;
 	}
@@ -331,7 +331,7 @@ bool SyntaxAnalyzer::N()
 	{
 		if (N_())
 		{
-			std::cout << "Production Rule: " << rule;
+			std::cout << "\nProduction Rule: " << rule << "\tN  ->  O  N'";
 		}
 		else isN = false;
 	}
@@ -349,31 +349,31 @@ bool SyntaxAnalyzer::O()
 
 	if (P())
 	{
-		std::cout << "Production Rule: " << rule;
+		std::cout << "\nProduction Rule: " << rule << "\tO  ->  ~P~  |  Q  |  R  |  S  |  T  |  U  |  V";
 	}
 	else if (Q()) 
 	{
-		std::cout << "Production Rule: " << rule;
+		std::cout << "\nProduction Rule: " << rule << "\tO  ->  P  |  ~Q~  |  R  |  S  |  T  |  U  |  V";
 	}
 	else if (R())
 	{
-		std::cout << "Production Rule: " << rule;
+		std::cout << "\nProduction Rule: " << rule << "\tO  ->  P  |  Q  |  ~R~  |  S  |  T  |  U  |  V";
 	}
 	else if (S())
 	{
-		std::cout << "Production Rule: " << rule;
+		std::cout << "\nProduction Rule: " << rule << "\tO  ->  P  |  Q  |  R  |  ~S~  |  T  |  U  |  V";
 	}
 	else if (T())
 	{
-		std::cout << "Production Rule: " << rule;
+		std::cout << "\nProduction Rule: " << rule << "\tO  ->  P  |  Q  |  R  |  S  |  ~T~  |  U  |  V";
 	}
 	else if (U())
 	{
-		std::cout << "Production Rule: " << rule;
+		std::cout << "\nProduction Rule: " << rule << "\tO  ->  P  |  Q  |  R  |  S  |  T  |  ~U~  |  V";
 	}
 	else if (V())
 	{
-		std::cout << "Production Rule: " << rule;
+		std::cout << "\nProduction Rule: " << rule << "\tO  ->  P  |  Q  |  R  |  S  |  T  |  U  |  ~V~";
 	}
 	else isO = false;
 
@@ -394,7 +394,7 @@ bool SyntaxAnalyzer::P()
 			if (currentPair->second == "}")
 			{
 				++currentPair;
-				std::cout << "Production Rule: " << rule;
+				std::cout << "\nProduction Rule: " << rule << "\tP  ->  {  N  }";
 			}
 			else isP = false;
 		}
@@ -418,7 +418,7 @@ bool SyntaxAnalyzer::Q()
 			++currentPair;
 			if (Y())
 			{
-				std::cout << "Production Rule: " << rule;
+				std::cout << "\nProduction Rule: " << rule << "\tQ  ->  DD  =  Y";
 			}
 			else isQ = false;
 		}
@@ -450,7 +450,7 @@ bool SyntaxAnalyzer::R()
 					{
 						if (R_())
 						{
-							std::cout << "Production Rule: " << rule;
+							std::cout << "\nProduction Rule: " << rule << "\tif  (  W  )  O  R'";
 						}
 						else isR = false;
 					}
@@ -478,7 +478,7 @@ bool SyntaxAnalyzer::S()
 		++currentPair;
 		if (S_())
 		{
-			std::cout << "Production Rule: " << rule;
+			std::cout << "\nProduction Rule: " << rule << "\tS  ->  return  S'";
 		}
 		else isS = false;
 	}
@@ -493,6 +493,33 @@ bool SyntaxAnalyzer::T()
 	std::string rule{ "T" };
 	bool isT{ true };
 
+	if (currentPair->second == "put")
+	{
+		++currentPair;
+		if (currentPair->second == "(")
+		{
+			++currentPair;
+			if (Y())
+			{
+				if (currentPair->second == ")")
+				{
+					++currentPair;
+					if (currentPair->second == ";")
+					{
+						++currentPair;
+						std::cout << "\nProduction Rule: " << rule << "\tput  (  Y  )  ;";
+
+					}
+					else isT = false;
+				}
+				else isT = false;
+			}
+			else isT = false;
+		}
+		else isT = false;
+	}
+	else isT = false;
+
 	return isT;
 }
 
@@ -501,8 +528,35 @@ bool SyntaxAnalyzer::U()
 {
 	std::string rule{ "U" };
 	bool isU{ true };
+	if (currentPair->second == "get")
+	{
+		++currentPair;
+		if (currentPair->second == "(")
+		{
+			++currentPair;
+			if (M())
+			{
+				if (currentPair->second == ")")
+				{
+					++currentPair;
+					if (currentPair->second == ";")
+					{
+						++currentPair;
+						std::cout << "\nProduction Rule: " << rule << "\tU  ->  get  (  M  )  ;";
+
+					}
+					else isU = false;
+				}
+				else isU = false;
+			}
+			else isU = false;
+		}
+		else isU = false;
+	}
+	else isU = false;
 
 	return isU;
+
 }
 
 // V	->	while	(	W	)	O
@@ -510,6 +564,31 @@ bool SyntaxAnalyzer::V()
 {
 	std::string rule{ "V" };
 	bool isV{ true };
+	if (currentPair->second == "while")
+	{
+		++currentPair;
+		if (currentPair->second == "(")
+		{
+			++currentPair;
+			if (W())
+			{
+				if (currentPair->second == ")")
+				{
+					++currentPair;
+					if (O())
+					{
+						std::cout << "\nProduction Rule: " << rule << "\tV  ->  while  (  W  )  O";
+
+					}
+					else isV = false;
+				}
+				else isV = false;
+			}
+			else isV = false;
+		}
+		else isV = false;
+	}
+	else isV = false;
 
 	return isV;
 }
@@ -520,6 +599,20 @@ bool SyntaxAnalyzer::W()
 	std::string rule{ "W" };
 	bool isW{ true };
 
+	if (Y())
+	{
+		if (X())
+		{
+			if (Y())
+			{
+				std::cout << "\nProduction Rule: " << rule << "\tW  ->  Y  X  Y";
+			}
+			else isW = false;
+		}
+		else isW = false;
+	}
+	else isW = false;
+
 	return isW;
 }
 
@@ -528,6 +621,35 @@ bool SyntaxAnalyzer::X()
 {
 	std::string rule{ "X" };
 	bool isX{ true };
+
+	if (currentPair->second == "==")
+	{
+		std::cout << "\nProduction Rule: " << rule << "\tX  ->  ~==~  |  !=  |  >  |  <  |  <=  |  =>";
+	}
+	else if (currentPair->second == "!=")
+	{
+		std::cout << "\nProduction Rule: " << rule << "\tX  ->  ==  |  ~!=~  |  >  |  <  |  <=  |  =>";
+	}
+	else if (currentPair->second == ">")
+	{
+		std::cout << "\nProduction Rule: " << rule << "\tX  ->  ==  |  !=  |  ~>~  |  <  |  <=  |  =>";
+	}
+	else if (currentPair->second == "<")
+	{
+		std::cout << "\nProduction Rule: " << rule << "\tX  ->  ==  |  !=  |  >  |  ~<~  |  <=  |  =>";
+	}
+	else if (currentPair->second == "<=")
+	{
+		std::cout << "\nProduction Rule: " << rule << "\tX  ->  ==  |  !=  |  >  |  <  |  ~<=~  |  =>";
+	}
+	else if (currentPair->second == "=>")
+	{
+		std::cout << "\nProduction Rule: " << rule << "\tX  ->  ==  |  !=  |  >  |  <  |  <=  |  ~=>~";
+	}
+	else
+	{
+		isX = false;
+	}
 
 	return isX;
 }
@@ -538,6 +660,14 @@ bool SyntaxAnalyzer::Y()
 	std::string rule{ "Y" };
 	bool isY{ true };
 
+	if (Z())
+	{
+		if (Y_())
+		{
+			std::cout << "\nProduction Rule: " << rule << "\tY  ->  Z  Y'";
+		}
+	}
+
 	return isY;
 }
 
@@ -547,13 +677,40 @@ bool SyntaxAnalyzer::Z()
 	std::string rule{ "Z" };
 	bool isZ{ true };
 
+	if (AA())
+	{
+		if (Z_())
+		{
+			std::cout << "\nProduction Rule: " << rule << "\tZ  ->  AA  Z'";
+		}
+	}
+
 	return isZ;
 }
 
 // AA	->	-	BB	|	BB
 bool SyntaxAnalyzer::AA()
 {
-	return false;
+	std::string rule{ "AA" };
+	bool isAA{ true };
+
+	if (currentPair->second == "-")
+	{
+		if (BB())
+		{
+			std::cout << "\nProduction Rule: " << rule << "\tAA  ->  ~-BB~  |  BB";
+		}
+	}
+	else if (BB())
+	{
+		std::cout << "\nProduction Rule: " << rule << "\tAA  ->  -BB  |  ~BB~";
+	}
+	else
+	{
+		isAA = false;
+	}
+
+	return isAA;
 }
 
 // BB	->	DD	BB'	|	EE	|	(	Y	)	|	FF	|	TRUE	|	FALSE
@@ -606,13 +763,81 @@ bool SyntaxAnalyzer::FF()
 // Y'	->	+	Z	Y'	|	-	Z	Y'	|	epsilon
 bool SyntaxAnalyzer::Y_()
 {
-	return false;
+	std::string rule{ "Y_" };
+	bool isY_{ true };
+
+	if (currentPair->second == "+")
+	{
+		++currentPair;
+		if (Z())
+		{
+			if (Y_())
+			{
+				std::cout << "\nProduction Rule: " << rule << "\tY'  ->  ~+  Z  Y'~  |  -  Z  Y'  |  epsilon";
+			}
+			else isY_ = false;
+		}
+		else isY_ = false;
+	}
+	else if (currentPair->second == "-")
+	{
+		++currentPair;
+		if (Z())
+		{
+			if (Y_())
+			{
+				std::cout << "\nProduction Rule: " << rule << "\tY'  ->  +  Z  Y'  |  ~-  Z  Y'~  |  epsilon";
+			}
+			else isY_ = false;
+		}
+		else isY_ = false;
+	}
+	else // epsilon
+	{
+		std::cout << "\nProduction Rule: " << rule << "\tY'  ->  +  Z  Y'  |  -  Z  Y'  |  ~epsilon~";
+	}
+
+	return isY_;
 }
 
 // Z'	->	*	AA	Z'	|	/	AA	Z'	|	epsilon
 bool SyntaxAnalyzer::Z_()
 {
-	return false;
+	std::string rule{ "Z_" };
+	bool isZ_{ true };
+
+	if (currentPair->second == "*")
+	{
+		++currentPair;
+		if (AA())
+		{
+			if (Z_())
+			{
+				std::cout << "\nProduction Rule: " << rule;
+			}
+			else isZ_ = false;
+		}
+		else isZ_ = false;
+	}
+	else if (currentPair->second == "/")
+	{
+		++currentPair;
+		if (AA())
+		{
+			if (Z_())
+			{
+				std::cout << "\nProduction Rule: " << rule;
+			}
+			else isZ_ = false;
+		}
+		else isZ_ = false;
+	}
+	else // epsilon
+	{
+		std::cout << "\nProduction Rule: " << rule;
+	}
+
+	return isZ_;
 }
 
 // C'	->	epsilon	|	C
@@ -630,19 +855,41 @@ bool SyntaxAnalyzer::F_()
 // K'	->	epsilon	|	K
 bool SyntaxAnalyzer::K_()
 {
+	std::string rule{ "K_" };
+	if (K())
+	{
+		std::cout << "\nProduction Rule: " << rule;
+	}
 	return true;
 }
 
 // M'	->	epsilon	|	,	M
 bool SyntaxAnalyzer::M_()
 {
+	std::string rule{ "M_"};
+
+	if (currentPair->second == ",")
+	{
+		++currentPair;
+		if (M())
+		{
+			std::cout << "\nProduction Rule: " << rule << "\tM'  ->  ~,M~  |  epsilon";
+		}
+	}
+	else std::cout << "\nProduction Rule: " << rule << "\tM'  ->  ,M  |  ~epsilon~";
 	return true;
 }
 
 // N'	->	epsilon	|	N
 bool SyntaxAnalyzer::N_()
 {
-	return false;
+	std::string rule{ "N_" };
+	if (N())
+	{
+		std::cout << "\nProduction Rule: " << rule << "\tN'  ->  ~N~  |  epsilon";
+	}
+	else std::cout << "\nProduction Rule: " << rule << "\tN'  ->  N  |  ~epsilon~";
+	return true; // because of the epsilon
 }
 
 // R'	->	endif	|	else	O	endif
