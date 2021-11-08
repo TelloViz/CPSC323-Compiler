@@ -11,8 +11,8 @@
 // the verbose option requires the both of the #define in the pair to be active
 // ******************************************************************************************
 
-#define PRINT_RULE_ON_CALL		
-#define VERBOSE_PRINT_RULE_ON_CALL  // Both modes must be defined for Verbose to work	
+//#define PRINT_RULE_ON_CALL		
+//#define VERBOSE_PRINT_RULE_ON_CALL  // Both modes must be defined for Verbose to work	
 
 //*****************************************************************************************
 
@@ -20,6 +20,10 @@
 #define VERBOSE_PRINT_RULE_ON_ACCEPT	// Both modes must be defined for Verbose to work
 
 // **********************************************************************************************
+
+#define PRINT_RECOGNIZE_LABEL
+
+// *********************************************************************************************
 
 
 #pragma region	DO NOT CHANGE THESE VALUES
@@ -44,16 +48,17 @@
 
 
 
-
-
-
-
-
 #pragma region Production Rules
+void SyntaxAnalyzer::PrintRule(std::string theRule, std::string theRuleDef) const
+{
+}
+
+
 //	<A>	->	<B>	#	<J>	<N>	#
 bool SyntaxAnalyzer::A()
 {
 	std::string rule{ "<A>" };
+	std::string ruleDef{ "-> <B> # <J> <N> #" };
 	bool isA{ false };
 	#ifdef PRINT_RULE_ON_CALL 
 	std::cout << "\n" << rule	
@@ -69,7 +74,10 @@ bool SyntaxAnalyzer::A()
 	{
 		if (currentPair->second == "#")
 		{
-			std::cout << "\nRECOGNIZED:  #";
+			#ifdef PRINT_RECOGNIZE_LABEL 
+			std::cout << "\nRECOGNIZED:  #"; 
+			#endif
+
 			++currentPair;
 			if (J())
 			{
@@ -77,7 +85,10 @@ bool SyntaxAnalyzer::A()
 				{
 					if ('#')
 					{
+						#ifdef PRINT_RECOGNIZE_LABEL 
 						std::cout << "\nRECOGNIZED: #";
+						#endif
+
 						++currentPair;
 						isA = true;
 
@@ -204,13 +215,19 @@ bool SyntaxAnalyzer::D()
 		{			
 			if (currentPair->second == "(")
 			{
+				#ifdef PRINT_RECOGNIZE_LABEL 
 				std::cout << "\nRECOGNIZED: (";
+				#endif
+
 				++currentPair;
 				if (E())
 				{
 					if (currentPair->second == ")")
 					{
+						#ifdef PRINT_RECOGNIZE_LABEL 
 						std::cout << "\nRECOGNIZED: )";
+						#endif
+
 						++currentPair;
 
 						if (J())
@@ -368,19 +385,25 @@ bool SyntaxAnalyzer::H()
 
 	if (currentPair->first == "integer")
 	{
+		#ifdef PRINT_RECOGNIZE_LABEL 
 		std::cout << "\nRECOGNIZED: integer";
+#endif
 		++currentPair;
 		return true;
 	}
 	else if (currentPair->first == "boolean")
 	{
+		#ifdef PRINT_RECOGNIZE_LABEL 
 		std::cout << "\nRECOGNIZED: boolean";
+#endif
 		++currentPair;
 		return true;
 	}
 	else if (currentPair->first == "real")
 	{
+		#ifdef PRINT_RECOGNIZE_LABEL 
 		std::cout << "\nRECOGNIZED: real";
+#endif
 		++currentPair;
 		return true;
 	}
@@ -404,13 +427,17 @@ bool SyntaxAnalyzer::I()
 
 	if (currentPair->second == "{")
 	{
+		#ifdef PRINT_RECOGNIZE_LABEL 
 		std::cout << "\nRECOGNIZED: {";
+#endif
 		++currentPair;
 		if (N())
 		{
 			if (currentPair->second == "}")
 			{
+				#ifdef PRINT_RECOGNIZE_LABEL 
 				std::cout << "\nRECOGNIZED: {";
+#endif
 				++currentPair;
 				return true;
 			}
@@ -482,7 +509,9 @@ bool SyntaxAnalyzer::K()
 	{
 		if (currentPair->second == ";")
 		{
+			#ifdef PRINT_RECOGNIZE_LABEL 
 			std::cout << "\nRECOGNIZED: ;";
+#endif
 			++currentPair;
 			if (K_())
 			{
@@ -519,19 +548,25 @@ bool SyntaxAnalyzer::L()
 
 	if (currentPair->second == "integer")
 	{
+		#ifdef PRINT_RECOGNIZE_LABEL 
 		std::cout << "\nRECOGNIZED: integer";
+#endif
 		++currentPair;
 		if(M()) return true;
 	}
 	else if (currentPair->second == "boolean")
 	{
+		#ifdef PRINT_RECOGNIZE_LABEL 
 		std::cout << "\nRECOGNIZED: integer";
+#endif
 		++currentPair;
 		if(M()) return true;
 	}
 	else if (currentPair->second == "real")
 	{
+		#ifdef PRINT_RECOGNIZE_LABEL 
 		std::cout << "\nRECOGNIZED: real";
+#endif
 		++currentPair;
 		if(M()) return true;
 	}
@@ -725,13 +760,17 @@ bool SyntaxAnalyzer::P()
 
 	if (currentPair->second == "{")
 	{
+		#ifdef PRINT_RECOGNIZE_LABEL 
 		std::cout << "\nRECOGNIZED: {";
+#endif
 		++currentPair;
 		if (N())
 		{
 			if (currentPair->second == "}")
 			{
-				std::cout << "\nRECOGNIZED: }";
+				#ifdef PRINT_RECOGNIZE_LABEL 
+				std::cout << "\nRECOGNIZED: }"; 
+#endif
 				isP = true;
 				++currentPair;
 				#ifdef PRINT_RULE_ON_ACCEPT 
@@ -767,7 +806,9 @@ bool SyntaxAnalyzer::Q()
 	{
 		if (currentPair->second == "=")
 		{
+			#ifdef PRINT_RECOGNIZE_LABEL 
 			std::cout << "\nRECOGNIZED: =";
+#endif
 			++currentPair;
 			if (Y())
 			{
@@ -808,13 +849,17 @@ bool SyntaxAnalyzer::R()
 		++currentPair;
 		if (currentPair->second == "(")
 		{
+			#ifdef PRINT_RECOGNIZE_LABEL 
 			std::cout << "\nRECOGNIZED: (";
+#endif
 			++currentPair;
 			if (W())
 			{
 				if (currentPair->second == ")")
 				{
-					std::cout << "\nRECOGNIZED: )";
+					#ifdef PRINT_RECOGNIZE_LABEL 
+					std::cout << "\nRECOGNIZED: )"; 
+#endif
 					++currentPair;
 					if (O())
 					{
@@ -855,7 +900,9 @@ bool SyntaxAnalyzer::S()
 
 	if (currentPair->second == "return")
 	{
+		#ifdef PRINT_RECOGNIZE_LABEL 
 		std::cout << "\nRECOGNIZED: return";
+#endif
 		++currentPair;
 		if (S_())
 		{
@@ -890,21 +937,29 @@ bool SyntaxAnalyzer::T()
 
 	if (currentPair->second == "put")
 	{
+		#ifdef PRINT_RECOGNIZE_LABEL 
 		std::cout << "\nRECOGNIZED: put";
+#endif
 		++currentPair;
 		if (currentPair->second == "(")
 		{
+			#ifdef PRINT_RECOGNIZE_LABEL 
 			std::cout << "\nRECOGNIZED: (";
+#endif
 			++currentPair;
 			if (Y())
 			{
 				if (currentPair->second == ")")
 				{
+					#ifdef PRINT_RECOGNIZE_LABEL 
 					std::cout << "\nRECOGNIZED: )";
+#endif
 					++currentPair;
 					if (currentPair->second == ";")
 					{
+						#ifdef PRINT_RECOGNIZE_LABEL 
 						std::cout << "\nRECOGNIZED: ;";
+#endif
 						isT = true;
 						++currentPair;
 						#ifdef PRINT_RULE_ON_ACCEPT 
@@ -941,21 +996,29 @@ bool SyntaxAnalyzer::U()
 
 	if (currentPair->second == "get")
 	{
+		#ifdef PRINT_RECOGNIZE_LABEL 
 		std::cout << "\nRECOGNIZED: get";
+#endif
 		++currentPair;
 		if (currentPair->second == "(")
 		{
+			#ifdef PRINT_RECOGNIZE_LABEL 
 			std::cout << "\nRECOGNIZED: (";
+#endif
 			++currentPair;
 			if (M())
 			{
 				if (currentPair->second == ")")
 				{
+					#ifdef PRINT_RECOGNIZE_LABEL 
 					std::cout << "\nRECOGNIZED: )";
+#endif
 					++currentPair;
 					if (currentPair->second == ";")
 					{
+						#ifdef PRINT_RECOGNIZE_LABEL 
 						std::cout << "\nRECOGNIZED: ;";
+#endif
 						isU = true;
 						++currentPair;
 						#ifdef PRINT_RULE_ON_ACCEPT 
@@ -993,17 +1056,23 @@ bool SyntaxAnalyzer::V()
 
 	if (currentPair->second == "while")
 	{
+		#ifdef PRINT_RECOGNIZE_LABEL 
 		std::cout << "\nRECOGNIZED: while";
+#endif
 		++currentPair;
 		if (currentPair->second == "(")
 		{
+			#ifdef PRINT_RECOGNIZE_LABEL 
 			std::cout << "\nRECOGNIZED: (";
+#endif
 			++currentPair;
 			if (W())
 			{
 				if (currentPair->second == ")")
 				{
+					#ifdef PRINT_RECOGNIZE_LABEL 
 					std::cout << "\nRECOGNIZED: )";
+#endif
 					++currentPair;
 					if (O())
 					{
@@ -1081,7 +1150,9 @@ bool SyntaxAnalyzer::X()
 
 	if (currentPair->second == "==")
 	{
+		#ifdef PRINT_RECOGNIZE_LABEL 
 		std::cout << "\nRECOGNIZED: ==";
+#endif
 		#ifdef PRINT_RULE_ON_ACCEPT 
 		std::cout << "\nACCEPTED: " << rule
 #ifdef  VERBOSE_PRINT_RULE_ON_ACCEPT
@@ -1093,7 +1164,9 @@ bool SyntaxAnalyzer::X()
 	}
 	else if (currentPair->second == "!=")
 	{
+		#ifdef PRINT_RECOGNIZE_LABEL 
 		std::cout << "\nRECOGNIZED: !=";
+		#endif
 		#ifdef PRINT_RULE_ON_ACCEPT 
 		std::cout << "\nACCEPTED: " << rule 
 #ifdef  VERBOSE_PRINT_RULE_ON_ACCEPT
@@ -1105,7 +1178,9 @@ bool SyntaxAnalyzer::X()
 	}
 	else if (currentPair->second == ">")
 	{
+		#ifdef PRINT_RECOGNIZE_LABEL 
 		std::cout << "\nRECOGNIZED: >";
+#endif
 		#ifdef PRINT_RULE_ON_ACCEPT 
 		std::cout << "\nACCEPTED:   " << rule
 #ifdef  VERBOSE_PRINT_RULE_ON_ACCEPT
@@ -1117,7 +1192,9 @@ bool SyntaxAnalyzer::X()
 	}
 	else if (currentPair->second == "<")
 	{
+		#ifdef PRINT_RECOGNIZE_LABEL 
 		std::cout << "\nRECOGNIZED: <";
+#endif
 #ifdef PRINT_RULE_ON_ACCEPT 
 		std::cout << "\nACCEPTED:   " << rule
 #ifdef  VERBOSE_PRINT_RULE_ON_ACCEPT
@@ -1129,7 +1206,9 @@ bool SyntaxAnalyzer::X()
 	}
 	else if (currentPair->second == "<=")
 	{
+		#ifdef PRINT_RECOGNIZE_LABEL 
 		std::cout << "\nRECOGNIZED: <=";
+#endif
 #ifdef PRINT_RULE_ON_ACCEPT 
 		std::cout << "\nACCEPTED:   " << rule
 #ifdef  VERBOSE_PRINT_RULE_ON_ACCEPT
@@ -1141,7 +1220,9 @@ bool SyntaxAnalyzer::X()
 	}
 	else if (currentPair->second == "=>")
 	{
+		#ifdef PRINT_RECOGNIZE_LABEL 
 		std::cout << "\nRECOGNIZED: =>";
+#endif
 #ifdef PRINT_RULE_ON_ACCEPT 
 		std::cout << "\nACCEPTED:   " << rule
 #ifdef  VERBOSE_PRINT_RULE_ON_ACCEPT
@@ -1241,7 +1322,9 @@ bool SyntaxAnalyzer::AA()
 
 	if (currentPair->second == "-")
 	{
+		#ifdef PRINT_RECOGNIZE_LABEL 
 		std::cout << "\nRECOGNIZED: -";
+#endif
 		if (BB())
 		{
 			#ifdef PRINT_RULE_ON_ACCEPT 
@@ -1317,7 +1400,9 @@ bool SyntaxAnalyzer::DD()
 	#endif
 	if (currentPair->first == "identifier")
 	{
+		#ifdef PRINT_RECOGNIZE_LABEL 
 		std::cout << "\nRECOGNIZED: identifier";
+#endif
 		#ifdef PRINT_RULE_ON_ACCEPT 
 		std::cout << "\nACCEPTED:   " << rule
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
@@ -1394,7 +1479,9 @@ bool SyntaxAnalyzer::Y_()
 
 	if (currentPair->second == "+")
 	{
+		#ifdef PRINT_RECOGNIZE_LABEL 
 		std::cout << "\nRECOGNIZED: +";
+#endif
 		++currentPair;
 		if (Z())
 		{
@@ -1415,7 +1502,9 @@ bool SyntaxAnalyzer::Y_()
 	}
 	else if (currentPair->second == "-")
 	{
+		#ifdef PRINT_RECOGNIZE_LABEL 
 		std::cout << "\nRECOGNIZED: -";
+#endif
 		++currentPair;
 		if (Z())
 		{
@@ -1465,7 +1554,9 @@ bool SyntaxAnalyzer::Z_()
 
 	if (currentPair->second == "*")
 	{
+		#ifdef PRINT_RECOGNIZE_LABEL 
 		std::cout << "\nRECOGNIZED: *";
+#endif
 		++currentPair;
 		if (AA())
 		{
@@ -1486,7 +1577,9 @@ bool SyntaxAnalyzer::Z_()
 	}
 	else if (currentPair->second == "/")
 	{
+		#ifdef PRINT_RECOGNIZE_LABEL 
 		std::cout << "\nRECOGNIZED: /";
+#endif
 		++currentPair;
 		if (AA())
 		{
@@ -1594,7 +1687,9 @@ bool SyntaxAnalyzer::M_()
 
 	if (currentPair->second == ",")
 	{
+		#ifdef PRINT_RECOGNIZE_LABEL 
 		std::cout << "\nRECOGNIZED: ,";
+#endif
 		++currentPair;
 		if (M())
 		{
