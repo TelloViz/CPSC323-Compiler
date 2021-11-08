@@ -83,23 +83,23 @@ bool SyntaxAnalyzer::B()
 bool SyntaxAnalyzer::C()
 {
 	std::string rule{ "C" };
-	bool isC{ true };
-	#ifdef PRINT_RULE_ON_CALL 
+	bool isC{ false };
+	
+#ifdef PRINT_RULE_ON_CALL 
 	std::cout << "\n" << rule; 
-#endif
+	#endif
 
 	if (D())
 	{
 		if (C_())
 		{
+			isC = true;
+			
 			#ifdef PRINT_RULE_ON_ACCEPT 
 			std::cout << "\nProduction Rule: " << rule << "\tC  ->  D  C'";
-#endif
+			#endif
 		}
-		else isC = false;
 	}
-	else isC = false;
-
 
 	return isC;
 }
@@ -108,17 +108,17 @@ bool SyntaxAnalyzer::C()
 bool SyntaxAnalyzer::D()
 {
 	std::string rule{ "D" };
-	bool isD{ true };
+	bool isD{ false };
+
 	#ifdef PRINT_RULE_ON_CALL 
 	std::cout << "\n" << rule;
-#endif
+	#endif
 
 	if (currentPair->second == "function") // todo this needs to be changed
 	{
 		++currentPair;
 		if (DD())
-		{
-			
+		{			
 			if (currentPair->second == "(")
 			{
 				++currentPair;
@@ -132,23 +132,17 @@ bool SyntaxAnalyzer::D()
 						{
 							if (I())
 							{
+								isD = true;
 								#ifdef PRINT_RULE_ON_ACCEPT 
 								std::cout << "\nProduction Rule: " << rule << "\tD  ->  function  DD  (  E  )  J  I";
-#endif
+								#endif
 							}
-							else isD = false;
 						}
-						else isD = false;
 					}
-					else isD = false;
 				}
-				else isD = false;
 			}
-			else isD = false;
 		}
-		else isD = false;
 	}
-	else isD = false;
 
 	return isD;
 }
