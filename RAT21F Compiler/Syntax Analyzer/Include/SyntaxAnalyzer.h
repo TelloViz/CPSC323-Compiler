@@ -14,6 +14,8 @@ public:
 	
 private:
 
+	void PrintRule(std::string theRule, std::string theRuleDef) const;
+
 #pragma region Production Rules
 	bool A();
 	bool B( );
