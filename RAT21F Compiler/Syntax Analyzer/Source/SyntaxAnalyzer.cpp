@@ -34,6 +34,7 @@
 #undef VERBOSE_PRINT_RULE_ON_CALL
 #endif
 #endif // !PRINT_RULE_ON_CALL
+
 /***********************************************************************************************************************/
 
 /***********************************************************************************************************************/
@@ -666,7 +667,7 @@ bool SyntaxAnalyzer::O()
 		#ifdef PRINT_RULE_ON_ACCEPT 
 		std::cout << "\nACCEPTED: " << rule
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "\t<O>  ->  ~<P>~  | < Q > | < R > | < S > | < T > | < U > |  <V>";
+			<< "  ->  ~<P>~  | < Q > | < R > | < S > | < T > | < U > |  <V>";
 #else
 			;
 #endif
@@ -677,7 +678,7 @@ bool SyntaxAnalyzer::O()
 		#ifdef PRINT_RULE_ON_ACCEPT 
 		std::cout << "\nACCEPTED: " << rule
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "\t<O>  ->  <P>  |  ~<Q>~  | < R > | < S > | < T > | < U > |  <V>";
+			<< "  ->  <P>  |  ~<Q>~  | < R > | < S > | < T > | < U > |  <V>";
 #else
 			;
 #endif
@@ -688,7 +689,7 @@ bool SyntaxAnalyzer::O()
 		#ifdef PRINT_RULE_ON_ACCEPT 
 		std::cout << "\nACCEPTED: " << rule
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "\t<O>  ->  <P>  | < Q > |  ~<R>~  | < S > | < T > | < U > |  <V>";
+			<< "  ->  <P>  | < Q > |  ~<R>~  | < S > | < T > | < U > |  <V>";
 #else
 			;
 #endif
@@ -699,7 +700,7 @@ bool SyntaxAnalyzer::O()
 		#ifdef PRINT_RULE_ON_ACCEPT 
 		std::cout << "\nACCEPTED: " << rule 
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "\t<O>  ->  <P>  | < Q > | < R > |  ~<S>~  | < T > | < U > |  <V>";
+			<< "  ->  <P>  | < Q > | < R > |  ~<S>~  | < T > | < U > |  <V>";
 #else
 			;
 #endif
@@ -710,7 +711,7 @@ bool SyntaxAnalyzer::O()
 		#ifdef PRINT_RULE_ON_ACCEPT 
 		std::cout << "\nACCEPTED: " << rule
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "\t<O>  ->  <P>  | < Q > | < R > | < S > |  ~<T>~  | < U > |  <V>";
+			<< "  ->  <P>  | < Q > | < R > | < S > |  ~<T>~  | < U > |  <V>";
 #else
 			;
 #endif
@@ -721,7 +722,7 @@ bool SyntaxAnalyzer::O()
 		#ifdef PRINT_RULE_ON_ACCEPT 
 		std::cout << "\nACCEPTED: " << rule
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "\t<O>  ->  <P>  | < Q > | < R > | < S > | < T > |  ~<U>~  |  <V>";
+			<< "  ->  <P>  | < Q > | < R > | < S > | < T > |  ~<U>~  |  <V>";
 #else
 			;
 #endif
@@ -732,7 +733,7 @@ bool SyntaxAnalyzer::O()
 		#ifdef PRINT_RULE_ON_ACCEPT 
 		std::cout << "\nACCEPTED: " << rule
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "\t<O>  ->  <P>  |  <Q>  |  <R>  |  <S>  |  <T>  |  <U>  |  ~<V>~";
+			<< "  ->  <P>  |  <Q>  |  <R>  |  <S>  |  <T>  |  <U>  |  ~<V>~";
 #else
 			;
 #endif
@@ -776,7 +777,7 @@ bool SyntaxAnalyzer::P()
 				#ifdef PRINT_RULE_ON_ACCEPT 
 				std::cout << "\nACCEPTED: " << rule
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-					<< "\t<P>  ->  {  <N>  }";
+					<< "  ->  {  <N>  }";
 #else
 					;
 #endif
@@ -815,7 +816,7 @@ bool SyntaxAnalyzer::Q()
 				#ifdef PRINT_RULE_ON_ACCEPT 
 				std::cout << "\nACCEPTED: " << rule
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-					<< "\t<Q>  ->  <DD>  =  <Y>";
+					<< "  ->  <DD>  =  <Y>";
 #else
 					;
 #endif
@@ -1076,7 +1077,7 @@ bool SyntaxAnalyzer::V()
 					++currentPair;
 					if (O())
 					{
-
+						isV = true;
 						#ifdef PRINT_RULE_ON_ACCEPT 
 						std::cout << "\nACCEPTED: " << rule
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
@@ -1087,15 +1088,10 @@ bool SyntaxAnalyzer::V()
 #endif
 
 					}
-					else isV = false;
 				}
-				else isV = false;
 			}
-			else isV = false;
 		}
-		else isV = false;
 	}
-	else isV = false;
 
 	return isV;
 }
@@ -1104,7 +1100,7 @@ bool SyntaxAnalyzer::V()
 bool SyntaxAnalyzer::W()
 {
 	std::string rule{ "<W>" };
-	bool isW{ true };
+	bool isW{ false };
 	#ifdef PRINT_RULE_ON_CALL 
 	std::cout << "\n" << rule; 
 #endif
@@ -1116,6 +1112,7 @@ bool SyntaxAnalyzer::W()
 		{
 			if (Y())
 			{
+				isW = true;
 				#ifdef PRINT_RULE_ON_ACCEPT 
 				std::cout << "\nACCEPTED: " << rule
 #ifdef  VERBOSE_PRINT_RULE_ON_ACCEPT
@@ -1125,11 +1122,8 @@ bool SyntaxAnalyzer::W()
 #endif
 #endif
 			}
-			else isW = false;
 		}
-		else isW = false;
 	}
-	else isW = false;
 
 	return isW;
 }
@@ -1330,7 +1324,7 @@ bool SyntaxAnalyzer::AA()
 			#ifdef PRINT_RULE_ON_ACCEPT 
 			std::cout << "\nACCEPTED:   " << rule
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-				<< "\t<AA>  ->  ~-<BB>~  |  <BB>";
+				<< "  ->  ~-<BB>~  |  <BB>";
 #else
 				;
 #endif
@@ -1342,7 +1336,7 @@ bool SyntaxAnalyzer::AA()
 		#ifdef PRINT_RULE_ON_ACCEPT 
 		std::cout << "\nACCEPTED:   " << rule
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "\t<AA>  ->  -<BB>  |  ~<BB>~";
+			<< "  ->  -<BB>  |  ~<BB>~";
 #else
 			;
 #endif
@@ -1513,7 +1507,7 @@ bool SyntaxAnalyzer::Y_()
 				#ifdef PRINT_RULE_ON_ACCEPT 
 				std::cout << "\nACCEPTED:   " << rule 
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-					<< "\t<Y'>  ->  +  <Z>  <Y'>  |  ~-  <Z>  <Y'>~  |  epsilon";
+					<< "  ->  +  <Z>  <Y'>  |  ~-  <Z>  <Y'>~  |  epsilon";
 #else 
 				;
 #endif
@@ -1528,7 +1522,7 @@ bool SyntaxAnalyzer::Y_()
 		#ifdef PRINT_RULE_ON_ACCEPT 
 		std::cout << "\nACCEPTED:   " << rule 
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "\t<Y'>  ->  + <Z> <Y'>  |  -  <Z>  <Y'>  |  ~epsilon~";
+			<< "  ->  + <Z> <Y'>  |  -  <Z>  <Y'>  |  ~epsilon~";
 #else 
 		;
 #endif
@@ -1734,7 +1728,7 @@ bool SyntaxAnalyzer::N_()
 		#ifdef PRINT_RULE_ON_ACCEPT 
 		std::cout << "\nACCEPTED:   " << rule
 			#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-				<< "\t<N'>  ->  ~<N>~  |  epsilon";
+				<< "  ->  ~<N>~  |  epsilon";
 			#else
 				;
 			#endif
@@ -1746,7 +1740,7 @@ bool SyntaxAnalyzer::N_()
 		#ifdef PRINT_RULE_ON_ACCEPT 
 		std::cout << "\nACCEPTED:   " << rule
 			#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT 
-				<< "\t<N'>  ->  <N>  |  ~epsilon~";
+				<< "  ->  <N>  |  ~epsilon~";
 			#else
 				;
 			#endif
