@@ -20,7 +20,7 @@
 bool SyntaxAnalyzer::A()
 {
 	std::string rule{ "A" };
-	bool isA{ true };
+	bool isA{ false };
 	#ifdef PRINT_RULE_ON_CALL 
 	std::cout << "\n" << rule; 
 #endif
@@ -37,21 +37,16 @@ bool SyntaxAnalyzer::A()
 					if ('#')
 					{
 						++currentPair;
-
+						isA = true;
 
 						#ifdef PRINT_RULE_ON_ACCEPT 
 						std::cout << "\nProduction Rule: " << rule << "\tA  ->  B  #  J  N  #";
-#endif
+						#endif
 					}
-					else isA = false;
 				}
-				else isA = false;
 			}
-			else isA = false;
 		}
-		else isA = false;
 	}
-	else isA = false;
 
 	return isA;
 }
@@ -60,27 +55,26 @@ bool SyntaxAnalyzer::A()
 bool SyntaxAnalyzer::B() 
 {
 	std::string rule{ "B" };
-	bool isB{ true };
+	bool isB{ false };
 	#ifdef PRINT_RULE_ON_CALL 
 	std::cout << "\n" << rule; 
 #endif
 
 	if (C())
 	{
+		isB = true;
 		#ifdef PRINT_RULE_ON_ACCEPT 
 		std::cout << "\nProduction Rule: " << rule << "\tB  -> ~C~  |  CC";
 #endif
 	}
 	else if (CC())
 	{
+		isB = true;
 		#ifdef PRINT_RULE_ON_ACCEPT 
 		std::cout << "\nProduction Rule: " << rule << "\tB  ->  C  |  ~CC~";
 #endif
 	}
-	else
-	{
-		isB = false;
-	}
+	else{}
 
 	return isB;
 }
