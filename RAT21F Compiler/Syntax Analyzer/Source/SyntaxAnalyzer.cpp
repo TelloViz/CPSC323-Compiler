@@ -11,8 +11,8 @@
 // the verbose option requires the both of the #define in the pair to be active
 // ******************************************************************************************
 
-//#define PRINT_RULE_ON_CALL		
-//#define VERBOSE_PRINT_RULE_ON_CALL  // Both modes must be defined for Verbose to work	
+#define PRINT_RULE_ON_CALL		
+#define VERBOSE_PRINT_RULE_ON_CALL  // Both modes must be defined for Verbose to work	
 
 //*****************************************************************************************
 
@@ -200,17 +200,21 @@ bool SyntaxAnalyzer::D()
 	std::string rule{ "<D>" };
 	bool isD{ false };
 
-#ifdef PRINT_RULE_ON_CALL 
+	#ifdef PRINT_RULE_ON_CALL 
 	std::cout << "\n" << rule
-#ifdef VERBOSE_PRINT_RULE_ON_CALL
+		#ifdef VERBOSE_PRINT_RULE_ON_CALL
 		<< "  ->  function <DD>  (  <E>  )  <J>  <I>";
-#else	
+		#else	
 		;
-#endif	
-#endif
+		#endif	
+	#endif
 
-	if (currentPair->second == "function") // todo this needs to be changed
+	if (currentPair->second == "function") 
 	{
+		#ifdef PRINT_RECOGNIZE_LABEL
+		std::cout << "\nRECOGNIZED: function";
+		#endif // PRINT_RECOGNIZE_LABEL
+
 		++currentPair;
 		if (DD())
 		{			
@@ -260,14 +264,14 @@ bool SyntaxAnalyzer::E()
 {
 	std::string rule{ "<E>" };
 	bool isE{ true };
-#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\n" << rule
-#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  <F>  |  <CC>";
-#else	
-		;
-#endif	
-#endif
+	#ifdef PRINT_RULE_ON_CALL 
+		std::cout << "\n" << rule
+		#ifdef VERBOSE_PRINT_RULE_ON_CALL
+			<< "  ->  <F>  |  <CC>";
+		#else	
+			;
+		#endif		
+	#endif
 
 	if (F())
 	{
@@ -306,14 +310,14 @@ bool SyntaxAnalyzer::F()
 {
 	std::string rule{ "<F>" };
 	bool isF{ true };
-#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\n" << rule
-#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  <G>  <F'>";
-#else	
-		;
-#endif	
-#endif
+	#ifdef PRINT_RULE_ON_CALL 
+		std::cout << "\n" << rule
+		#ifdef VERBOSE_PRINT_RULE_ON_CALL
+			<< "  ->  <G>  <F'>";
+		#else	
+			;
+		#endif	
+	#endif
 
 	if (G())
 	{
@@ -341,14 +345,14 @@ bool SyntaxAnalyzer::G()
 {
 	std::string rule{ "<G>" };
 	bool isG{ true };
-#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\n" << rule
-#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  <M>  <H>";
-#else	
-		;
-#endif	
-#endif
+	#ifdef PRINT_RULE_ON_CALL 
+		std::cout << "\n" << rule
+		#ifdef VERBOSE_PRINT_RULE_ON_CALL
+			<< "  ->  <M>  <H>";
+		#else	
+			;
+		#endif	
+	#endif
 
 	if (M())
 	{
