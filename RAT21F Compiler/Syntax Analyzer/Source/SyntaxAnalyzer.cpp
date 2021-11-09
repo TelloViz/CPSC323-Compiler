@@ -58,13 +58,12 @@ void SyntaxAnalyzer::PrintRule(std::string theRule, std::string theRuleDef) cons
 //	<A>	->	<B>	#	<J>	<N>	#
 bool SyntaxAnalyzer::A()
 {
-	std::string rule{ "<A>" };
-	std::string ruleDef{ "-> <B> # <J> <N> #" };
+	std::string rule{ "A" };
 	bool isA{ false };
 	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\n" << rule	
+	std::cout << "\nTrying Rule :: <" << rule << ">"	
 	#ifdef VERBOSE_PRINT_RULE_ON_CALL 
-		<< "  ->  <B>  #  <J>  <N>  #";
+		<< "   ->  " << GetConversion(rule);
 
 		#else
 		;
@@ -76,27 +75,28 @@ bool SyntaxAnalyzer::A()
 		if (currentPair->second == "#")
 		{
 			#ifdef PRINT_RECOGNIZE_LABEL 
-			std::cout << "\nRECOGNIZED:  #"; 
+			std::cout << "\n\nRECOGNIZED.............................................................................  #\n"; 
 			#endif
 
 			++currentPair;
 			if (J())
 			{
+
 				if (N())
 				{
 					if ('#')
 					{
 						#ifdef PRINT_RECOGNIZE_LABEL 
-						std::cout << "\nRECOGNIZED: #";
+						std::cout << "\n\nRECOGNIZED............................................................................. #\n";
 						#endif
 
 						++currentPair;
 						isA = true;
 
 						#ifdef PRINT_RULE_ON_ACCEPT 
-						std::cout << "\nACCEPTED:   " << rule
+						std::cout << "\nACCEPTED:  <" << rule << "> "
 							#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT 
-							<< "  ->  <B>  #  <J>  <N>  #";
+							<< " -> " << GetConversion(rule);
 							
 							#else
 							;
@@ -112,16 +112,16 @@ bool SyntaxAnalyzer::A()
 	return isA;
 }
 
-//   B ::=	C	|	CC      
+//  <B> ->  C  |  CC      
 bool SyntaxAnalyzer::B() 
 {
-	std::string rule{ "<B>" };
+	std::string rule{ "B" };
 	bool isB{ false };
 	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\n" << rule
+	std::cout << "\nTrying Rule :: <" << rule << "> "
 
 		#ifdef VERBOSE_PRINT_RULE_ON_CALL 
-		<< "  ->  <C> | <CC>";
+		<< " -> " << GetConversion(rule);
 
 		#else
 		;
@@ -132,7 +132,7 @@ bool SyntaxAnalyzer::B()
 	{
 		isB = true;
 		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED:   " << rule
+		std::cout << "\nACCEPTED:  <" << rule << "> "
 			#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT 
 				<< "  -> ~<C>~  |  <CC>";
 
@@ -145,7 +145,7 @@ bool SyntaxAnalyzer::B()
 	{
 		isB = true;
 		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED:   " << rule 
+		std::cout << "\nACCEPTED:   <" << rule << "> " 
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT 
 			<< "  ->  <C>  |  ~<CC>~";
 #else
@@ -161,13 +161,13 @@ bool SyntaxAnalyzer::B()
 //	C	->	D	C'
 bool SyntaxAnalyzer::C()
 {
-	std::string rule{ "<C>" };
+	std::string rule{ "C" };
 	bool isC{ false };
 	
 	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\n" << rule
+	std::cout << "\nTrying Rule :: <" << rule << "> "
 		#ifdef VERBOSE_PRINT_RULE_ON_CALL
-			<< "  ->  <D>  <C'>";
+		<< " -> " << GetConversion(rule);
 		#else
 			;
 		#endif	
@@ -181,7 +181,7 @@ bool SyntaxAnalyzer::C()
 			isC = true;
 			
 			#ifdef PRINT_RULE_ON_ACCEPT 
-			std::cout << "\nACCEPTED:   " << rule
+			std::cout << "\nACCEPTED:   <" << rule << "> "
 				#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
 					<< "  ->  <D>  <C'>";
 				#else
@@ -197,13 +197,13 @@ bool SyntaxAnalyzer::C()
 //	D	->	function	DD	(	E	)	J	I
 bool SyntaxAnalyzer::D()
 {
-	std::string rule{ "<D>" };
+	std::string rule{ "D" };
 	bool isD{ false };
 
 	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\n" << rule
+	std::cout << "\nTrying Rule :: <" << rule << "> "
 		#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  function <DD>  (  <E>  )  <J>  <I>";
+		<< " -> " << GetConversion(rule);
 		#else	
 		;
 		#endif	
@@ -212,7 +212,7 @@ bool SyntaxAnalyzer::D()
 	if (currentPair->second == "function") 
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL
-		std::cout << "\nRECOGNIZED: function";
+		std::cout << "\n\nRECOGNIZED............................................................................. function\n";
 		#endif // PRINT_RECOGNIZE_LABEL
 
 		++currentPair;
@@ -221,7 +221,7 @@ bool SyntaxAnalyzer::D()
 			if (currentPair->second == "(")
 			{
 				#ifdef PRINT_RECOGNIZE_LABEL 
-				std::cout << "\nRECOGNIZED: (";
+				std::cout << "\n\nRECOGNIZED............................................................................. (\n";
 				#endif
 
 				++currentPair;
@@ -230,7 +230,7 @@ bool SyntaxAnalyzer::D()
 					if (currentPair->second == ")")
 					{
 						#ifdef PRINT_RECOGNIZE_LABEL 
-						std::cout << "\nRECOGNIZED: )";
+						std::cout << "\n\nRECOGNIZED............................................................................. )\n";
 						#endif
 
 						++currentPair;
@@ -241,7 +241,7 @@ bool SyntaxAnalyzer::D()
 							{
 								isD = true;
 								#ifdef PRINT_RULE_ON_ACCEPT 
-								std::cout << "\nACCEPTED:   " << rule
+								std::cout << "\nACCEPTED:   <" << rule << "> "
 									#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT	
 										<< "  ->  function  <DD>  (  <E>  )  <J>  <I>";
 									#else
@@ -262,12 +262,12 @@ bool SyntaxAnalyzer::D()
 //	E	->	F	|	CC
 bool SyntaxAnalyzer::E()
 {
-	std::string rule{ "<E>" };
+	std::string rule{ "E" };
 	bool isE{ true };
 	#ifdef PRINT_RULE_ON_CALL 
-		std::cout << "\n" << rule
+		std::cout << "\nTrying Rule :: <" << rule << "> "
 		#ifdef VERBOSE_PRINT_RULE_ON_CALL
-			<< "  ->  <F>  |  <CC>";
+			<< " -> " << GetConversion(rule);
 		#else	
 			;
 		#endif		
@@ -277,7 +277,7 @@ bool SyntaxAnalyzer::E()
 	{
 		#ifdef PRINT_RULE_ON_ACCEPT 
 
-		std::cout << "\nACCEPTED: " << rule
+		std::cout << "\nACCEPTED:  <" << rule << "> "
 
 			#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
 						<< " ->  ~<F>~  |  <CC>";
@@ -289,7 +289,7 @@ bool SyntaxAnalyzer::E()
 	else if (CC())
 	{
 		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED :   " << rule
+		std::cout << "\nACCEPTED:  <" << rule << "> "
 			#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT 
 				<< "  ->  <F>  |  ~<CC>~";
 			#else 
@@ -308,12 +308,12 @@ bool SyntaxAnalyzer::E()
 //	F	->	G	F'
 bool SyntaxAnalyzer::F()
 {
-	std::string rule{ "<F>" };
+	std::string rule{ "F" };
 	bool isF{ true };
 	#ifdef PRINT_RULE_ON_CALL 
-		std::cout << "\n" << rule
+		std::cout << "\nTrying Rule :: <" << rule << "> "
 		#ifdef VERBOSE_PRINT_RULE_ON_CALL
-			<< "  ->  <G>  <F'>";
+			<< " -> " << GetConversion(rule);
 		#else	
 			;
 		#endif	
@@ -324,7 +324,7 @@ bool SyntaxAnalyzer::F()
 		if (F_())
 		{
 			#ifdef PRINT_RULE_ON_ACCEPT 
-			std::cout << "\nACCEPTED :   " << rule
+			std::cout << "\nACCEPTED:   <" << rule << "> "
 				#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
 					<< "  ->  <G>  <F'>";
 				#else 
@@ -343,12 +343,12 @@ bool SyntaxAnalyzer::F()
 //	G	->	M	H
 bool SyntaxAnalyzer::G()
 {
-	std::string rule{ "<G>" };
+	std::string rule{ "G" };
 	bool isG{ true };
 	#ifdef PRINT_RULE_ON_CALL 
-		std::cout << "\n" << rule
+		std::cout << "\nTrying Rule :: <" << rule << "> "
 		#ifdef VERBOSE_PRINT_RULE_ON_CALL
-			<< "  ->  <M>  <H>";
+			<< " -> " << GetConversion(rule);
 		#else	
 			;
 		#endif	
@@ -359,7 +359,7 @@ bool SyntaxAnalyzer::G()
 		if (H())
 		{
 			#ifdef PRINT_RULE_ON_ACCEPT 
-			std::cout << "\nACCEPTED :   " << rule
+			std::cout << "\nACCEPTED :   <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
 				<< "  ->  <M>  <H>";
 #else
@@ -378,11 +378,11 @@ bool SyntaxAnalyzer::G()
 // H	->	integer	|	boolean	|	real
 bool SyntaxAnalyzer::H()
 {
-	std::string rule{ "<H>" };
+	std::string rule{ "H" };
 #ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\n" << rule
+	std::cout << "\nTrying Rule :: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  integer  |  boolean  |  real";
+		<< " -> " << GetConversion(rule);
 #else	
 		;
 #endif	
@@ -391,7 +391,7 @@ bool SyntaxAnalyzer::H()
 	if (currentPair->first == "integer")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\nRECOGNIZED: integer";
+		std::cout << "\n\nRECOGNIZED............................................................................. integer\n";
 #endif
 		++currentPair;
 		return true;
@@ -399,7 +399,7 @@ bool SyntaxAnalyzer::H()
 	else if (currentPair->first == "boolean")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\nRECOGNIZED: boolean";
+		std::cout << "\n\nRECOGNIZED............................................................................. boolean\n";
 #endif
 		++currentPair;
 		return true;
@@ -407,7 +407,7 @@ bool SyntaxAnalyzer::H()
 	else if (currentPair->first == "real")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\nRECOGNIZED: real";
+		std::cout << "\n\nRECOGNIZED............................................................................. real\n";
 #endif
 		++currentPair;
 		return true;
@@ -420,11 +420,11 @@ bool SyntaxAnalyzer::H()
 bool SyntaxAnalyzer::I()
 {
 
-	std::string rule{ "<I>" };
+	std::string rule{ "I" };
 #ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\n" << rule
+	std::cout << "\nTrying Rule :: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->	{  <N>  }";
+		<< " -> " << GetConversion(rule);
 #else	
 		;
 #endif	
@@ -433,7 +433,7 @@ bool SyntaxAnalyzer::I()
 	if (currentPair->second == "{")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\nRECOGNIZED: {";
+		std::cout << "\n\nRECOGNIZED............................................................................. {\n";
 #endif
 		++currentPair;
 		if (N())
@@ -441,7 +441,7 @@ bool SyntaxAnalyzer::I()
 			if (currentPair->second == "}")
 			{
 				#ifdef PRINT_RECOGNIZE_LABEL 
-				std::cout << "\nRECOGNIZED: {";
+				std::cout << "\n\nRECOGNIZED............................................................................. {\n";
 #endif
 				++currentPair;
 				return true;
@@ -453,15 +453,15 @@ bool SyntaxAnalyzer::I()
 	else	return false;
 }
 
-//	J -> K | CC
+//	J ->  <K> | CC
 bool SyntaxAnalyzer::J()
 {
-	std::string rule{ "<J>" };
+	std::string rule{ "J" };
 	bool isJ{ true }; 
 #ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\n" << rule
+	std::cout << "\nTrying Rule :: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  <K>  |  <CC>";
+		<< " -> " << GetConversion(rule);
 #else
 		;
 #endif	
@@ -469,23 +469,23 @@ bool SyntaxAnalyzer::J()
 	if (K())
 	{
 		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED:  " << rule
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< " -> ~<K>~ | <CC>";
-#else
-			;
-#endif
+		std::cout << "\nACCEPTED:  <" << rule << "> "
+		#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
+				<< " -> ~<K>~ | <CC>";
+		#else
+					;
+		#endif
 		#endif
 	}
 	else if (CC())
 	{
 		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED:  " << rule
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< " -> <K> | ~<CC>~";
-#else
-			;
-#endif
+			std::cout << "\nACCEPTED:  <" << rule << "> "
+			#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
+				<< " -> <K> | ~<CC>~";
+			#else
+				;
+			#endif
 		#endif
 	}
 	else
@@ -499,12 +499,12 @@ bool SyntaxAnalyzer::J()
 // K	->	L	;	K'
 bool SyntaxAnalyzer::K()
 {
-	std::string rule{ "<K>" };
+	std::string rule{ "K" };
 	bool isK{ true };
 #ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\n" << rule
+	std::cout << "\nTrying Rule :: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  <L>  ;  <K'>";
+		<< " -> " << GetConversion(rule);
 #else	
 		;
 #endif	
@@ -515,13 +515,13 @@ bool SyntaxAnalyzer::K()
 		if (currentPair->second == ";")
 		{
 			#ifdef PRINT_RECOGNIZE_LABEL 
-			std::cout << "\nRECOGNIZED: ;";
+			std::cout << "\n\nRECOGNIZED............................................................................. ;\n";
 #endif
 			++currentPair;
 			if (K_())
 			{
 				#ifdef PRINT_RULE_ON_ACCEPT 
-				std::cout << "\nACCEPTED: " << rule
+				std::cout << "\nACCEPTED: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
 					<< "  ->  <L>  ;  <K'>";
 #else
@@ -541,11 +541,11 @@ bool SyntaxAnalyzer::K()
 // L	->	integer	M	|	boolean	M	|	real	M
 bool SyntaxAnalyzer::L()
 {
-	std::string rule{ "<L>" };
+	std::string rule{ "L" };
 #ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\n" << rule
+	std::cout << "\nTrying Rule :: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  integer  <M>  |  boolean  <M>  |  real  <M>";
+		<< " -> " << GetConversion(rule);
 #else	
 		;
 #endif	
@@ -554,7 +554,7 @@ bool SyntaxAnalyzer::L()
 	if (currentPair->second == "integer")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\nRECOGNIZED: integer";
+		std::cout << "\n\nRECOGNIZED............................................................................. integer\n";
 #endif
 		++currentPair;
 		if(M()) return true;
@@ -562,7 +562,7 @@ bool SyntaxAnalyzer::L()
 	else if (currentPair->second == "boolean")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\nRECOGNIZED: integer";
+		std::cout << "\n\nRECOGNIZED............................................................................. integer\n";
 #endif
 		++currentPair;
 		if(M()) return true;
@@ -570,7 +570,7 @@ bool SyntaxAnalyzer::L()
 	else if (currentPair->second == "real")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\nRECOGNIZED: real";
+		std::cout << "\n\nRECOGNIZED............................................................................. real\n";
 #endif
 		++currentPair;
 		if(M()) return true;
@@ -582,13 +582,13 @@ bool SyntaxAnalyzer::L()
 //	M	->	DD	M'
 bool SyntaxAnalyzer::M()
 {
-	std::string rule{ "<M>" };
+	std::string rule{ "M" };
 	bool isM{ true };
 
 #ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\n" << rule
+	std::cout << "\nTrying Rule :: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  <DD>  <M'>";
+		<< " -> " << GetConversion(rule);
 #else	
 		;
 #endif
@@ -599,7 +599,7 @@ bool SyntaxAnalyzer::M()
 		if (M_())
 		{
 			#ifdef PRINT_RULE_ON_ACCEPT 
-			std::cout << "\nACCEPTED: " << rule
+			std::cout << "\nACCEPTED:  <" << rule << "> "
 				#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
 					<< "  ->  <DD> <M'>";
 				#else
@@ -618,13 +618,13 @@ bool SyntaxAnalyzer::M()
 // <N>	->	O	<N>'
 bool SyntaxAnalyzer::N()
 {
-	std::string rule{ "<N>" };
+	std::string rule{ "N" };
 	bool isN{ true };
 
 	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\n" << rule
+	std::cout << "\nTrying Rule :: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  <O>  <N'>";
+		<< " -> " << GetConversion(rule);
 		#else
 			;
 		#endif	
@@ -635,7 +635,7 @@ bool SyntaxAnalyzer::N()
 		if (N_())
 		{
 			#ifdef PRINT_RULE_ON_ACCEPT 
-			std::cout << "\nACCEPTED: " << rule
+			std::cout << "\nACCEPTED:  <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
 				<< " ->  <O>  <N'>";
 #else
@@ -654,12 +654,12 @@ bool SyntaxAnalyzer::N()
 // <O>->	<P>	|	<Q>	|	<R>	|	<S>	|	<T>	|	<U>	|	<V>
 bool SyntaxAnalyzer::O()
 {
-	std::string rule{ "<O>" };
+	std::string rule{ "O" };
 	bool isO{ true };
 	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\n" << rule
+	std::cout << "\nTrying Rule :: <" << rule << "> "
 		#ifdef VERBOSE_PRINT_RULE_ON_CALL
-			<< "  ->  <P>  | < Q > | < R > | < S > | < T >  | < U > |  <V>";
+		<< " -> " << GetConversion(rule);
 		#else 
 			;
 		#endif // VERBOSE_PRINT_RULE_ON_CALL
@@ -669,9 +669,9 @@ bool SyntaxAnalyzer::O()
 	if (P())
 	{
 		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED: " << rule
+		std::cout << "\nACCEPTED: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  ~<P>~  | < Q > | < R > | < S > | < T > | < U > |  <V>";
+			<< "  ->  ~<P>~  |  <Q> |  <R> |  <S> |  <T> |  <U> |  <V>";
 #else
 			;
 #endif
@@ -680,9 +680,9 @@ bool SyntaxAnalyzer::O()
 	else if (Q()) 
 	{
 		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED: " << rule
+		std::cout << "\nACCEPTED: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  <P>  |  ~<Q>~  | < R > | < S > | < T > | < U > |  <V>";
+			<< "  ->  <P>  |  ~<Q>~  |  <R> |  <S> |  <T> |  <U> |  <V>";
 #else
 			;
 #endif
@@ -691,9 +691,9 @@ bool SyntaxAnalyzer::O()
 	else if (R())
 	{
 		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED: " << rule
+		std::cout << "\nACCEPTED: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  <P>  | < Q > |  ~<R>~  | < S > | < T > | < U > |  <V>";
+			<< "  ->  <P> | <Q> | ~<R>~ | <S> | <T> | <U> | <V>";
 #else
 			;
 #endif
@@ -702,9 +702,9 @@ bool SyntaxAnalyzer::O()
 	else if (S())
 	{
 		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED: " << rule 
+		std::cout << "\nACCEPTED: <" << rule << "> " 
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  <P>  | < Q > | < R > |  ~<S>~  | < T > | < U > |  <V>";
+			<< "  ->  <P> | <Q> | <R> | ~<S>~ | <T> | <U> | <V>";
 #else
 			;
 #endif
@@ -713,9 +713,9 @@ bool SyntaxAnalyzer::O()
 	else if (T())
 	{
 		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED: " << rule
+		std::cout << "\nACCEPTED: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  <P>  | < Q > | < R > | < S > |  ~<T>~  | < U > |  <V>";
+			<< "  ->  <P> | <Q> | <R> | <S> | ~<T>~ | <U> | <V>";
 #else
 			;
 #endif
@@ -724,9 +724,9 @@ bool SyntaxAnalyzer::O()
 	else if (U())
 	{
 		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED: " << rule
+		std::cout << "\nACCEPTED: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  <P>  | < Q > | < R > | < S > | < T > |  ~<U>~  |  <V>";
+			<< "  ->  <P> | <Q> | <R> | <S> | <T> | ~<U>~  | <V>";
 #else
 			;
 #endif
@@ -735,9 +735,9 @@ bool SyntaxAnalyzer::O()
 	else if (V())
 	{
 		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED: " << rule
+		std::cout << "\nACCEPTED: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  <P>  |  <Q>  |  <R>  |  <S>  |  <T>  |  <U>  |  ~<V>~";
+			<< "  ->  <P> | <Q> | <R> | <S> | <T> | <U> | ~<V>~";
 #else
 			;
 #endif
@@ -752,12 +752,12 @@ bool SyntaxAnalyzer::O()
 // <P>	->	{	<N>	}
 bool SyntaxAnalyzer::P()
 {
-	std::string rule{ "<P>" };
+	std::string rule{ "P" };
 	bool isP{ false };
 	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\n" << rule
+	std::cout << "\nTrying Rule :: <" << rule << "> "
 		#ifdef VERBOSE_PRINT_RULE_ON_CALL
-			<< "  ->  {  <N>  }";
+		<< " -> " << GetConversion(rule);
 			#else
 				;
 			#endif
@@ -766,7 +766,7 @@ bool SyntaxAnalyzer::P()
 	if (currentPair->second == "{")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\nRECOGNIZED: {";
+		std::cout << "\n\nRECOGNIZED............................................................................. {\n";
 #endif
 		++currentPair;
 		if (N())
@@ -774,12 +774,12 @@ bool SyntaxAnalyzer::P()
 			if (currentPair->second == "}")
 			{
 				#ifdef PRINT_RECOGNIZE_LABEL 
-				std::cout << "\nRECOGNIZED: }"; 
+				std::cout << "\n\nRECOGNIZED............................................................................. }\n"; 
 #endif
 				isP = true;
 				++currentPair;
 				#ifdef PRINT_RULE_ON_ACCEPT 
-				std::cout << "\nACCEPTED: " << rule
+				std::cout << "\nACCEPTED: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
 					<< "  ->  {  <N>  }";
 #else
@@ -796,11 +796,11 @@ bool SyntaxAnalyzer::P()
 // Q	->	DD	=	Y
 bool SyntaxAnalyzer::Q()
 {
-	std::string rule{ "<Q>" };
+	std::string rule{ "Q" };
 	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\n" << rule
+	std::cout << "\nTrying Rule :: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  <DD>  =  <Y>";
+		<< " -> " << GetConversion(rule);
 #else
 		;
 #endif
@@ -812,13 +812,13 @@ bool SyntaxAnalyzer::Q()
 		if (currentPair->second == "=")
 		{
 			#ifdef PRINT_RECOGNIZE_LABEL 
-			std::cout << "\nRECOGNIZED: =";
+			std::cout << "\n\nRECOGNIZED............................................................................. =\n";
 #endif
 			++currentPair;
 			if (Y())
 			{
 				#ifdef PRINT_RULE_ON_ACCEPT 
-				std::cout << "\nACCEPTED: " << rule
+				std::cout << "\nACCEPTED: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
 					<< "  ->  <DD>  =  <Y>";
 #else
@@ -838,12 +838,12 @@ bool SyntaxAnalyzer::Q()
 // R	->	if	(	W	)	O	R'
 bool SyntaxAnalyzer::R()
 {
-	std::string rule{ "<R>" };
+	std::string rule{ "R" };
 	bool isR{ false };
 	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\n" << rule
+	std::cout << "\nTrying Rule :: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_CALL
-	<< "  ->  if  (  <W>  )  <O>  <R'>";
+		<< " -> " << GetConversion(rule);
 #else
 	;
 #endif
@@ -855,7 +855,7 @@ bool SyntaxAnalyzer::R()
 		if (currentPair->second == "(")
 		{
 			#ifdef PRINT_RECOGNIZE_LABEL 
-			std::cout << "\nRECOGNIZED: (";
+			std::cout << "\n\nRECOGNIZED............................................................................. (\n";
 #endif
 			++currentPair;
 			if (W())
@@ -863,7 +863,7 @@ bool SyntaxAnalyzer::R()
 				if (currentPair->second == ")")
 				{
 					#ifdef PRINT_RECOGNIZE_LABEL 
-					std::cout << "\nRECOGNIZED: )"; 
+					std::cout << "\n\nRECOGNIZED............................................................................. )\n"; 
 #endif
 					++currentPair;
 					if (O())
@@ -872,7 +872,7 @@ bool SyntaxAnalyzer::R()
 						{
 							isR = true;
 							#ifdef PRINT_RULE_ON_ACCEPT 
-							std::cout << "\nACCEPTED: " << rule
+							std::cout << "\nACCEPTED: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
 								<< "  ->  if  (  <W>  )  <O>  <R'>";
 #else
@@ -892,12 +892,12 @@ bool SyntaxAnalyzer::R()
 // S	->	return	S'
 bool SyntaxAnalyzer::S()
 {
-	std::string rule{ "<S>" };
+	std::string rule{ "S" };
 	bool isS{ false };
 	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\n" << rule
+	std::cout << "\nTrying Rule :: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  return  S'";
+		<< " -> " << GetConversion(rule);
 #else
 		;
 #endif
@@ -906,14 +906,14 @@ bool SyntaxAnalyzer::S()
 	if (currentPair->second == "return")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\nRECOGNIZED: return";
+		std::cout << "\n\nRECOGNIZED............................................................................. return\n";
 #endif
 		++currentPair;
 		if (S_())
 		{
 			isS = true;
 			#ifdef PRINT_RULE_ON_ACCEPT 
-			std::cout << "\nACCEPTED: " << rule
+			std::cout << "\nACCEPTED: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
 				<< "  ->  return  <S'>";
 #else
@@ -929,12 +929,12 @@ bool SyntaxAnalyzer::S()
 // T	->	put	(	Y	)	;
 bool SyntaxAnalyzer::T()
 {
-	std::string rule{ "<T>" };
+	std::string rule{ "T" };
 	bool isT{ false };
 	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\n" << rule
+	std::cout << "\nTrying Rule :: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  put (  <Y>  )  ;";
+		<< " -> " << GetConversion(rule);
 #else
 		;
 #endif
@@ -943,13 +943,13 @@ bool SyntaxAnalyzer::T()
 	if (currentPair->second == "put")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\nRECOGNIZED: put";
+		std::cout << "\n\nRECOGNIZED............................................................................. put\n";
 #endif
 		++currentPair;
 		if (currentPair->second == "(")
 		{
 			#ifdef PRINT_RECOGNIZE_LABEL 
-			std::cout << "\nRECOGNIZED: (";
+			std::cout << "\n\nRECOGNIZED............................................................................. (\n";
 #endif
 			++currentPair;
 			if (Y())
@@ -957,18 +957,18 @@ bool SyntaxAnalyzer::T()
 				if (currentPair->second == ")")
 				{
 					#ifdef PRINT_RECOGNIZE_LABEL 
-					std::cout << "\nRECOGNIZED: )";
+					std::cout << "\n\nRECOGNIZED............................................................................. )\n";
 #endif
 					++currentPair;
 					if (currentPair->second == ";")
 					{
 						#ifdef PRINT_RECOGNIZE_LABEL 
-						std::cout << "\nRECOGNIZED: ;";
+						std::cout << "\n\nRECOGNIZED............................................................................. ;\n";
 #endif
 						isT = true;
 						++currentPair;
 						#ifdef PRINT_RULE_ON_ACCEPT 
-						std::cout << "\nACCEPTED: " << rule
+						std::cout << "\nACCEPTED: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
 							<< "  ->  put  (  <Y>  )  ;";
 #else
@@ -988,12 +988,12 @@ bool SyntaxAnalyzer::T()
 // U	->	get	(	M	)	;
 bool SyntaxAnalyzer::U()
 {
-	std::string rule{ "<U>" };
+	std::string rule{ "U" };
 	bool isU{ false };
 	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\n" << rule
+	std::cout << "\nTrying Rule :: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  -> get  (  <M>  )  ;";
+		<< " -> " << GetConversion(rule);
 #else
 		;
 #endif
@@ -1002,13 +1002,13 @@ bool SyntaxAnalyzer::U()
 	if (currentPair->second == "get")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\nRECOGNIZED: get";
+		std::cout << "\n\nRECOGNIZED............................................................................. get\n";
 #endif
 		++currentPair;
 		if (currentPair->second == "(")
 		{
 			#ifdef PRINT_RECOGNIZE_LABEL 
-			std::cout << "\nRECOGNIZED: (";
+			std::cout << "\n\nRECOGNIZED............................................................................. (\n";
 #endif
 			++currentPair;
 			if (M())
@@ -1016,18 +1016,18 @@ bool SyntaxAnalyzer::U()
 				if (currentPair->second == ")")
 				{
 					#ifdef PRINT_RECOGNIZE_LABEL 
-					std::cout << "\nRECOGNIZED: )";
+					std::cout << "\n\nRECOGNIZED............................................................................. )\n";
 #endif
 					++currentPair;
 					if (currentPair->second == ";")
 					{
 						#ifdef PRINT_RECOGNIZE_LABEL 
-						std::cout << "\nRECOGNIZED: ;";
+						std::cout << "\n\nRECOGNIZED............................................................................. ;\n";
 #endif
 						isU = true;
 						++currentPair;
 						#ifdef PRINT_RULE_ON_ACCEPT 
-						std::cout << "\nACCEPTED: " << rule
+						std::cout << "\nACCEPTED: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
 							<< "  ->  get  (  <M>  )  ;";
 #else
@@ -1048,12 +1048,12 @@ bool SyntaxAnalyzer::U()
 // V	->	while	(	W	)	O
 bool SyntaxAnalyzer::V()
 {
-	std::string rule{ "<V>" };
+	std::string rule{ "V" };
 	bool isV{ false };
 	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\n" << rule
+	std::cout << "\nTrying Rule :: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  while  (  <W>  )  <O>";
+		<< " -> " << GetConversion(rule);
 #else
 		;
 #endif
@@ -1062,13 +1062,13 @@ bool SyntaxAnalyzer::V()
 	if (currentPair->second == "while")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\nRECOGNIZED: while";
+		std::cout << "\n\nRECOGNIZED............................................................................. while\n";
 #endif
 		++currentPair;
 		if (currentPair->second == "(")
 		{
 			#ifdef PRINT_RECOGNIZE_LABEL 
-			std::cout << "\nRECOGNIZED: (";
+			std::cout << "\n\nRECOGNIZED............................................................................. (\n";
 #endif
 			++currentPair;
 			if (W())
@@ -1076,14 +1076,14 @@ bool SyntaxAnalyzer::V()
 				if (currentPair->second == ")")
 				{
 					#ifdef PRINT_RECOGNIZE_LABEL 
-					std::cout << "\nRECOGNIZED: )";
+					std::cout << "\n\nRECOGNIZED............................................................................. )\n";
 #endif
 					++currentPair;
 					if (O())
 					{
 						isV = true;
 						#ifdef PRINT_RULE_ON_ACCEPT 
-						std::cout << "\nACCEPTED: " << rule
+						std::cout << "\nACCEPTED: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
 							<< "  ->  while  (  <W>  )  <O>";
 #else
@@ -1103,10 +1103,10 @@ bool SyntaxAnalyzer::V()
 // W	->	Y	X	Y
 bool SyntaxAnalyzer::W()
 {
-	std::string rule{ "<W>" };
+	std::string rule{ "W" };
 	bool isW{ false };
 	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\n" << rule; 
+	std::cout << "\nTrying Rule :: <" << rule << "> "; 
 #endif
 
 
@@ -1118,7 +1118,7 @@ bool SyntaxAnalyzer::W()
 			{
 				isW = true;
 				#ifdef PRINT_RULE_ON_ACCEPT 
-				std::cout << "\nACCEPTED: " << rule
+				std::cout << "\nACCEPTED: <" << rule << "> "
 #ifdef  VERBOSE_PRINT_RULE_ON_ACCEPT
 					<< "  ->  <Y>  <X>  <Y>";
 #else
@@ -1135,12 +1135,12 @@ bool SyntaxAnalyzer::W()
 // X	->	==	|	!=	|	>	|	<	|	<=	|	=>
 bool SyntaxAnalyzer::X()
 {
-	std::string rule{ "<X>" };
+	std::string rule{ "X" };
 	bool isX{ true };
 	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\n" << rule
+	std::cout << "\nTrying Rule :: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  ==  |  !=  |  >  |  <  |  <=  |  =>\n";
+		<< " -> " << GetConversion(rule);
 #else
 		;
 #endif
@@ -1149,10 +1149,10 @@ bool SyntaxAnalyzer::X()
 	if (currentPair->second == "==")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\nRECOGNIZED: ==";
+		std::cout << "\n\nRECOGNIZED............................................................................. ==\n";
 #endif
 		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED: " << rule
+		std::cout << "\nACCEPTED: <" << rule << "> "
 #ifdef  VERBOSE_PRINT_RULE_ON_ACCEPT
 			<< "  ->  ~==~  |  !=  |  >  |  <  |  <=  |  =>";
 #else
@@ -1163,10 +1163,10 @@ bool SyntaxAnalyzer::X()
 	else if (currentPair->second == "!=")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\nRECOGNIZED: !=";
+		std::cout << "\n\nRECOGNIZED............................................................................. !=\n";
 		#endif
 		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED: " << rule 
+		std::cout << "\nACCEPTED: <" << rule << "> " 
 #ifdef  VERBOSE_PRINT_RULE_ON_ACCEPT
 			<< "  ->  ==  |  ~!=~  |  >  |  <  |  <=  |  =>";
 #else
@@ -1177,10 +1177,10 @@ bool SyntaxAnalyzer::X()
 	else if (currentPair->second == ">")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\nRECOGNIZED: >";
+		std::cout << "\n\nRECOGNIZED............................................................................. >\n";
 #endif
 		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED:   " << rule
+		std::cout << "\nACCEPTED:  <" << rule << "> "
 #ifdef  VERBOSE_PRINT_RULE_ON_ACCEPT
 			<< "  ->  ==  |  !=  |  ~>~  |  <  |  <=  |  =>";
 #else
@@ -1191,10 +1191,10 @@ bool SyntaxAnalyzer::X()
 	else if (currentPair->second == "<")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\nRECOGNIZED: <";
+		std::cout << "\n\nRECOGNIZED............................................................................. <\n";
 #endif
 #ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED:   " << rule
+		std::cout << "\nACCEPTED:  <" << rule << "> "
 #ifdef  VERBOSE_PRINT_RULE_ON_ACCEPT
 			<< "  ->  ==  |  !=  |  >  |  ~<~  |  <=  |  =>";
 #else
@@ -1205,10 +1205,10 @@ bool SyntaxAnalyzer::X()
 	else if (currentPair->second == "<=")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\nRECOGNIZED: <=";
+		std::cout << "\n\nRECOGNIZED............................................................................. <=\n";
 #endif
 #ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED:   " << rule
+		std::cout << "\nACCEPTED:  <" << rule << "> "
 #ifdef  VERBOSE_PRINT_RULE_ON_ACCEPT
 			<< " ->  ==  |  !=  |  >  |  <  |  ~<=~  |  =>";
 #else
@@ -1219,10 +1219,10 @@ bool SyntaxAnalyzer::X()
 	else if (currentPair->second == "=>")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\nRECOGNIZED: =>";
+		std::cout << "\n\nRECOGNIZED............................................................................. =>\n";
 #endif
 #ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED:   " << rule
+		std::cout << "\nACCEPTED:  <" << rule << "> "
 #ifdef  VERBOSE_PRINT_RULE_ON_ACCEPT
 			<< "  ->  ==  |  !=  |  >  |  <  |  <=  |  ~=>~";
 #else
@@ -1241,12 +1241,12 @@ bool SyntaxAnalyzer::X()
 // Y	->	Z	Y'
 bool SyntaxAnalyzer::Y()
 {
-	std::string rule{ "<Y>" };
+	std::string rule{ "Y" };
 	bool isY{ true };
 	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\n" << rule
+	std::cout << "\nTrying Rule :: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  <Z>  <Y'>";
+		<< " -> " << GetConversion(rule);
 #else
 		;
 #endif
@@ -1257,7 +1257,7 @@ bool SyntaxAnalyzer::Y()
 		if (Y_())
 		{
 			#ifdef PRINT_RULE_ON_ACCEPT 
-			std::cout << "\nACCEPTED:   " << rule 
+			std::cout << "\nACCEPTED:  <" << rule << "> " 
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
 				<< "  -> <Z> <Y'>";
 #else 
@@ -1273,12 +1273,12 @@ bool SyntaxAnalyzer::Y()
 // <Z>	->	<AA>	<Z'>
 bool SyntaxAnalyzer::Z()
 {
-	std::string rule{ "<Z>" };
+	std::string rule{ "Z" };
 	bool isZ{ true };
 	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\n" << rule
+	std::cout << "\nTrying Rule :: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  <AA>  <Z'>";
+		<< " -> " << GetConversion(rule); 
 #else
 		;
 #endif
@@ -1291,7 +1291,7 @@ bool SyntaxAnalyzer::Z()
 		if (Z_())
 		{
 			#ifdef PRINT_RULE_ON_ACCEPT 
-			std::cout << "\nACCEPTED:   " << rule
+			std::cout << "\nACCEPTED:  <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
 				<< "  ->  <AA>  <Z'>";
 #else
@@ -1307,12 +1307,12 @@ bool SyntaxAnalyzer::Z()
 // AA	->	-	BB	|	BB
 bool SyntaxAnalyzer::AA()
 {
-	std::string rule{ "<AA>" };
+	std::string rule{ "AA" };
 	bool isAA{ true };
 	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\n" << rule
+	std::cout << "\nTrying Rule :: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  -  <BB>  |  <BB>";
+		<< " -> " << GetConversion(rule); 
 #else
 		;
 #endif
@@ -1321,12 +1321,12 @@ bool SyntaxAnalyzer::AA()
 	if (currentPair->second == "-")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\nRECOGNIZED: -";
+		std::cout << "\n\nRECOGNIZED............................................................................. -\n";
 #endif
 		if (BB())
 		{
 			#ifdef PRINT_RULE_ON_ACCEPT 
-			std::cout << "\nACCEPTED:   " << rule
+			std::cout << "\nACCEPTED:  <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
 				<< "  ->  ~-<BB>~  |  <BB>";
 #else
@@ -1338,7 +1338,7 @@ bool SyntaxAnalyzer::AA()
 	else if (BB())
 	{
 		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED:   " << rule
+		std::cout << "\nACCEPTED:  <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
 			<< "  ->  -<BB>  |  ~<BB>~";
 #else
@@ -1357,11 +1357,11 @@ bool SyntaxAnalyzer::AA()
 // <BB>	->	<DD>	<BB'>	|	<EE>	|	(	<Y>	)	|	<FF>	|	TRUE	|	FALSE
 bool SyntaxAnalyzer::BB()
 {
-	std::string rule{ "<BB>" };
+	std::string rule{ "BB" };
 	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\n" << rule
+	std::cout << "\nTrying Rule :: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  <DD> <BB'>  |  <EE>  |  (  <Y>  |  <FF>  TRUE  |  FALSE";
+		<< " -> " << GetConversion(rule);
 #else
 		;
 #endif
@@ -1372,11 +1372,11 @@ bool SyntaxAnalyzer::BB()
 // CC	->	epsilon
 bool SyntaxAnalyzer::CC()
 {
-	std::string rule{ "<CC>" };
+	std::string rule{ "CC" };
 	#ifdef PRINT_RULE_ON_CALL 
-		std::cout << "\n" << rule
+		std::cout << "\nTrying Rule :: <" << rule << "> "
 		#ifdef VERBOSE_PRINT_RULE_ON_CALL
-			<< "  ->  epsilon";
+			<< " -> " << GetConversion(rule);
 		#else
 			;
 		#endif
@@ -1387,11 +1387,11 @@ bool SyntaxAnalyzer::CC()
 // DD -> identifier
 bool SyntaxAnalyzer::DD()
 {
-	std::string rule{ "<DD>" };
+	std::string rule{ "DD" };
 	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\n" << rule 
+	std::cout << "\nTrying Rule :: <" << rule << "> " 
 		#ifdef VERBOSE_PRINT_RULE_ON_CALL
-			<< "  ->  identifier";
+		<< " -> " << GetConversion(rule);
 		#else
 			;
 		#endif
@@ -1399,10 +1399,10 @@ bool SyntaxAnalyzer::DD()
 	if (currentPair->first == "identifier")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\nRECOGNIZED: identifier";
+		std::cout << "\n\nRECOGNIZED............................................................................. identifier\n";
 #endif
 		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED:   " << rule
+		std::cout << "\nACCEPTED:  <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
 			<< "  ->  identifier";
 			#else
@@ -1422,11 +1422,11 @@ bool SyntaxAnalyzer::DD()
 bool SyntaxAnalyzer::EE()
 {
 
-	std::string rule{ "<EE>" };
+	std::string rule{ "EE" };
 	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\n" << rule
+	std::cout << "\nTrying Rule :: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  integer";
+		<< " -> " << GetConversion(rule);
 #else
 		;
 #endif
@@ -1443,11 +1443,11 @@ bool SyntaxAnalyzer::EE()
 // FF -> real
 bool SyntaxAnalyzer::FF()
 {
-	std::string rule{ "<FF>" };
+	std::string rule{ "FF" };
 	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\n" << rule
+	std::cout << "\nTrying Rule :: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  real";
+		<< " -> " << GetConversion(rule);
 #else
 		;
 #endif
@@ -1464,12 +1464,12 @@ bool SyntaxAnalyzer::FF()
 // Y'	->	+	Z	Y'	|	-	Z	Y'	|	epsilon
 bool SyntaxAnalyzer::Y_()
 {
-	std::string rule{ "<Y_>" };
+	std::string rule{ "Y'" };
 	bool isY_{ true };
 	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\n" << rule
+	std::cout << "\nTrying Rule :: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  +  <Z>  <Y'>  |  -  <Z>  <Y'>  |  epsilon";
+		<< " -> " << GetConversion(rule);
 #else
 		;
 #endif
@@ -1478,7 +1478,7 @@ bool SyntaxAnalyzer::Y_()
 	if (currentPair->second == "+")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\nRECOGNIZED: +";
+		std::cout << "\n\nRECOGNIZED............................................................................. +\n";
 #endif
 		++currentPair;
 		if (Z())
@@ -1486,7 +1486,7 @@ bool SyntaxAnalyzer::Y_()
 			if (Y_())
 			{
 				#ifdef PRINT_RULE_ON_ACCEPT 
-				std::cout << "\nACCEPTED:   " << rule 
+				std::cout << "\nACCEPTED: <" << rule << "> " 
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
 					<< "  ->  ~+ <Z> <Y'>~  |  - <Z><Y'> |  epsilon";
 #else 
@@ -1501,7 +1501,7 @@ bool SyntaxAnalyzer::Y_()
 	else if (currentPair->second == "-")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\nRECOGNIZED: -";
+		std::cout << "\n\nRECOGNIZED............................................................................. -\n";
 #endif
 		++currentPair;
 		if (Z())
@@ -1509,7 +1509,7 @@ bool SyntaxAnalyzer::Y_()
 			if (Y_())
 			{
 				#ifdef PRINT_RULE_ON_ACCEPT 
-				std::cout << "\nACCEPTED:   " << rule 
+				std::cout << "\nACCEPTED:  <" << rule << "> " 
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
 					<< "  ->  +  <Z>  <Y'>  |  ~-  <Z>  <Y'>~  |  epsilon";
 #else 
@@ -1524,7 +1524,7 @@ bool SyntaxAnalyzer::Y_()
 	else // epsilon
 	{
 		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED:   " << rule 
+		std::cout << "\nACCEPTED:  <" << rule << "> " 
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
 			<< "  ->  + <Z> <Y'>  |  -  <Z>  <Y'>  |  ~epsilon~";
 #else 
@@ -1539,12 +1539,12 @@ bool SyntaxAnalyzer::Y_()
 // Z'	->	*	AA	Z'	|	/	AA	Z'	|	epsilon
 bool SyntaxAnalyzer::Z_()
 {
-	std::string rule{ "<Z_>" };
+	std::string rule{ "Z'" };
 	bool isZ_{ true };
 	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\n" << rule
+	std::cout << "\nTrying Rule :: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  *  <AA>  <Z'>  |  /  <AA>  <Z'>  |  epsilon";
+		<< " -> " << GetConversion(rule);
 #else
 		;
 #endif
@@ -1553,7 +1553,7 @@ bool SyntaxAnalyzer::Z_()
 	if (currentPair->second == "*")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\nRECOGNIZED: *";
+		std::cout << "\n\nRECOGNIZED............................................................................. *\n";
 #endif
 		++currentPair;
 		if (AA())
@@ -1561,9 +1561,9 @@ bool SyntaxAnalyzer::Z_()
 			if (Z_())
 			{
 				#ifdef PRINT_RULE_ON_ACCEPT 
-				std::cout << "\nACCEPTED:   " << rule
+				std::cout << "\nACCEPTED:  <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-					<< "->	*	AA	Z'	|	/	AA	Z'	|	epsilon";
+					<< "->	*	<AA>	<Z'>	|	/	<AA>	<Z'>	|	epsilon";
 #else
 					;
 #endif
@@ -1576,7 +1576,7 @@ bool SyntaxAnalyzer::Z_()
 	else if (currentPair->second == "/")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\nRECOGNIZED: /";
+		std::cout << "\n\nRECOGNIZED............................................................................. /\n";
 #endif
 		++currentPair;
 		if (AA())
@@ -1584,7 +1584,7 @@ bool SyntaxAnalyzer::Z_()
 			if (Z_())
 			{
 				#ifdef PRINT_RULE_ON_ACCEPT 
-				std::cout << "\nACCEPTED:   " << rule
+				std::cout << "\nACCEPTED:  <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
 					<< "  ->	*	AA	Z'	|	/	AA	Z'	|	epsilon";
 #else
@@ -1599,7 +1599,7 @@ bool SyntaxAnalyzer::Z_()
 	else // epsilon
 	{
 		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED:   " << rule
+		std::cout << "\nACCEPTED:  <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
 			<< "  ->	*	AA	Z'	|	/	AA	Z'	|	epsilon";
 #else
@@ -1614,11 +1614,11 @@ bool SyntaxAnalyzer::Z_()
 // C'	->	epsilon	|	C
 bool SyntaxAnalyzer::C_()
 {
-	std::string rule{ "<C_>" };
+	std::string rule{ "C'" };
 	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\n" << rule
+	std::cout << "\nTrying Rule :: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  <C>  |  epsilon";
+		<< " -> " << GetConversion(rule);
 #else
 		;
 #endif
@@ -1629,11 +1629,11 @@ bool SyntaxAnalyzer::C_()
 // F'	->	epsilon	|	,	F
 bool SyntaxAnalyzer::F_()
 {
-	std::string rule{ "<F_>" };
+	std::string rule{ "F'" };
 	#ifdef PRINT_RULE_ON_CALL
-	std::cout << "\n" << rule
+	std::cout << "\nTrying Rule :: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_CALL
-	<< "  ->  ,  <F>  |  epsilon";
+		<< " -> " << GetConversion(rule);
 #else
 	;
 #endif
@@ -1644,11 +1644,11 @@ bool SyntaxAnalyzer::F_()
 // K'	->	epsilon	|	K
 bool SyntaxAnalyzer::K_()
 {
-	std::string rule{ "<K_>" };
+	std::string rule{ "K'" };
 	#ifdef PRINT_RULE_ON_CALL
-	std::cout << "\n" << rule 
+	std::cout << "\nTrying Rule :: <" << rule << "> " 
 #ifdef VERBOSE_PRINT_RULE_ON_CALL
-	<< "  ->  <K>  |  epsilon";
+		<< " -> " << GetConversion(rule);
 #else
 	;
 #endif
@@ -1658,7 +1658,7 @@ bool SyntaxAnalyzer::K_()
 	if (K())
 	{
 		#ifdef PRINT_RULE_ON_ACCEPT
-		std::cout << "\nACCEPTED:   " << rule
+		std::cout << "\nACCEPTED:  <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
 			<< "  ->  <K>  |  epsilon";
 #else
@@ -1673,11 +1673,11 @@ bool SyntaxAnalyzer::K_()
 // M'	->	epsilon	|	,	M
 bool SyntaxAnalyzer::M_()
 {
-	std::string rule{ "<M_>"};
+	std::string rule{ "M'"};
 	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\n" << rule
+	std::cout << "\nTrying Rule :: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_CALL
-	<< "  -> ,  <M>  |  epsilon";
+		<< " -> " << GetConversion(rule);
 #else
 	;
 #endif
@@ -1686,13 +1686,13 @@ bool SyntaxAnalyzer::M_()
 	if (currentPair->second == ",")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\nRECOGNIZED: ,";
+		std::cout << "\n\nRECOGNIZED............................................................................. ,\n";
 #endif
 		++currentPair;
 		if (M())
 		{
 			#ifdef PRINT_RULE_ON_ACCEPT 
-			std::cout << "\nACCEPTED:   " << rule
+			std::cout << "\nACCEPTED:  <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
 				<< "  ->  ~, <M>~  |  epsilon";
 #else 
@@ -1703,7 +1703,7 @@ bool SyntaxAnalyzer::M_()
 	}
 	else {
 		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED:   " << rule 
+		std::cout << "\nACCEPTED:  <" << rule << "> " 
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
 			<< "  ->  ,<M>  |  ~epsilon~";
 #else 
@@ -1717,11 +1717,11 @@ bool SyntaxAnalyzer::M_()
 // <N'>	->	epsilon	|	<N>
 bool SyntaxAnalyzer::N_()
 {
-	std::string rule{ "<N_>" };
+	std::string rule{ "N'" };
 	#ifdef PRINT_RULE_ON_CALL
-	std::cout << "\n" << rule
+	std::cout << "\nTrying Rule :: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  -> <N>  |  epsilon";
+		<< " -> " << GetConversion(rule);
 #else
 	;
 #endif
@@ -1730,7 +1730,7 @@ bool SyntaxAnalyzer::N_()
 	if(N())
 	{
 		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED:   " << rule
+		std::cout << "\nACCEPTED:  <" << rule << "> "
 			#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
 				<< "  ->  ~<N>~  |  epsilon";
 			#else
@@ -1742,7 +1742,7 @@ bool SyntaxAnalyzer::N_()
 	else
 	{
 		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED:   " << rule
+		std::cout << "\nACCEPTED:  <" << rule << "> "
 			#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT 
 				<< "  ->  <N>  |  ~epsilon~";
 			#else
@@ -1756,11 +1756,11 @@ bool SyntaxAnalyzer::N_()
 // R'	->	endif	|	else	O	endif
 bool SyntaxAnalyzer::R_()
 {
-	std::string rule{ "<R_>" };
+	std::string rule{ "R'" };
 	#ifdef PRINT_RULE_ON_CALL
-	std::cout << "\n" << rule
+	std::cout << "\nTrying Rule :: <" << rule << "> "
 #ifdef VERBOSE_PRINT_RULE_ON_CALL
-	<< "  ->  endif  |  else <O>  endif";
+		<< " -> " << GetConversion(rule);
 #else
 	;
 #endif
@@ -1771,11 +1771,11 @@ bool SyntaxAnalyzer::R_()
 // S'	->	;	|	Y	;
 bool SyntaxAnalyzer::S_()
 {
-	std::string rule{ "<S_>" };
+	std::string rule{ "S'" };
 	#ifdef PRINT_RULE_ON_CALL
-	std::cout << "\n" << rule 
+	std::cout << "\nTrying Rule :: <" << rule << "> " 
 		#ifdef VERBOSE_PRINT_RULE_ON_CALL
-			<< "  ->  ;  |  Y  ;";
+		<< " -> " << GetConversion(rule);
 		#else
 			;
 		#endif		
@@ -1786,11 +1786,11 @@ bool SyntaxAnalyzer::S_()
 // BB'	->	epsilon	|	(	M	)
 bool SyntaxAnalyzer::BB_()
 {
-	std::string rule{ "<BB_>" };
+	std::string rule{ "BB'" };
 	#ifdef PRINT_RULE_ON_CALL
-	std::cout << "\n" << rule
+	std::cout << "\nTrying Rule :: <" << rule << "> "
 		#ifdef VERBOSE_PRINT_RULE_ON_CALL
-			<< "  ->  (  M  )  |  epsilon";
+		<< " -> " << GetConversion(rule);
 		#else
 			;
 		#endif // VERBOSE_PRINT_RULE_ON_CALL
