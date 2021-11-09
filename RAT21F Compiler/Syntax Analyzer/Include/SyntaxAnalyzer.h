@@ -15,19 +15,19 @@ public:
 	
 	std::string RuleNameConversion(std::string simplifiedRuleName) const
 	{
-		return RuleNameConversionMap.at(simplifiedRuleName);
+		return AbstractRuleNameConversion.at(simplifiedRuleName);
 	}
 
 	std::string GetConversion(std::string simplifiedRuleName) const
 	{
-		return EquivalenceMap.at(simplifiedRuleName);
+		return AbstractEquivalenceMap.at(simplifiedRuleName);
 	}
 
 private:
 
 	void PrintRule(std::string theRule, std::string theRuleDef) const;
 
-	std::map<std::string, std::string> RuleNameConversionMap
+	std::map<std::string, std::string> AbstractRuleNameConversion
 	{
 		{"A", "Rat21F"},
 		{"B", "Opt Function Definitions"},
@@ -73,7 +73,7 @@ private:
 		{"BB'", "Primary'"},
 	};
 
-	std::map<std::string, std::string> EquivalenceMap
+	std::map<std::string, std::string> AbstractEquivalenceMap
 	{
 		{"A", "<B>  #  <J>  <N>  #"},
 		{"B", "<C>  |  <CC>"},
@@ -87,37 +87,84 @@ private:
 		{"J", "<K>  |  <CC>"},
 		{"K", "<L>  ;  <K'>"},
 		{"L", "integer  <M>  |  boolean  <M>  |  real  <M>"},
-		{"M", "<DD>	<M'>"},
-		{"N", "<O>	<N'>"},
-		{"O", "<P>	|	<Q>	|	<R>	|	<S>	|	<T>	|	<U>	|	<V>"},
-		{"P", "{	<N>	}"},
-		{"Q", "<DD>	=	<Y>"},
-		{"R", "if	(	<W>	)	<O>	<R'>"},
-		{"S", "return	<S'>"},
-		{"T", "put	(	<Y>	)	;"},
-		{"U", "get	(	<M>	)	;"},
-		{"V", "while	(	<W>	)	<O>"},
-		{"W", "<Y>	<X>	<Y>"},
-		{"X", "==	|	!=	|	>	|	<	|	<=	|	=>"},
-		{"Y", "<Z>	<Y'>"},
-		{"Z", "<AA>	<Z'>"},
-		{"AA", "-	<BB>	|	<BB>"},
-		{"BB", "<DD>	<BB'>	|	<EE>	|	(	<Y>	)	|	<FF>	|	TRUE	|	FALSE"},
+		{"M", "<DD>  <M'>"},
+		{"N", "<O>  <N'>"},
+		{"O", "<P>  |  <Q>  |  <R>  |  <S>  |  <T>  |  <U>  |  <V>"},
+		{"P", "{  <N>  }"},
+		{"Q", "<DD>  =  <Y>"},
+		{"R", "if  (  <W>  )  <O>  <R'>"},
+		{"S", "return  <S'>"},
+		{"T", "put  (  <Y>  )  ;"},
+		{"U", "get  (  <M>  )  ;"},
+		{"V", "while  (  <W>  )  <O>"},
+		{"W", "<Y>  <X>  <Y>"},
+		{"X", "==  |  !=  |  >  |  <  |  <=  |  =>"},
+		{"Y", "<Z>  <Y'>"},
+		{"Z", "<AA>  <Z'>"},
+		{"AA", "-  <BB>  |  <BB>"},
+		{"BB", "<DD>  <BB'>  |  <EE>  |  (  <Y>  )  |  <FF>  |  TRUE  |  FALSE"},
 		{"CC", "epsilon"},
 		{"DD", "identifier"},
 		{"EE", "integer"},
 		{"FF", "real"},
-		{"Y'", "+	<Z>	<Y'>	|	-	<Z>	<Y'>	|	epsilon"},
-		{"Z'", "*	<AA>	<Z'>	|	/	<AA>	<Z'>	|	epsilon"},
-		{"C'", "epsilon	|	<C>"},
-		{"F'", "epsilon	|	,	<F>"},
-		{"K'", "epsilon	|	<K>"},
-		{"M'", "epsilon	|	,	<M>"},
-		{"N'", "epsilon	|	<N>"},
-		{"R'", "endif	|	else	<O>	endif"},
-		{"S'", ";	|	<Y>	;"},
-		{"BB'", "epsilon	|	(	<M>	)"},
+		{"Y'", "+  <Z>  <Y'>  |  -  <Z>  <Y'>  |  epsilon"},
+		{"Z'", "*  <AA>  <Z'>  |  /  <AA>  <Z'>  |  epsilon"},
+		{"C'", "epsilon  |  <C>"},
+		{"F'", "epsilon  |  ,  <F>"},
+		{"K'", "epsilon  |  <K>"},
+		{"M'", "epsilon  |  ,  <M>"},
+		{"N'", "epsilon  |  <N>"},
+		{"R'", "endif  |  else  <O>  endif"},
+		{"S'", ";  |  <Y>  ;"},
+		{"BB'", "epsilon  |  (  <M>  )"},
 	
+	};
+
+	std::map<std::string, std::string> EquivalenceMap
+	{
+		{"Rat21F", "<Opt Function Definitions>  #  <Opt Declaration List>  <Statement List>  #"},
+		{"Opt Function Definitions", "<Function Definitions>  |  <Empty>"},
+		{"Function Definitions", "<Function>  <Function Definitions'>"},
+		{"Function", "function  <Identifier>  (  <FunctionOpt Parameter List>  )  <Opt Declaration List>  <Body>"},
+		{"FunctionOpt Parameter List", "<Parameter List>  |  <Empty>"},
+		{"Parameter List", "<Parameter>  <Parameter List'>"},
+		{"Parameter", "<IDs>  <Qualifier>"},
+		{"Qualifier", "integer  |  boolean  |  real"},
+		{"Body", "{  <Statement List>  }"},
+		{"Opt Declaration List", "<Declaration List>  |  <Empty>"},
+		{"Declaration List", "<Declaration>  ;  <Declaration List'>"},
+		{"Declaration", "integer  <IDs>  |  boolean  <IDs>  |  real  <IDs>"},
+		{"IDs", "<Identifier>  <IDs'>"},
+		{"Statement List", "<Statement>  <Statement List'>"},
+		{"Statement", "<Compound>  |  <Assign>  |  <If>  |  <Return>  |  <Print>  |  <Scan>  |  <While>"},
+		{"Compound", "{  <Statement List>  }"},
+		{"Assign", "<Identifier>  =  <Expression>"},
+		{"If", "if  (  <Condition>  )  <Statement>  <If'>"},
+		{"Return", "return  <Return'>"},
+		{"Print", "put  (  <Expression>  )  ;"},
+		{"Scan", "get  (  <IDs>  )  ;"},
+		{"While", "while  (  <Condition>  )  <Statement>"},
+		{"Condition", "<Expression>  <Relop>  <Expression>"},
+		{"Relop", "==  |  !=  |  >  |  <  |  <=  |  =>"},
+		{"Expression", "<Term>  <Expression'>"},
+		{"Term", "<Factor>  <Term'>"},
+		{"Factor", "-  <Primary>  |  <Primary>"},
+		{"Primary", "<Identifier>  <Primary'>  |  <Integer>  |  (  <Expression>  )  |  <Real>  |  TRUE  |  FALSE"},
+		{"Empty", "epsilon"},
+		{"Identifier", "identifier"},
+		{"Integer", "integer"},
+		{"FF", "real"},
+		{"Expression'", "+  <Term>  <Expression'>  |  -  <Term>  <Expression'>  |  epsilon"},
+		{"Term'", "*  <Factor>  <Term'>  |  /  <Factor>  <Term'>  |  epsilon"},
+		{"Function Definitions'", "epsilon  |  <Function Definitions>"},
+		{"Parameter List'", "epsilon  |  ,  <Parameter List>"},
+		{"Declaration List'", "epsilon  |  <Declaration List>"},
+		{"IDs'", "epsilon  |  ,  <IDs>"},
+		{"Statement List'", "epsilon  |  <Statement List>"},
+		{"If'", "endif  |  else  <Statement>  endif"},
+		{"Return'", ";  |  <Expression>  ;"},
+		{"Primary'", "(  <IDs>  )  |  epsilon"},
+
 	};
 
 #pragma region Production Rules
