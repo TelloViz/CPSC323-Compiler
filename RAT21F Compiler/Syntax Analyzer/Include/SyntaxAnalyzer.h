@@ -1,3 +1,14 @@
+// SyntaxAnalyzer.h
+
+/* This file is the header that holds the SA class and function signatures for the class.
+//  There are also various containers to convert from a simplified representation of non-terminals and
+//  a non-abstract version. Currently it is set to simplified only and this feature is not fully implemented.
+
+Author: Joshua Lollis
+Last Edited: 11/10/21
+CPSC-323 Project 2 Syntax Analyzer
+Fall 20218*/
+
 #pragma once
 #include <utility>
 #include <string>
