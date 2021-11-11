@@ -1,6 +1,5 @@
 #include "../Include/SyntaxAnalyzer.h"
-#include <string>
-#include <iostream>
+
 
 
 
@@ -11,20 +10,89 @@
 // the verbose option requires the both of the #define in the pair to be active
 // ******************************************************************************************
 
-#define PRINT_RULE_ON_CALL		
-#define VERBOSE_PRINT_RULE_ON_CALL  // Both modes must be defined for Verbose to work	
+#ifndef PRINT_RULE_ON_CALL
+#define PRINT_RULE_ON_CALL // Comment out ths line to turn off
+#endif
 
+#ifndef VERBOSE_PRINT_RULE_ON_CALL	// Both modes must be defined for Verbose to work
+#define VERBOSE_PRINT_RULE_ON_CALL  // Comment out ths line to turn off	
+#endif
 //*****************************************************************************************
-
+#ifndef PRINT_RULE_ON_ACCEPT
 #define PRINT_RULE_ON_ACCEPT
-#define VERBOSE_PRINT_RULE_ON_ACCEPT	// Both modes must be defined for Verbose to work
+#endif
 
+#ifndef VERBOSE_PRINT_RULE_ON_ACCEPT	// Both modes must be defined for Verbose to work
+#define VERBOSE_PRINT_RULE_ON_ACCEPT	// Comment out ths line to turn off
+#endif
 // **********************************************************************************************
 
-#define PRINT_RECOGNIZE_LABEL
+#ifndef PRINT_RECOGNIZE_LABEL
+#define PRINT_RECOGNIZE_LABEL	// Comment out ths line to turn off
+#endif // !PRINT_RECOGNIZE_LABEL
+
+
 
 // *********************************************************************************************
 
+#ifndef SLOW_MODE
+//#define SLOW_MODE		// Comment out ths line to turn off
+#endif // !SLOW_MODE
+
+#ifndef COLOR_MODE
+#define COLOR_MODE		// Comment out ths line to turn off
+#endif // !COLOR_MODE
+
+
+#ifdef _WIN32
+	#include <windows.h>
+	#include <wincon.h>
+
+	#ifdef SLOW_MODE
+		void mySleep(unsigned milliseconds)
+		{
+			Sleep(milliseconds);
+		}
+	#endif
+	#ifdef COLOR_MODE
+		enum COLOR
+		{
+			black = 0,
+			dark_blue = 1,
+			dark_green = 2,
+			dark_aqua, dark_cyan = 3,
+			dark_red = 4,
+			dark_purple = 5, dark_pink = 5, dark_magenta = 5,
+			dark_yellow = 6,
+			dark_white = 7,
+			gray = 8,
+			blue = 9,
+			green = 10,
+			aqua = 11, cyan = 11,
+			red = 12,
+			purple = 13, pink = 13, magenta = 13,
+			yellow = 14,
+			white = 15
+		};
+		COLOR TRYING_COLOR{ COLOR::yellow };
+		COLOR RECOGNIZED_COLOR{ COLOR::aqua };
+		COLOR ACCEPTED_COLOR{ COLOR::green };
+	#endif
+
+#else
+#include <unistd.h>
+
+void sleep(unsigned milliseconds)
+{
+	usleep(milliseconds * 1000); // takes microseconds
+}
+#endif
+
+
+
+
+
+// **********************************************************************************************
 
 #pragma region	DO NOT CHANGE THESE VALUES
 /***********************************************************************************************************************/
@@ -50,24 +118,22 @@
 
 
 #pragma region Production Rules
-void SyntaxAnalyzer::PrintRule(std::string theRule, std::string theRuleDef) const
-{
-}
 
+SyntaxAnalyzer::SyntaxAnalyzer(std::vector<std::pair<std::string, std::string>> tokenizedSource) : sourcePairs{ tokenizedSource }
+{
+	currentPair = sourcePairs.begin();
+}
 
 //	<A>  ->  <B>	#	<J>	<N>	#
 bool SyntaxAnalyzer::A()
 {
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
+#endif
 	std::string rule{ "A" };
 	bool isA{ false };
 	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\nTrying Rule :: <" << rule << ">"	
-	#ifdef VERBOSE_PRINT_RULE_ON_CALL 
-		<< "  ->  " << GetConversion(rule);
-
-		#else
-		;
-		#endif
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
 	#endif
 
 	if (B())
@@ -75,7 +141,7 @@ bool SyntaxAnalyzer::A()
 		if (currentPair->second == "#")
 		{
 			#ifdef PRINT_RECOGNIZE_LABEL 
-			std::cout << "\n\nRECOGNIZED.............................................................................  #\n"; 
+				PrintRecognizedString("#");
 			#endif
 
 			++currentPair;
@@ -87,21 +153,14 @@ bool SyntaxAnalyzer::A()
 					if (currentPair->second == "#")
 					{
 						#ifdef PRINT_RECOGNIZE_LABEL 
-						std::cout << "\n\nRECOGNIZED............................................................................. #\n";
+							PrintRecognizedString("#");
 						#endif
 
 						++currentPair;
 						isA = true;
 
-						#ifdef PRINT_RULE_ON_ACCEPT 
-						std::cout << "\nACCEPTED:  <" << rule << ">"
-							#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT 
-							<< "  ->  " << GetConversion(rule);
-							
-							#else
-							;
-							#endif
-						
+						#ifdef PRINT_RULE_ON_ACCEPT
+							PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));				
 						#endif
 					}
 				}
@@ -115,18 +174,15 @@ bool SyntaxAnalyzer::A()
 //  <B> ->  C  |  CC      
 bool SyntaxAnalyzer::B() 
 {
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
+#endif
+
 	std::string rule{ "B" };
 	bool isB{ false };
-	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\nTrying Rule :: <" << rule << ">"
-
-		#ifdef VERBOSE_PRINT_RULE_ON_CALL 
-		<< "  ->  " << GetConversion(rule);
-
-		#else
-		;
-		#endif
-	#endif
+#ifdef PRINT_RULE_ON_CALL 
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
+#endif
 
 	if (C())
 	{
@@ -144,14 +200,10 @@ bool SyntaxAnalyzer::B()
 	else if (CC())
 	{
 		isB = true;
-		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED:  <" << rule << ">" 
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT 
-			<< "  ->  <C>  |  ~<CC>~";
-#else
-			;
-#endif
-#endif
+		
+		#ifdef PRINT_RULE_ON_ACCEPT
+			PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
+		#endif
 	}
 	else{}
 
@@ -164,14 +216,9 @@ bool SyntaxAnalyzer::C()
 	std::string rule{ "C" };
 	bool isC{ false };
 	
-	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\nTrying Rule :: <" << rule << ">"
-		#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  " << GetConversion(rule);
-		#else
-			;
-		#endif	
-	#endif
+#ifdef PRINT_RULE_ON_CALL 
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
+#endif
 
 	if (D())
 	{
@@ -180,13 +227,8 @@ bool SyntaxAnalyzer::C()
 		{
 			isC = true;
 			
-			#ifdef PRINT_RULE_ON_ACCEPT 
-			std::cout << "\nACCEPTED:  <" << rule << ">"
-				#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-					<< "  ->  <D>  <C'>";
-				#else
-					;
-				#endif
+			#ifdef PRINT_RULE_ON_ACCEPT
+				PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 			#endif
 		}
 	}
@@ -197,23 +239,22 @@ bool SyntaxAnalyzer::C()
 //	D  ->  function	DD	(	E	)	J	I
 bool SyntaxAnalyzer::D()
 {
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
+#endif
+
 	std::string rule{ "D" };
 	bool isD{ false };
 
-	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\nTrying Rule :: <" << rule << ">"
-		#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  " << GetConversion(rule);
-		#else	
-		;
-		#endif	
-	#endif
+#ifdef PRINT_RULE_ON_CALL 
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
+#endif
 
 	if (currentPair->second == "function") 
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL
-		std::cout << "\n\nRECOGNIZED............................................................................. function\n";
-		#endif // PRINT_RECOGNIZE_LABEL
+		#ifdef PRINT_RECOGNIZE_LABEL 
+			PrintRecognizedString("function");
+		#endif
 
 		++currentPair;
 		if (DD())
@@ -221,7 +262,7 @@ bool SyntaxAnalyzer::D()
 			if (currentPair->second == "(")
 			{
 				#ifdef PRINT_RECOGNIZE_LABEL 
-				std::cout << "\n\nRECOGNIZED............................................................................. (\n";
+					PrintRecognizedString("(");
 				#endif
 
 				++currentPair;
@@ -230,7 +271,7 @@ bool SyntaxAnalyzer::D()
 					if (currentPair->second == ")")
 					{
 						#ifdef PRINT_RECOGNIZE_LABEL 
-						std::cout << "\n\nRECOGNIZED............................................................................. )\n";
+							PrintRecognizedString(")");
 						#endif
 
 						++currentPair;
@@ -240,13 +281,8 @@ bool SyntaxAnalyzer::D()
 							if (I())
 							{
 								isD = true;
-								#ifdef PRINT_RULE_ON_ACCEPT 
-								std::cout << "\nACCEPTED:  <" << rule << ">"
-									#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT	
-										<< "  ->  function  <DD>  (  <E>  )  <J>  <I>";
-									#else
-										;
-									#endif
+								#ifdef PRINT_RULE_ON_ACCEPT
+									PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 								#endif
 							}
 						}
@@ -262,39 +298,26 @@ bool SyntaxAnalyzer::D()
 //	E  ->  F	|	CC
 bool SyntaxAnalyzer::E()
 {
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
+#endif
+
 	std::string rule{ "E" };
 	bool isE{ true };
-	#ifdef PRINT_RULE_ON_CALL 
-		std::cout << "\nTrying Rule :: <" << rule << ">"
-		#ifdef VERBOSE_PRINT_RULE_ON_CALL
-			<< "  ->  " << GetConversion(rule);
-		#else	
-			;
-		#endif		
-	#endif
+#ifdef PRINT_RULE_ON_CALL 
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
+#endif
 
 	if (F())
 	{
-		#ifdef PRINT_RULE_ON_ACCEPT 
-
-		std::cout << "\nACCEPTED:  <" << rule << ">"
-
-			#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-						<< " ->  ~<F>~  |  <CC>";
-			#else
-				;
-			#endif
+		#ifdef PRINT_RULE_ON_ACCEPT
+			PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 		#endif
 	}
 	else if (CC())
 	{
-		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED:  <" << rule << ">"
-			#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT 
-				<< "  ->  <F>  |  ~<CC>~";
-			#else 
-				;
-			#endif
+		#ifdef PRINT_RULE_ON_ACCEPT
+			PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 		#endif
 	}
 	else
@@ -308,28 +331,22 @@ bool SyntaxAnalyzer::E()
 //	F  ->  G	F'
 bool SyntaxAnalyzer::F()
 {
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
+#endif
+
 	std::string rule{ "F" };
 	bool isF{ true };
-	#ifdef PRINT_RULE_ON_CALL 
-		std::cout << "\nTrying Rule :: <" << rule << ">"
-		#ifdef VERBOSE_PRINT_RULE_ON_CALL
-			<< "  ->  " << GetConversion(rule);
-		#else	
-			;
-		#endif	
-	#endif
+#ifdef PRINT_RULE_ON_CALL 
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
+#endif
 
 	if (G())
 	{
 		if (F_())
 		{
-			#ifdef PRINT_RULE_ON_ACCEPT 
-			std::cout << "\nACCEPTED:  <" << rule << ">"
-				#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-					<< "  ->  <G>  <F'>";
-				#else 
-					;
-				#endif
+			#ifdef PRINT_RULE_ON_ACCEPT
+				PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 			#endif
 		}
 		else isF = false;
@@ -343,28 +360,22 @@ bool SyntaxAnalyzer::F()
 //	G  ->  M	H
 bool SyntaxAnalyzer::G()
 {
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
+#endif
+
 	std::string rule{ "G" };
 	bool isG{ true };
-	#ifdef PRINT_RULE_ON_CALL 
-		std::cout << "\nTrying Rule :: <" << rule << ">"
-		#ifdef VERBOSE_PRINT_RULE_ON_CALL
-			<< "  ->  " << GetConversion(rule);
-		#else	
-			;
-		#endif	
-	#endif
+#ifdef PRINT_RULE_ON_CALL 
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
+#endif
 
 	if (M())
 	{
 		if (H())
 		{
-			#ifdef PRINT_RULE_ON_ACCEPT 
-			std::cout << "\nACCEPTED :  <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-				<< "  ->  <M>  <H>";
-#else
-				;
-#endif
+			#ifdef PRINT_RULE_ON_ACCEPT
+				PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 			#endif
 		}
 		else isG = false;
@@ -378,64 +389,48 @@ bool SyntaxAnalyzer::G()
 // H  ->  integer	|	boolean	|	real
 bool SyntaxAnalyzer::H()
 {
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
+#endif
+
 	std::string rule{ "H" };
 #ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\nTrying Rule :: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  " << GetConversion(rule);
-#else	
-		;
-#endif	
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
 #endif
 
 	if (currentPair->first == "integer")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\n\nRECOGNIZED............................................................................. " << currentPair->second << "\n";
-#endif
+			PrintRecognizedString("integer");
+		#endif
 
-#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  ~integer~  |  boolean  |  real";
-#else
-			;
-#endif
-#endif
+			#ifdef PRINT_RULE_ON_ACCEPT
+			PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
+			#endif
 		++currentPair;
 		return true;
 	}
 	else if (currentPair->first == "boolean")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\n\nRECOGNIZED............................................................................. " << currentPair->second << "\n";
-#endif
+			PrintRecognizedString("boolean");
+		#endif
 
-#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  integer  |  ~boolean~  |  real";
-#else
-			;
-#endif
-#endif
+		#ifdef PRINT_RULE_ON_ACCEPT
+			PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
+		#endif
 		++currentPair;
 		return true;
 	}
 	else if (currentPair->first == "real")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\n\nRECOGNIZED............................................................................. " << currentPair->second << "\n";
-#endif
+			PrintRecognizedString("real");
+		#endif
 
-#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  integer  |  boolean  |  ~real~";
-#else
-			;
-#endif
-#endif
+		#ifdef PRINT_RULE_ON_ACCEPT
+			PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
+		#endif
 
 
 		++currentPair;
@@ -448,30 +443,28 @@ bool SyntaxAnalyzer::H()
 //  I  ->  {	<N>	}
 bool SyntaxAnalyzer::I()
 {
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
+#endif
 
 	std::string rule{ "I" };
 #ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\nTrying Rule :: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  " << GetConversion(rule);
-#else	
-		;
-#endif	
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
 #endif
 
 	if (currentPair->second == "{")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\n\nRECOGNIZED............................................................................. {\n";
-#endif
+			PrintRecognizedString("{");
+		#endif
 		++currentPair;
 		if (N())
 		{
 			if (currentPair->second == "}")
 			{
 				#ifdef PRINT_RECOGNIZE_LABEL 
-				std::cout << "\n\nRECOGNIZED............................................................................. {\n";
-#endif
+					PrintRecognizedString("}");
+				#endif
 				++currentPair;
 				return true;
 			}
@@ -485,36 +478,26 @@ bool SyntaxAnalyzer::I()
 //	J ->  <K> | CC
 bool SyntaxAnalyzer::J()
 {
+	#ifdef SLOW_MODE
+		mySleep(slowModeSpeed);
+	#endif
+
 	std::string rule{ "J" };
 	bool isJ{ true }; 
 #ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\nTrying Rule :: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  " << GetConversion(rule);
-#else
-		;
-#endif	
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
 #endif
+
 	if (K())
 	{
-		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED:  <" << rule << ">"
-		#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-				<< " -> ~<K>~ | <CC>";
-		#else
-					;
-		#endif
+		#ifdef PRINT_RULE_ON_ACCEPT
+			PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 		#endif
 	}
 	else if (CC())
 	{
-		#ifdef PRINT_RULE_ON_ACCEPT 
-			std::cout << "\nACCEPTED:  <" << rule << ">"
-			#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-				<< " -> <K> | ~<CC>~";
-			#else
-				;
-			#endif
+		#ifdef PRINT_RULE_ON_ACCEPT
+			PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 		#endif
 	}
 	else
@@ -528,15 +511,16 @@ bool SyntaxAnalyzer::J()
 // K  ->  L	;	K'
 bool SyntaxAnalyzer::K()
 {
+
+	#ifdef SLOW_MODE
+		mySleep(slowModeSpeed);
+	#endif
+
 	std::string rule{ "K" };
-	bool isK{ true };
+	bool isK{ false };
+	
 #ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\nTrying Rule :: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  " << GetConversion(rule);
-#else	
-		;
-#endif	
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
 #endif
 
 	if (L())
@@ -544,25 +528,20 @@ bool SyntaxAnalyzer::K()
 		if (currentPair->second == ";")
 		{
 			#ifdef PRINT_RECOGNIZE_LABEL 
-			std::cout << "\n\nRECOGNIZED............................................................................. ;\n";
-#endif
+				PrintRecognizedString(";");
+			#endif
+			
 			++currentPair;
 			if (K_())
 			{
-				#ifdef PRINT_RULE_ON_ACCEPT 
-				std::cout << "\nACCEPTED: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-					<< "  ->  <L>  ;  <K'>";
-#else
-					;
-#endif
+				isK = true;
+				#ifdef PRINT_RULE_ON_ACCEPT
+					PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 				#endif
 			}
 			
 		}
-		else isK = false;
 	}
-	else isK = false;
 
 	return isK;
 }
@@ -570,98 +549,86 @@ bool SyntaxAnalyzer::K()
 // L  ->  integer	M	|	boolean	M	|	real	M
 bool SyntaxAnalyzer::L()
 {
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
+#endif
+
 	std::string rule{ "L" };
+	bool isL{ false };
 #ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\nTrying Rule :: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  " << GetConversion(rule);
-#else	
-		;
-#endif	
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
 #endif
 
 	if (currentPair->second == "integer")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\n\nRECOGNIZED............................................................................. integer\n";
+#ifdef PRINT_RECOGNIZE_LABEL 
+		PrintRecognizedString("integer");
 #endif
 
-#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  ~integer	M~  |  boolean  M  |  real  M";
-#else
-			;
-#endif
+#ifdef PRINT_RULE_ON_ACCEPT
+		PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
 		++currentPair;
-		if(M()) return true;
+		if (M())
+		{
+			isL = true;
+		}
 	}
 	else if (currentPair->second == "boolean")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\n\nRECOGNIZED............................................................................. integer\n";
+#ifdef PRINT_RECOGNIZE_LABEL 
+		PrintRecognizedString("boolean");
 #endif
 
-#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  integer  M  |  ~boolean  M~  |  real  M";
-#else
-			;
-#endif
+#ifdef PRINT_RULE_ON_ACCEPT
+		PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
 		++currentPair;
-		if(M()) return true;
+		if(M()) 
+		{
+			isL = true;
+		}
 	}
 	else if (currentPair->second == "real")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\n\nRECOGNIZED............................................................................. real\n";
+#ifdef PRINT_RECOGNIZE_LABEL 
+		PrintRecognizedString("real");
 #endif
 
-#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  integer  M  |  boolean  M  |  ~real  M~";
-#else
-			;
-#endif
+#ifdef PRINT_RULE_ON_ACCEPT
+		PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
 		++currentPair;
-		if(M()) return true;
+		if(M()) 
+		{
+			isL = true;
+		}
 	}
 
-	return false;
+	return isL;
 }
 
 //	M  ->  DD	M'
 bool SyntaxAnalyzer::M()
 {
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
+#endif
+
 	std::string rule{ "M" };
 	bool isM{ true };
 
 #ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\nTrying Rule :: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  " << GetConversion(rule);
-#else	
-		;
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
 #endif
-		#endif
 
 	if (DD())
 	{
 		if (M_())
 		{
-			#ifdef PRINT_RULE_ON_ACCEPT 
-			std::cout << "\nACCEPTED:  <" << rule << ">"
-				#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-					<< "  ->  <DD> <M'>";
-				#else
-					;
-				#endif
-			#endif
+#ifdef PRINT_RULE_ON_ACCEPT
+			PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
+#endif
 		}
 		else isM = false;
 	}
@@ -674,34 +641,27 @@ bool SyntaxAnalyzer::M()
 // <N>  ->  <O>	<N'>
 bool SyntaxAnalyzer::N()
 {
-	std::string rule{ "N" };
-	bool isN{ true };
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
+#endif
 
-	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\nTrying Rule :: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  " << GetConversion(rule);
-		#else
-			;
-		#endif	
-	#endif
+	std::string rule{ "N" };
+	bool isN{ false };
+
+#ifdef PRINT_RULE_ON_CALL 
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
+#endif
 
 	if (O())
 	{
 		if (N_())
 		{
-			#ifdef PRINT_RULE_ON_ACCEPT 
-			std::cout << "\nACCEPTED:  <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-				<< " ->  <O>  <N'>";
-#else
-				;
+			isN = true;
+#ifdef PRINT_RULE_ON_ACCEPT
+			PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
-			#endif
 		}
-		else isN = false;
 	}
-	else isN = false;
 
 
 	return isN;
@@ -710,94 +670,57 @@ bool SyntaxAnalyzer::N()
 // <O>->	<P>	|	<Q>	|	<R>	|	<S>	|	<T>	|	<U>	|	<V>
 bool SyntaxAnalyzer::O()
 {
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
+#endif
+
 	std::string rule{ "O" };
 	bool isO{ true };
-	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\nTrying Rule :: <" << rule << ">"
-		#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  " << GetConversion(rule);
-		#else 
-			;
-		#endif // VERBOSE_PRINT_RULE_ON_CALL
-
-	#endif
+#ifdef PRINT_RULE_ON_CALL 
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
+#endif
 
 	if (P())
 	{
-		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  ~<P>~  |  <Q> |  <R> |  <S> |  <T> |  <U> |  <V>";
-#else
-			;
+#ifdef PRINT_RULE_ON_ACCEPT
+		PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
-		#endif
 	}
 	else if (Q()) 
 	{
-		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  <P>  |  ~<Q>~  |  <R> |  <S> |  <T> |  <U> |  <V>";
-#else
-			;
+#ifdef PRINT_RULE_ON_ACCEPT
+		PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
-		#endif
 	}
 	else if (R())
 	{
-		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  <P> | <Q> | ~<R>~ | <S> | <T> | <U> | <V>";
-#else
-			;
-#endif
+#ifdef PRINT_RULE_ON_ACCEPT
+		PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
 	}
 	else if (S())
 	{
-		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED: <" << rule << ">" 
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  <P> | <Q> | <R> | ~<S>~ | <T> | <U> | <V>";
-#else
-			;
+#ifdef PRINT_RULE_ON_ACCEPT
+		PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
-		#endif
 	}
 	else if (T())
 	{
-		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  <P> | <Q> | <R> | <S> | ~<T>~ | <U> | <V>";
-#else
-			;
-#endif
+#ifdef PRINT_RULE_ON_ACCEPT
+		PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
 	}
 	else if (U())
 	{
-		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  <P> | <Q> | <R> | <S> | <T> | ~<U>~  | <V>";
-#else
-			;
+#ifdef PRINT_RULE_ON_ACCEPT
+		PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
-		#endif
 	}
 	else if (V())
 	{
-		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  <P> | <Q> | <R> | <S> | <T> | <U> | ~<V>~";
-#else
-			;
+#ifdef PRINT_RULE_ON_ACCEPT
+		PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
-		#endif
 	}
 	else isO = false;
 
@@ -808,40 +731,34 @@ bool SyntaxAnalyzer::O()
 // <P>  ->  {	<N>	}
 bool SyntaxAnalyzer::P()
 {
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
+#endif
+
 	std::string rule{ "P" };
 	bool isP{ false };
-	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\nTrying Rule :: <" << rule << ">"
-		#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  " << GetConversion(rule);
-			#else
-				;
-			#endif
-		#endif
+#ifdef PRINT_RULE_ON_CALL 
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
+#endif
 
 	if (currentPair->second == "{")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\n\nRECOGNIZED............................................................................. {\n";
+#ifdef PRINT_RECOGNIZE_LABEL 
+		PrintRecognizedString("{");
 #endif
 		++currentPair;
 		if (N())
 		{
 			if (currentPair->second == "}")
 			{
-				#ifdef PRINT_RECOGNIZE_LABEL 
-				std::cout << "\n\nRECOGNIZED............................................................................. }\n"; 
+#ifdef PRINT_RECOGNIZE_LABEL 
+				PrintRecognizedString("}");
 #endif
 				isP = true;
 				++currentPair;
-				#ifdef PRINT_RULE_ON_ACCEPT 
-				std::cout << "\nACCEPTED: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-					<< "  ->  {  <N>  }";
-#else
-					;
+#ifdef PRINT_RULE_ON_ACCEPT
+				PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
-				#endif
 			}
 		}
 	}
@@ -849,38 +766,44 @@ bool SyntaxAnalyzer::P()
 	return isP;
 }
 
-// Q  ->  DD	=	Y
+// Q  ->  DD	=	Y  ;
 bool SyntaxAnalyzer::Q()
 {
-	std::string rule{ "Q" };
-	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\nTrying Rule :: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  " << GetConversion(rule);
-#else
-		;
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
 #endif
-	#endif
+
+	std::string rule{ "Q" };
+#ifdef PRINT_RULE_ON_CALL 
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
+#endif
 
 	bool isQ{ true };
 	if (DD())
 	{
 		if (currentPair->second == "=")
 		{
-			#ifdef PRINT_RECOGNIZE_LABEL 
-			std::cout << "\n\nRECOGNIZED............................................................................. =\n";
+#ifdef PRINT_RECOGNIZE_LABEL 
+			PrintRecognizedString("=");
 #endif
 			++currentPair;
 			if (Y())
 			{
-				#ifdef PRINT_RULE_ON_ACCEPT 
-				std::cout << "\nACCEPTED: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-					<< "  ->  <DD>  =  <Y>";
-#else
-					;
+
+				if (currentPair->second == ";")
+				{
+
+#ifdef PRINT_RECOGNIZE_LABEL 
+					PrintRecognizedString(";");
 #endif
-				#endif
+
+
+					isQ = true;
+					++currentPair;
+#ifdef PRINT_RULE_ON_ACCEPT
+					PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
+#endif
+				}
 			}
 			else isQ = false;
 		}
@@ -894,50 +817,44 @@ bool SyntaxAnalyzer::Q()
 // R  ->  if	(	W	)	O	R'
 bool SyntaxAnalyzer::R()
 {
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
+#endif
+
 	std::string rule{ "R" };
 	bool isR{ false };
-	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\nTrying Rule :: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  " << GetConversion(rule);
-#else
-	;
+#ifdef PRINT_RULE_ON_CALL 
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
 #endif
-	#endif
 
 	if (currentPair->second == "if")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-			std::cout << "\n\nRECOGNIZED............................................................................. if\n";
+			PrintRecognizedString("if");
 		#endif
 		++currentPair;
 		if (currentPair->second == "(")
 		{
 			#ifdef PRINT_RECOGNIZE_LABEL 
-			std::cout << "\n\nRECOGNIZED............................................................................. (\n";
-#endif
+				PrintRecognizedString("(");
+			#endif
 			++currentPair;
 			if (W())
 			{
 				if (currentPair->second == ")")
 				{
 					#ifdef PRINT_RECOGNIZE_LABEL 
-					std::cout << "\n\nRECOGNIZED............................................................................. )\n"; 
-#endif
+						PrintRecognizedString(")");
+					#endif
 					++currentPair;
 					if (O())
 					{
 						if (R_())
 						{
 							isR = true;
-							#ifdef PRINT_RULE_ON_ACCEPT 
-							std::cout << "\nACCEPTED: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-								<< "  ->  if  (  <W>  )  <O>  <R'>";
-#else
-								;
+#ifdef PRINT_RULE_ON_ACCEPT
+							PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
-							#endif
 						}
 					}
 				}
@@ -951,34 +868,29 @@ bool SyntaxAnalyzer::R()
 // S  ->  return	S'
 bool SyntaxAnalyzer::S()
 {
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
+#endif
+
 	std::string rule{ "S" };
 	bool isS{ false };
-	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\nTrying Rule :: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  " << GetConversion(rule);
-#else
-		;
-#endif
+#ifdef PRINT_RULE_ON_CALL 
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
 #endif
 
 	if (currentPair->second == "return")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\n\nRECOGNIZED............................................................................. return\n";
-#endif
+			PrintRecognizedString("return");
+		#endif
+
 		++currentPair;
 		if (S_())
 		{
 			isS = true;
-			#ifdef PRINT_RULE_ON_ACCEPT 
-			std::cout << "\nACCEPTED: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-				<< "  ->  return  <S'>";
-#else
-				;
+#ifdef PRINT_RULE_ON_ACCEPT
+			PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
-			#endif
 		}
 	}
 
@@ -988,51 +900,45 @@ bool SyntaxAnalyzer::S()
 // T  ->  put	(	Y	)	;
 bool SyntaxAnalyzer::T()
 {
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
+#endif
+
 	std::string rule{ "T" };
 	bool isT{ false };
-	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\nTrying Rule :: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  " << GetConversion(rule);
-#else
-		;
-#endif
+#ifdef PRINT_RULE_ON_CALL 
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
 #endif
 
 	if (currentPair->second == "put")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\n\nRECOGNIZED............................................................................. put\n";
+#ifdef PRINT_RECOGNIZE_LABEL 
+		PrintRecognizedString("put");
 #endif
 		++currentPair;
 		if (currentPair->second == "(")
 		{
-			#ifdef PRINT_RECOGNIZE_LABEL 
-			std::cout << "\n\nRECOGNIZED............................................................................. (\n";
+#ifdef PRINT_RECOGNIZE_LABEL 
+			PrintRecognizedString("(");
 #endif
 			++currentPair;
 			if (Y())
 			{
 				if (currentPair->second == ")")
 				{
-					#ifdef PRINT_RECOGNIZE_LABEL 
-					std::cout << "\n\nRECOGNIZED............................................................................. )\n";
+#ifdef PRINT_RECOGNIZE_LABEL 
+					PrintRecognizedString(")");
 #endif
 					++currentPair;
 					if (currentPair->second == ";")
 					{
-						#ifdef PRINT_RECOGNIZE_LABEL 
-						std::cout << "\n\nRECOGNIZED............................................................................. ;\n";
+#ifdef PRINT_RECOGNIZE_LABEL 
+						PrintRecognizedString(";");
 #endif
 						isT = true;
 						++currentPair;
-						#ifdef PRINT_RULE_ON_ACCEPT 
-						std::cout << "\nACCEPTED: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-							<< "  ->  put  (  <Y>  )  ;";
-#else
-							;
-#endif
+#ifdef PRINT_RULE_ON_ACCEPT
+						PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
 
 					}
@@ -1047,51 +953,45 @@ bool SyntaxAnalyzer::T()
 // U  ->  get	(	M	)	;
 bool SyntaxAnalyzer::U()
 {
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
+#endif
+
 	std::string rule{ "U" };
 	bool isU{ false };
-	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\nTrying Rule :: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  " << GetConversion(rule);
-#else
-		;
-#endif
+#ifdef PRINT_RULE_ON_CALL 
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
 #endif
 
 	if (currentPair->second == "get")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\n\nRECOGNIZED............................................................................. get\n";
+#ifdef PRINT_RECOGNIZE_LABEL 
+		PrintRecognizedString("get");
 #endif
 		++currentPair;
 		if (currentPair->second == "(")
 		{
-			#ifdef PRINT_RECOGNIZE_LABEL 
-			std::cout << "\n\nRECOGNIZED............................................................................. (\n";
+#ifdef PRINT_RECOGNIZE_LABEL 
+			PrintRecognizedString("(");
 #endif
 			++currentPair;
 			if (M())
 			{
 				if (currentPair->second == ")")
 				{
-					#ifdef PRINT_RECOGNIZE_LABEL 
-					std::cout << "\n\nRECOGNIZED............................................................................. )\n";
+#ifdef PRINT_RECOGNIZE_LABEL 
+					PrintRecognizedString(")");
 #endif
 					++currentPair;
 					if (currentPair->second == ";")
 					{
-						#ifdef PRINT_RECOGNIZE_LABEL 
-						std::cout << "\n\nRECOGNIZED............................................................................. ;\n";
+#ifdef PRINT_RECOGNIZE_LABEL 
+						PrintRecognizedString(";");
 #endif
 						isU = true;
 						++currentPair;
-						#ifdef PRINT_RULE_ON_ACCEPT 
-						std::cout << "\nACCEPTED: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-							<< "  ->  get  (  <M>  )  ;";
-#else
-							;
-#endif
+#ifdef PRINT_RULE_ON_ACCEPT
+						PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
 
 					}
@@ -1107,47 +1007,41 @@ bool SyntaxAnalyzer::U()
 // V  ->  while	(	W	)	O
 bool SyntaxAnalyzer::V()
 {
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
+#endif
+
 	std::string rule{ "V" };
 	bool isV{ false };
-	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\nTrying Rule :: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  " << GetConversion(rule);
-#else
-		;
-#endif
+#ifdef PRINT_RULE_ON_CALL 
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
 #endif
 
 	if (currentPair->second == "while")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\n\nRECOGNIZED............................................................................. while\n";
+#ifdef PRINT_RECOGNIZE_LABEL 
+		PrintRecognizedString("while");
 #endif
 		++currentPair;
 		if (currentPair->second == "(")
 		{
-			#ifdef PRINT_RECOGNIZE_LABEL 
-			std::cout << "\n\nRECOGNIZED............................................................................. (\n";
+#ifdef PRINT_RECOGNIZE_LABEL 
+			PrintRecognizedString("(");
 #endif
 			++currentPair;
 			if (W())
 			{
 				if (currentPair->second == ")")
 				{
-					#ifdef PRINT_RECOGNIZE_LABEL 
-					std::cout << "\n\nRECOGNIZED............................................................................. )\n";
+#ifdef PRINT_RECOGNIZE_LABEL 
+					PrintRecognizedString(")");
 #endif
 					++currentPair;
 					if (O())
 					{
 						isV = true;
-						#ifdef PRINT_RULE_ON_ACCEPT 
-						std::cout << "\nACCEPTED: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-							<< "  ->  while  (  <W>  )  <O>";
-#else
-							;
-#endif
+#ifdef PRINT_RULE_ON_ACCEPT
+						PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
 
 					}
@@ -1162,10 +1056,14 @@ bool SyntaxAnalyzer::V()
 // W  ->  Y	X	Y
 bool SyntaxAnalyzer::W()
 {
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
+#endif
+
 	std::string rule{ "W" };
 	bool isW{ false };
-	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\nTrying Rule :: <" << rule << ">"; 
+#ifdef PRINT_RULE_ON_CALL 
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
 #endif
 
 
@@ -1176,13 +1074,8 @@ bool SyntaxAnalyzer::W()
 			if (Y())
 			{
 				isW = true;
-				#ifdef PRINT_RULE_ON_ACCEPT 
-				std::cout << "\nACCEPTED: <" << rule << ">"
-#ifdef  VERBOSE_PRINT_RULE_ON_ACCEPT
-					<< "  ->  <Y>  <X>  <Y>";
-#else
-					;
-#endif
+#ifdef PRINT_RULE_ON_ACCEPT
+					PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
 			}
 		}
@@ -1194,100 +1087,81 @@ bool SyntaxAnalyzer::W()
 // X  ->  ==	|	!=	|	>	|	<	|	<=	|	=>
 bool SyntaxAnalyzer::X()
 {
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
+#endif
+
 	std::string rule{ "X" };
 	bool isX{ true };
-	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\nTrying Rule :: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  " << GetConversion(rule);
-#else
-		;
-#endif
+#ifdef PRINT_RULE_ON_CALL 
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
 #endif
 
 	if (currentPair->second == "==")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\n\nRECOGNIZED............................................................................. ==\n";
+#ifdef PRINT_RECOGNIZE_LABEL 
+		PrintRecognizedString("==");
 #endif
-		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED: <" << rule << ">"
-#ifdef  VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  ~==~  |  !=  |  >  |  <  |  <=  |  =>";
-#else
-			;
+#ifdef PRINT_RULE_ON_ACCEPT
+		PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
-#endif
+
+		++currentPair;
 	}
 	else if (currentPair->second == "!=")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\n\nRECOGNIZED............................................................................. !=\n";
-		#endif
-		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED: <" << rule << ">" 
-#ifdef  VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  ==  |  ~!=~  |  >  |  <  |  <=  |  =>";
-#else
-			;
+#ifdef PRINT_RECOGNIZE_LABEL 
+		PrintRecognizedString("!=");
 #endif
+#ifdef PRINT_RULE_ON_ACCEPT
+		PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
+
+		++currentPair;
 	}
 	else if (currentPair->second == ">")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\n\nRECOGNIZED............................................................................. >\n";
+#ifdef PRINT_RECOGNIZE_LABEL 
+		PrintRecognizedString(">");
 #endif
-		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED:  <" << rule << ">"
-#ifdef  VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  ==  |  !=  |  ~>~  |  <  |  <=  |  =>";
-#else
-			;
+#ifdef PRINT_RULE_ON_ACCEPT
+		PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
-#endif
+
+		++currentPair;
 	}
 	else if (currentPair->second == "<")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\n\nRECOGNIZED............................................................................. <\n";
+#ifdef PRINT_RECOGNIZE_LABEL 
+		PrintRecognizedString("<");
 #endif
-#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED:  <" << rule << ">"
-#ifdef  VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  ==  |  !=  |  >  |  ~<~  |  <=  |  =>";
-#else
-			;
+#ifdef PRINT_RULE_ON_ACCEPT
+		PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
-#endif
+
+		++currentPair;
 	}
 	else if (currentPair->second == "<=")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\n\nRECOGNIZED............................................................................. <=\n";
+#ifdef PRINT_RECOGNIZE_LABEL 
+		PrintRecognizedString("<=");
 #endif
-#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED:  <" << rule << ">"
-#ifdef  VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< " ->  ==  |  !=  |  >  |  <  |  ~<=~  |  =>";
-#else
-			;
+#ifdef PRINT_RULE_ON_ACCEPT
+		PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
-#endif
+
+		++currentPair;
 	}
 	else if (currentPair->second == "=>")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\n\nRECOGNIZED............................................................................. =>\n";
+#ifdef PRINT_RECOGNIZE_LABEL 
+		PrintRecognizedString("=>");
 #endif
-#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED:  <" << rule << ">"
-#ifdef  VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  ==  |  !=  |  >  |  <  |  <=  |  ~=>~";
-#else
-			;
+#ifdef PRINT_RULE_ON_ACCEPT
+		PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
-#endif
+
+		++currentPair;
 	}
 	else
 	{
@@ -1300,28 +1174,22 @@ bool SyntaxAnalyzer::X()
 // Y  ->  Z	Y'
 bool SyntaxAnalyzer::Y()
 {
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
+#endif
+
 	std::string rule{ "Y" };
 	bool isY{ true };
-	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\nTrying Rule :: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  " << GetConversion(rule);
-#else
-		;
-#endif
+#ifdef PRINT_RULE_ON_CALL 
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
 #endif
 
 	if (Z())
 	{
 		if (Y_())
 		{
-			#ifdef PRINT_RULE_ON_ACCEPT 
-			std::cout << "\nACCEPTED:  <" << rule << ">" 
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-				<< "  -> <Z> <Y'>";
-#else 
-			;
-#endif
+#ifdef PRINT_RULE_ON_ACCEPT
+			PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
 		}
 	}
@@ -1332,15 +1200,14 @@ bool SyntaxAnalyzer::Y()
 // <Z>  ->  <AA>	<Z'>
 bool SyntaxAnalyzer::Z()
 {
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
+#endif
+
 	std::string rule{ "Z" };
 	bool isZ{ true };
-	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\nTrying Rule :: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  " << GetConversion(rule); 
-#else
-		;
-#endif
+#ifdef PRINT_RULE_ON_CALL 
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
 #endif
 
 
@@ -1349,13 +1216,8 @@ bool SyntaxAnalyzer::Z()
 	{
 		if (Z_())
 		{
-			#ifdef PRINT_RULE_ON_ACCEPT 
-			std::cout << "\nACCEPTED:  <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-				<< "  ->  <AA>  <Z'>";
-#else
-				;
-#endif
+#ifdef PRINT_RULE_ON_ACCEPT
+			PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
 		}
 	}
@@ -1366,43 +1228,32 @@ bool SyntaxAnalyzer::Z()
 // AA  ->  -	BB	|	BB
 bool SyntaxAnalyzer::AA()
 {
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
+#endif
+
 	std::string rule{ "AA" };
 	bool isAA{ true };
-	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\nTrying Rule :: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  " << GetConversion(rule); 
-#else
-		;
-#endif
+#ifdef PRINT_RULE_ON_CALL 
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
 #endif
 
 	if (currentPair->second == "-")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\n\nRECOGNIZED............................................................................. -\n";
+#ifdef PRINT_RECOGNIZE_LABEL 
+		PrintRecognizedString("-");
 #endif
 		if (BB())
 		{
-			#ifdef PRINT_RULE_ON_ACCEPT 
-			std::cout << "\nACCEPTED:  <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-				<< "  ->  ~-<BB>~  |  <BB>";
-#else
-				;
-#endif
+#ifdef PRINT_RULE_ON_ACCEPT
+			PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
 		}
 	}
 	else if (BB())
 	{
-		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED:  <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  -<BB>  |  ~<BB>~";
-#else
-			;
-#endif
+#ifdef PRINT_RULE_ON_ACCEPT
+		PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
 	}
 	else
@@ -1414,67 +1265,50 @@ bool SyntaxAnalyzer::AA()
 }
 
 // <BB>  ->  <DD>	<BB'>	|	<EE>	|	(	<Y>	)	|	<FF>	|	TRUE	|	FALSE
-bool SyntaxAnalyzer::BB()
+bool SyntaxAnalyzer::BB() // TODO keep looking into BB function
 {
-	std::string rule{ "BB" };
-	bool isBB{ false };
-	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\nTrying Rule :: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  " << GetConversion(rule);
-#else
-		;
-#endif
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
 #endif
 
+	std::string rule{ "BB" };
+	bool isBB{ false };
+#ifdef PRINT_RULE_ON_CALL 
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
+#endif
 
 	if (DD())
 	{
 		if (BB_())
 		{
-#ifdef PRINT_RULE_ON_ACCEPT 
-			std::cout << "\nACCEPTED:  <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-				<< "  ->  ~<DD> <BB'>~  |  <EE>  |  (  <Y>  )  |  <FF>  |  TRUE  |  FALSE";
-#else
-				;
-#endif
+#ifdef PRINT_RULE_ON_ACCEPT
+			PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
 			isBB = true;
 		}
 	}
 	else if (EE())
 	{
-#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED:  <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  <DD> <BB'>  |  ~<EE>~  |  (  <Y>  )  |  <FF>  |  TRUE  |  FALSE";
-#else
-			;
-#endif
+#ifdef PRINT_RULE_ON_ACCEPT
+		PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
 	}
 	else if (currentPair->second == "(")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			std::cout << "\n\nRECOGNIZED............................................................................. (\n";
-		#endif
+#ifdef PRINT_RECOGNIZE_LABEL 
+		PrintRecognizedString("(");
+#endif
 		++currentPair;
 		if (Y())
 		{
 			if (currentPair->second == ")")
 			{
-				#ifdef PRINT_RECOGNIZE_LABEL 
-					std::cout << "\n\nRECOGNIZED............................................................................. )\n";
-				#endif
-
-#ifdef PRINT_RULE_ON_ACCEPT 
-					std::cout << "\nACCEPTED:  <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-						<< "  ->  <DD> <BB'>  |  <EE>  |  ~(  <Y>  )~  |  <FF>  |  TRUE  |  FALSE";
-#else
-						;
+#ifdef PRINT_RECOGNIZE_LABEL 
+				PrintRecognizedString(")");
 #endif
+
+#ifdef PRINT_RULE_ON_ACCEPT
+				PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
 
 
@@ -1487,13 +1321,8 @@ bool SyntaxAnalyzer::BB()
 	else if (FF())
 	{
 		isBB = true;
-#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED:  <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  <DD> <BB'>  |  <EE>  |  (  <Y>  )  |  ~<FF>~  |  TRUE  |  FALSE";
-#else
-			;
-#endif
+#ifdef PRINT_RULE_ON_ACCEPT
+		PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
 	}
 	else if(currentPair->second == "TRUE")
@@ -1501,32 +1330,22 @@ bool SyntaxAnalyzer::BB()
 		isBB = true;
 
 #ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\n\nRECOGNIZED............................................................................. TRUE\n";
+		PrintRecognizedString("TRUE");
 #endif
 
-#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED:  <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  <DD> <BB'>  |  <EE>  |  (  <Y>  )  |  <FF>  |  ~TRUE~  |  FALSE";
-#else
-			;
-#endif
+#ifdef PRINT_RULE_ON_ACCEPT
+		PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
 		++currentPair;
 	}
 	else if (currentPair->second == "FALSE")
 	{
 #ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\n\nRECOGNIZED............................................................................. FALSE\n";
+		PrintRecognizedString("FALSE");
 #endif
 
-#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED:  <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  <DD> <BB'>  |  <EE>  |  (  <Y>  )  |  <FF>  |  TRUE  |  ~FALSE~";
-#else
-			;
-#endif
+#ifdef PRINT_RULE_ON_ACCEPT
+		PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
 
 		++currentPair;
@@ -1543,56 +1362,55 @@ bool SyntaxAnalyzer::BB()
 // CC  ->  epsilon
 bool SyntaxAnalyzer::CC()
 {
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
+#endif
+
 	std::string rule{ "CC" };
-	#ifdef PRINT_RULE_ON_CALL 
-		std::cout << "\nTrying Rule :: <" << rule << ">"
-		#ifdef VERBOSE_PRINT_RULE_ON_CALL
-			<< "  ->  " << GetConversion(rule);
-		#else
-			;
-		#endif
-	#endif
+#ifdef PRINT_RULE_ON_CALL 
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
+#endif
+
+#ifdef PRINT_RECOGNIZE_LABEL 
+		PrintRecognizedString("epsilon");
+#endif
+
 	return true;
 }
 
 // DD -> identifier
 bool SyntaxAnalyzer::DD()
 {
+	bool isDD{ false };
 	std::string rule{ "DD" };
-	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\nTrying Rule :: <" << rule << ">" 
-		#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  " << GetConversion(rule);
-		#else
-			;
-		#endif
-	#endif
+#ifdef PRINT_RULE_ON_CALL 
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
+#endif
 	if (currentPair->first == "identifier")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\n\nRECOGNIZED............................................................................. identifier\n";
+#ifdef PRINT_RECOGNIZE_LABEL 
+		PrintRecognizedString(currentPair->second);
 #endif
-		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED:  <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  identifier";
-			#else
-				;
-			#endif
-		#endif
+#ifdef PRINT_RULE_ON_ACCEPT
+		PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
+#endif
 
 		++currentPair;
-		return true;
+		isDD = true;;
 	}
 
-	return false;
+	return isDD;
 	
 }
 
 // EE -> integer
 bool SyntaxAnalyzer::EE()
 {
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
+#endif
 
+	bool isEE{ false };
 	std::string rule{ "EE" };
 	#ifdef PRINT_RULE_ON_CALL 
 	std::cout << "\nTrying Rule :: <" << rule << ">"
@@ -1605,108 +1423,96 @@ bool SyntaxAnalyzer::EE()
 
 	if (currentPair->first == "integer")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			std::cout << "\n\nRECOGNIZED............................................................................. " << currentPair->second << "\n";
-		#endif
+#ifdef PRINT_RECOGNIZE_LABEL 
+		PrintRecognizedString(currentPair->second);
+#endif
 		++currentPair;
-		return true;
+		isEE =  true;
 	}
-	return false;
+	
+	return isEE;
 }
 
 // FF -> real
 bool SyntaxAnalyzer::FF()
 {
-	std::string rule{ "FF" };
-	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\nTrying Rule :: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  " << GetConversion(rule);
-#else
-		;
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
 #endif
+
+	bool isFF{ false };
+	std::string rule{ "FF" };
+#ifdef PRINT_RULE_ON_CALL 
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
 #endif
 
 	if (currentPair->first == "real")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			std::cout << "\n\nRECOGNIZED............................................................................. real\n";
-		#endif
+#ifdef PRINT_RECOGNIZE_LABEL 
+		PrintRecognizedString("real");
+#endif
 		++currentPair;
-		return true;
+		isFF = true;
+
+#ifdef PRINT_RULE_ON_ACCEPT
+		PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
+#endif
 	}
-	return false;
+	return isFF;
 }
 
 // Y'  ->  +	Z	Y'	|	-	Z	Y'	|	epsilon
 bool SyntaxAnalyzer::Y_()
 {
-	std::string rule{ "Y'" };
-	bool isY_{ true };
-	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\nTrying Rule :: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  " << GetConversion(rule);
-#else
-		;
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
 #endif
+
+	std::string rule{ "Y'" };
+	bool isY_{ false };
+#ifdef PRINT_RULE_ON_CALL 
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
 #endif
 
 	if (currentPair->second == "+")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\n\nRECOGNIZED............................................................................. +\n";
+#ifdef PRINT_RECOGNIZE_LABEL 
+		PrintRecognizedString("+");
 #endif
 		++currentPair;
 		if (Z())
 		{
 			if (Y_())
 			{
-				#ifdef PRINT_RULE_ON_ACCEPT 
-				std::cout << "\nACCEPTED: <" << rule << ">" 
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-					<< "  ->  ~+ <Z> <Y'>~  |  - <Z><Y'> |  epsilon";
-#else 
-				;
-#endif
+				isY_ = true;
+#ifdef PRINT_RULE_ON_ACCEPT
+				PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
 			}
-			else isY_ = false;
 		}
-		else isY_ = false;
 	}
 	else if (currentPair->second == "-")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\n\nRECOGNIZED............................................................................. -\n";
+#ifdef PRINT_RECOGNIZE_LABEL 
+		PrintRecognizedString("-");
 #endif
 		++currentPair;
 		if (Z())
 		{
 			if (Y_())
 			{
-				#ifdef PRINT_RULE_ON_ACCEPT 
-				std::cout << "\nACCEPTED:  <" << rule << ">" 
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-					<< "  ->  +  <Z>  <Y'>  |  ~-  <Z>  <Y'>~  |  epsilon";
-#else 
-				;
-#endif
+				isY_ = true;
+#ifdef PRINT_RULE_ON_ACCEPT
+				PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
 			}
-			else isY_ = false;
 		}
-		else isY_ = false;
 	}
 	else // epsilon
 	{
-		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED:  <" << rule << ">" 
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  + <Z> <Y'>  |  -  <Z>  <Y'>  |  ~epsilon~";
-#else 
-		;
-#endif
+		isY_ = true;
+#ifdef PRINT_RULE_ON_ACCEPT
+		PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
 	}
 
@@ -1716,34 +1522,28 @@ bool SyntaxAnalyzer::Y_()
 // Z'  ->  *	AA	Z'	|	/	AA	Z'	|	epsilon
 bool SyntaxAnalyzer::Z_()
 {
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
+#endif
+
 	std::string rule{ "Z'" };
 	bool isZ_{ true };
-	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\nTrying Rule :: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  " << GetConversion(rule);
-#else
-		;
-#endif
+#ifdef PRINT_RULE_ON_CALL 
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
 #endif
 
 	if (currentPair->second == "*")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\n\nRECOGNIZED............................................................................. *\n";
+#ifdef PRINT_RECOGNIZE_LABEL 
+		PrintRecognizedString("*");
 #endif
 		++currentPair;
 		if (AA())
 		{
 			if (Z_())
 			{
-				#ifdef PRINT_RULE_ON_ACCEPT 
-				std::cout << "\nACCEPTED:  <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-					<< "->	*	<AA>	<Z'>	|	/	<AA>	<Z'>	|	epsilon";
-#else
-					;
-#endif
+#ifdef PRINT_RULE_ON_ACCEPT
+				PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
 			}
 			else isZ_ = false;
@@ -1752,21 +1552,16 @@ bool SyntaxAnalyzer::Z_()
 	}
 	else if (currentPair->second == "/")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\n\nRECOGNIZED............................................................................. /\n";
+#ifdef PRINT_RECOGNIZE_LABEL 
+		PrintRecognizedString("/");
 #endif
 		++currentPair;
 		if (AA())
 		{
 			if (Z_())
 			{
-				#ifdef PRINT_RULE_ON_ACCEPT 
-				std::cout << "\nACCEPTED:  <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-					<< "  ->  *	AA	Z'	|	/	AA	Z'	|	epsilon";
-#else
-					;
-#endif
+#ifdef PRINT_RULE_ON_ACCEPT
+				PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
 			}
 			else isZ_ = false;
@@ -1775,13 +1570,8 @@ bool SyntaxAnalyzer::Z_()
 	}
 	else // epsilon
 	{
-		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED:  <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  *  AA  Z'  |  /  AA  Z'  |  epsilon";
-#else
-			;
-#endif
+#ifdef PRINT_RULE_ON_ACCEPT
+		PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
 	}
 
@@ -1791,6 +1581,10 @@ bool SyntaxAnalyzer::Z_()
 // C'  ->  epsilon	|	C
 bool SyntaxAnalyzer::C_()
 {
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
+#endif
+
 	std::string rule{ "C'" };
 	#ifdef PRINT_RULE_ON_CALL 
 	std::cout << "\nTrying Rule :: <" << rule << ">"
@@ -1806,14 +1600,13 @@ bool SyntaxAnalyzer::C_()
 // F'  ->  epsilon	|	,	F
 bool SyntaxAnalyzer::F_()
 {
-	std::string rule{ "F'" };
-	#ifdef PRINT_RULE_ON_CALL
-	std::cout << "\nTrying Rule :: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  " << GetConversion(rule);
-#else
-	;
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
 #endif
+
+	std::string rule{ "F'" };
+#ifdef PRINT_RULE_ON_CALL 
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
 #endif
 	return true;
 }
@@ -1821,6 +1614,10 @@ bool SyntaxAnalyzer::F_()
 // K'  ->  K  |  epsilon
 bool SyntaxAnalyzer::K_()
 {
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
+#endif
+
 	std::string rule{ "K'" };
 	#ifdef PRINT_RULE_ON_CALL
 	std::cout << "\nTrying Rule :: <" << rule << ">" 
@@ -1834,14 +1631,8 @@ bool SyntaxAnalyzer::K_()
 
 	if (K())
 	{
-		#ifdef PRINT_RULE_ON_ACCEPT
-		std::cout << "\nACCEPTED:  <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  <K>  |  epsilon";
-#else
-			;
-#endif
-
+#ifdef PRINT_RULE_ON_ACCEPT
+		PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
 	}
 	return true;
@@ -1850,42 +1641,31 @@ bool SyntaxAnalyzer::K_()
 // M'  ->  epsilon	|	,	M
 bool SyntaxAnalyzer::M_()
 {
-	std::string rule{ "M'"};
-	#ifdef PRINT_RULE_ON_CALL 
-	std::cout << "\nTrying Rule :: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  " << GetConversion(rule);
-#else
-	;
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
 #endif
+
+	std::string rule{ "M'"};
+#ifdef PRINT_RULE_ON_CALL 
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
 #endif
 
 	if (currentPair->second == ",")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-		std::cout << "\n\nRECOGNIZED............................................................................. ,\n";
+#ifdef PRINT_RECOGNIZE_LABEL 
+		PrintRecognizedString(",");
 #endif
 		++currentPair;
 		if (M())
 		{
-			#ifdef PRINT_RULE_ON_ACCEPT 
-			std::cout << "\nACCEPTED:  <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-				<< "  ->  ~, <M>~  |  epsilon";
-#else 
-				;
-#endif
+#ifdef PRINT_RULE_ON_ACCEPT
+			PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
 		}
 	}
 	else {
-		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED:  <" << rule << ">" 
-#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  ,<M>  |  ~epsilon~";
-#else 
-			;
-#endif
+#ifdef PRINT_RULE_ON_ACCEPT
+		PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 #endif
 	}
 	return true;
@@ -1894,38 +1674,26 @@ bool SyntaxAnalyzer::M_()
 // <N'>  ->  <N>  |  epsilon
 bool SyntaxAnalyzer::N_()
 {
-	std::string rule{ "N'" };
-	#ifdef PRINT_RULE_ON_CALL
-	std::cout << "\nTrying Rule :: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  " << GetConversion(rule);
-#else
-	;
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
 #endif
-	#endif
+
+	std::string rule{ "N'" };
+#ifdef PRINT_RULE_ON_CALL 
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
+#endif
 
 	if(N())
 	{
-		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED:  <" << rule << ">"
-			#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-				<< "  ->  ~<N>~  |  epsilon";
-			#else
-				;
-			#endif
-		 
-		#endif
+#ifdef PRINT_RULE_ON_ACCEPT
+		PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
+#endif
 	}
 	else
 	{
-		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED:  <" << rule << ">"
-			#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT 
-				<< "  ->  <N>  |  ~epsilon~";
-			#else
-				;
-			#endif
-		#endif
+#ifdef PRINT_RULE_ON_ACCEPT
+		PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
+#endif
 	}
 	return true; // because of the epsilon
 }
@@ -1933,47 +1701,258 @@ bool SyntaxAnalyzer::N_()
 // R'  ->  endif	|	else	O	endif
 bool SyntaxAnalyzer::R_()
 {
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
+#endif
+
 	std::string rule{ "R'" };
-	#ifdef PRINT_RULE_ON_CALL
-	std::cout << "\nTrying Rule :: <" << rule << ">"
-#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  " << GetConversion(rule);
-#else
-	;
+	bool isR_{ false };
+#ifdef PRINT_RULE_ON_CALL 
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
 #endif
+
+	if (currentPair->second == "endif")
+	{
+#ifdef PRINT_RECOGNIZE_LABEL 
+		PrintRecognizedString("endif");
 #endif
-	return false;
+		++currentPair;
+		isR_ = true;
+#ifdef PRINT_RULE_ON_ACCEPT
+		PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
+#endif
+
+	}
+	else if (currentPair->second == "else")
+	{
+#ifdef PRINT_RECOGNIZE_LABEL 
+		PrintRecognizedString("else");
+#endif
+		++currentPair;
+
+		if (O())
+		{
+			if (currentPair->second == "endif")
+			{
+#ifdef PRINT_RECOGNIZE_LABEL 
+				PrintRecognizedString("endif");
+#endif
+				isR_ = true;
+				++currentPair;
+
+#ifdef PRINT_RULE_ON_ACCEPT
+				PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
+#endif
+
+
+			}
+		}
+
+
+	}
+
+
+
+
+
+
+	return isR_;
 }
 
 // S'  ->  ;	|	Y	;
 bool SyntaxAnalyzer::S_()
 {
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
+#endif
+
 	std::string rule{ "S'" };
-	#ifdef PRINT_RULE_ON_CALL
-	std::cout << "\nTrying Rule :: <" << rule << ">" 
-		#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  " << GetConversion(rule);
-		#else
-			;
-		#endif		
-	#endif
-	return false;
+	bool isS_{ false };
+#ifdef PRINT_RULE_ON_CALL 
+	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
+#endif
+
+	if (currentPair->second == ";")
+	{
+#ifdef PRINT_RECOGNIZE_LABEL 
+		PrintRecognizedString(";");
+#endif
+		++currentPair;
+		isS_ = true;
+
+#ifdef PRINT_RULE_ON_ACCEPT
+		PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
+#endif
+	}
+	else if (Y())
+	{
+		if (currentPair->second == ";")
+		{
+#ifdef PRINT_RECOGNIZE_LABEL 
+			PrintRecognizedString(";");
+#endif
+			++currentPair;
+			isS_ = true;
+
+#ifdef PRINT_RULE_ON_ACCEPT
+			PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
+#endif
+		}
+	}
+
+	return isS_;
 }
 
 // BB'  ->  epsilon	|	(	M	)
 bool SyntaxAnalyzer::BB_()
 {
+#ifdef SLOW_MODE
+	mySleep(slowModeSpeed);
+#endif
+
 	std::string rule{ "BB'" };
-	#ifdef PRINT_RULE_ON_CALL
-	std::cout << "\nTrying Rule :: <" << rule << ">"
-		#ifdef VERBOSE_PRINT_RULE_ON_CALL
-		<< "  ->  " << GetConversion(rule);
-		#else
-			;
-		#endif // VERBOSE_PRINT_RULE_ON_CALL
+	bool isBB_{ false };
+	
+	#ifdef PRINT_RULE_ON_CALL 
+		PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
 	#endif
 
-	return true;
+
+	if (currentPair->second == "(")
+	{
+		#ifdef PRINT_RECOGNIZE_LABEL 
+			PrintRecognizedString("(");
+		#endif
+
+		++currentPair;
+
+		if (M())
+		{
+			if (currentPair->second == ")")
+			{
+				#ifdef PRINT_RECOGNIZE_LABEL 
+					PrintRecognizedString(")");
+				#endif
+								
+				#ifdef PRINT_RULE_ON_ACCEPT
+					PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
+				#endif
+
+				++currentPair;
+				isBB_ = true;
+			}
+		}
+	}
+	else // epsilon
+	{
+		isBB_ = true;
+	}
+
+	return isBB_;
+}
+
+void SyntaxAnalyzer::PrintOnCall(std::string ruleName, std::string rule)
+{
+#ifdef COLOR_MODE
+	HANDLE                      m_hConsole;
+	WORD                        m_currentConsoleAttr;
+	CONSOLE_SCREEN_BUFFER_INFO   csbi;
+
+	//retrieve and save the current attributes
+	m_hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	if (GetConsoleScreenBufferInfo(m_hConsole, &csbi))
+		m_currentConsoleAttr = csbi.wAttributes;
+
+	//change the attribute to what you like
+	SetConsoleTextAttribute(
+		m_hConsole,
+		TRYING_COLOR);
+#endif // COLOR_MODE
+
+
+	std::cout << "\nTrying Rule :: <" << ruleName << ">"
+#ifdef VERBOSE_PRINT_RULE_ON_CALL
+		<< "  ->  " << rule;
+#else
+		;
+#endif // VERBOSE_PRINT_RULE_ON_CALL
+
+	
+
+
+#ifdef COLOR_MODE
+	//set the ttribute to the original one
+	SetConsoleTextAttribute(
+		m_hConsole,
+		m_currentConsoleAttr);
+#endif
+}
+
+void SyntaxAnalyzer::PrintRecognizedString(std::string symbol) const
+{	
+	#ifdef COLOR_MODE
+		HANDLE                      m_hConsole;
+		WORD                        m_currentConsoleAttr;
+		CONSOLE_SCREEN_BUFFER_INFO   csbi;
+
+		//retrieve and save the current attributes
+		m_hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+		if (GetConsoleScreenBufferInfo(m_hConsole, &csbi))
+			m_currentConsoleAttr = csbi.wAttributes;
+
+		//change the attribute to what you like
+		SetConsoleTextAttribute(
+			m_hConsole,
+			RECOGNIZED_COLOR);
+	#endif // COLOR_MODE
+
+	
+
+	std::cout << "\n\nRECOGNIZED............................................................................. " << symbol << "\n";
+
+
+	#ifdef COLOR_MODE
+		//set the ttribute to the original one
+		SetConsoleTextAttribute(
+			m_hConsole,
+			m_currentConsoleAttr);
+	#endif
+}
+
+void SyntaxAnalyzer::PrintAcceptedRule(std::string ruleName, std::string rule) const
+{
+#ifdef COLOR_MODE
+	HANDLE                      m_hConsole;
+	WORD                        m_currentConsoleAttr;
+	CONSOLE_SCREEN_BUFFER_INFO   csbi;
+
+	//retrieve and save the current attributes
+	m_hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	if (GetConsoleScreenBufferInfo(m_hConsole, &csbi))
+		m_currentConsoleAttr = csbi.wAttributes;
+
+	//change the attribute to what you like
+	SetConsoleTextAttribute(
+		m_hConsole,
+		ACCEPTED_COLOR);
+#endif // COLOR_MODE
+
+
+	std::cout << "\nACCEPTED:  <" << ruleName << ">"
+#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
+		<< "  ->  " << rule;
+#else
+		;
+
+#endif
+
+
+#ifdef COLOR_MODE
+	//set the ttribute to the original one
+	SetConsoleTextAttribute(
+		m_hConsole,
+		m_currentConsoleAttr);
+#endif
 }
 
 #pragma endregion 

@@ -3,14 +3,13 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <iostream>
+
 
 class SyntaxAnalyzer
 {
 public:
-	SyntaxAnalyzer(std::vector<std::pair<std::string, std::string>> tokenizedSource) : sourcePairs{ tokenizedSource }
-	{
-		currentPair = sourcePairs.begin();
-	}
+	SyntaxAnalyzer(std::vector<std::pair<std::string, std::string>> tokenizedSource);
 	bool Analyze() { return A(); }
 	
 	std::string RuleNameConversion(std::string simplifiedRuleName) const
@@ -91,7 +90,7 @@ private:
 		{"N", "<O>  <N'>"},
 		{"O", "<P>  |  <Q>  |  <R>  |  <S>  |  <T>  |  <U>  |  <V>"},
 		{"P", "{  <N>  }"},
-		{"Q", "<DD>  =  <Y>"},
+		{"Q", "<DD>  =  <Y>  ;"},
 		{"R", "if  (  <W>  )  <O>  <R'>"},
 		{"S", "return  <S'>"},
 		{"T", "put  (  <Y>  )  ;"},
@@ -109,14 +108,14 @@ private:
 		{"FF", "real"},
 		{"Y'", "+  <Z>  <Y'>  |  -  <Z>  <Y'>  |  epsilon"},
 		{"Z'", "*  <AA>  <Z'>  |  /  <AA>  <Z'>  |  epsilon"},
-		{"C'", "epsilon  |  <C>"},
-		{"F'", "epsilon  |  ,  <F>"},
-		{"K'", "epsilon  |  <K>"},
-		{"M'", "epsilon  |  ,  <M>"},
-		{"N'", "epsilon  |  <N>"},
+		{"C'", "<C>  |  epsilon"},
+		{"F'", ",  <F>  |  epsilon"},
+		{"K'", "<K>  |  epsilon"},
+		{"M'", ",  <M>  |  epsilon"},
+		{"N'", "<N>  |  epsilon"},
 		{"R'", "endif  |  else  <O>  endif"},
 		{"S'", ";  |  <Y>  ;"},
-		{"BB'", "epsilon  |  (  <M>  )"},
+		{"BB'", "(  <M>  )  |  epsilon"},
 	
 	};
 
@@ -125,8 +124,8 @@ private:
 		{"Rat21F", "<Opt Function Definitions>  #  <Opt Declaration List>  <Statement List>  #"},
 		{"Opt Function Definitions", "<Function Definitions>  |  <Empty>"},
 		{"Function Definitions", "<Function>  <Function Definitions'>"},
-		{"Function", "function  <Identifier>  (  <FunctionOpt Parameter List>  )  <Opt Declaration List>  <Body>"},
-		{"FunctionOpt Parameter List", "<Parameter List>  |  <Empty>"},
+		{"Function", "function  <Identifier>  (  <Opt Parameter List>  )  <Opt Declaration List>  <Body>"},
+		{"Opt Parameter List", "<Parameter List>  |  <Empty>"},
 		{"Parameter List", "<Parameter>  <Parameter List'>"},
 		{"Parameter", "<IDs>  <Qualifier>"},
 		{"Qualifier", "integer  |  boolean  |  real"},
@@ -138,7 +137,7 @@ private:
 		{"Statement List", "<Statement>  <Statement List'>"},
 		{"Statement", "<Compound>  |  <Assign>  |  <If>  |  <Return>  |  <Print>  |  <Scan>  |  <While>"},
 		{"Compound", "{  <Statement List>  }"},
-		{"Assign", "<Identifier>  =  <Expression>"},
+		{"Assign", "<Identifier>  =  <Expression>  ;"},
 		{"If", "if  (  <Condition>  )  <Statement>  <If'>"},
 		{"Return", "return  <Return'>"},
 		{"Print", "put  (  <Expression>  )  ;"},
@@ -153,7 +152,7 @@ private:
 		{"Empty", "epsilon"},
 		{"Identifier", "identifier"},
 		{"Integer", "integer"},
-		{"FF", "real"},
+		{"Real", "real"},
 		{"Expression'", "+  <Term>  <Expression'>  |  -  <Term>  <Expression'>  |  epsilon"},
 		{"Term'", "*  <Factor>  <Term'>  |  /  <Factor>  <Term'>  |  epsilon"},
 		{"Function Definitions'", "epsilon  |  <Function Definitions>"},
@@ -210,7 +209,16 @@ private:
 	bool R_( );
 	bool S_( );
 	bool BB_( );
+
+	
+
 #pragma endregion
+
+	int slowModeSpeed{ 1000 };
+	void PrintOnCall(std::string ruleName, std::string rule);
+	void PrintRecognizedString(std::string symbol) const;
+	void PrintAcceptedRule(std::string ruleName, std::string rule) const;
+
 
 	std::vector<std::pair<std::string, std::string>> sourcePairs;
 	std::vector<std::pair<std::string, std::string>>::iterator currentPair;
