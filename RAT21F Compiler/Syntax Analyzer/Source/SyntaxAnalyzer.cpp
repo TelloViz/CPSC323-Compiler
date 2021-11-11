@@ -45,6 +45,16 @@ Last Edit: 11/10/21
 #endif
 // **********************************************************************************************
 
+//*****************************************************************************************
+#ifndef PRINT_RULE_ON_REJECT
+#define PRINT_RULE_ON_REJECT
+#endif
+
+#ifndef VERBOSE_PRINT_RULE_ON_REJECT	// Both modes must be defined for Verbose to work
+#define VERBOSE_PRINT_RULE_ON_REJECT	// Comment out ths line to turn off
+#endif
+// **********************************************************************************************
+
 #ifndef PRINT_RECOGNIZE_LABEL
 #define PRINT_RECOGNIZE_LABEL	// Comment out ths line to turn off
 #endif // !PRINT_RECOGNIZE_LABEL
@@ -95,6 +105,7 @@ Last Edit: 11/10/21
 		COLOR TRYING_COLOR{ COLOR::yellow };
 		COLOR RECOGNIZED_COLOR{ COLOR::aqua };
 		COLOR ACCEPTED_COLOR{ COLOR::green };
+		COLOR REJECTED_COLOR{ COLOR::red };
 	#endif
 #else
 #include <unistd.h>
@@ -1317,7 +1328,34 @@ bool SyntaxAnalyzer::BB() // TODO keep looking into BB function
 	#ifdef PRINT_RULE_ON_CALL 
 		PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
 	#endif
+	
+	if (currentPair->second == "TRUE")
+	{
+		isBB = true;
 
+		#ifdef PRINT_RECOGNIZE_LABEL 
+			PrintRecognizedString("TRUE");
+		#endif
+
+		#ifdef PRINT_RULE_ON_ACCEPT
+			PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
+		#endif
+
+		++currentPair;
+	}
+	else if (currentPair->second == "FALSE")
+		{
+
+		#ifdef PRINT_RECOGNIZE_LABEL 
+			PrintRecognizedString("FALSE");
+		#endif
+
+		#ifdef PRINT_RULE_ON_ACCEPT
+			PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
+		#endif
+
+		++currentPair;
+	}
 	if (DD())
 	{
 		if (BB_())
@@ -1365,33 +1403,7 @@ bool SyntaxAnalyzer::BB() // TODO keep looking into BB function
 		#ifdef PRINT_RULE_ON_ACCEPT
 			PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 		#endif
-	}
-	else if(currentPair->second == "TRUE")
-	{
-		isBB = true;
-
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("TRUE");
-		#endif
-
-		#ifdef PRINT_RULE_ON_ACCEPT
-			PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
-		#endif
-
-		++currentPair;
-	}
-	else if (currentPair->second == "FALSE")
-	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("FALSE");
-		#endif
-
-		#ifdef PRINT_RULE_ON_ACCEPT
-			PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
-		#endif
-
-		++currentPair;
-	}
+	}	
 	return isBB;
 }
 
