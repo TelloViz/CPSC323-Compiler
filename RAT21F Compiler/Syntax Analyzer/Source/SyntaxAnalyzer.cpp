@@ -1,3 +1,21 @@
+// SyntaxAnalyzer.cpp
+
+/* This file holds the implementation details for the Syntax Analyzer class.
+// It is also home to the #defines that toggle various modes of output,
+// including color and slow-mode
+
+// The Syntax analyzer is built from a Backus-Naur grammar listing of Rat21F.
+// I've removed left recursion and factored where needed.
+
+Author: Josh Lollis
+Project 2 Syntax Analysis
+CPSC-323 Fall 2021
+
+Last Edit: 11/10/21
+
+*/
+
+
 #include "../Include/SyntaxAnalyzer.h"
 
 
@@ -32,20 +50,15 @@
 #endif // !PRINT_RECOGNIZE_LABEL
 
 
-
-// *********************************************************************************************
-
 #ifndef SLOW_MODE
 //#define SLOW_MODE		// Comment out ths line to turn off
-
 #endif // !SLOW_MODE
 
 #ifndef COLOR_MODE
 #define COLOR_MODE		// Comment out ths line to turn off
-
 #endif // !COLOR_MODE
 
-
+// *********************************************************************************************
 
 #pragma region Do Not Edit This Region
 #ifdef _WIN32
@@ -93,11 +106,6 @@ void sleep(unsigned milliseconds)
 #endif
 #pragma endregion
 
-
-
-
-// **********************************************************************************************
-
 #pragma region	DO NOT CHANGE THESE VALUES
 /***********************************************************************************************************************/
 // !!! Do not change the settings in this block !!!
@@ -120,13 +128,12 @@ void sleep(unsigned milliseconds)
 #pragma endregion
 
 
-
-#pragma region Production Rules
-
 SyntaxAnalyzer::SyntaxAnalyzer(std::vector<std::pair<std::string, std::string>> tokenizedSource) : sourcePairs{ tokenizedSource }
 {
 	currentPair = sourcePairs.begin();
 }
+
+#pragma region Production Rules
 
 //	<A>  ->  <B>	#	<J>	<N>	#
 bool SyntaxAnalyzer::A()
@@ -1920,6 +1927,11 @@ bool SyntaxAnalyzer::BB_()
 	return isBB_;
 }
 
+#pragma endregion 
+
+
+#pragma region Print Functions
+
 void SyntaxAnalyzer::PrintOnCall(std::string ruleName, std::string rule)
 {
 	#ifdef COLOR_MODE
@@ -1944,10 +1956,10 @@ void SyntaxAnalyzer::PrintOnCall(std::string ruleName, std::string rule)
 	#ifdef VERBOSE_PRINT_RULE_ON_CALL
 			<< "  ->  " << rule;
 	#else
-		;
-#endif // VERBOSE_PRINT_RULE_ON_CALL
+			;
+	#endif // VERBOSE_PRINT_RULE_ON_CALL
 
-	
+
 
 
 	#ifdef COLOR_MODE
@@ -1959,7 +1971,7 @@ void SyntaxAnalyzer::PrintOnCall(std::string ruleName, std::string rule)
 }
 
 void SyntaxAnalyzer::PrintRecognizedString(std::string symbol) const
-{	
+{
 	#ifdef COLOR_MODE
 		HANDLE                      m_hConsole;
 		WORD                        m_currentConsoleAttr;
@@ -1976,7 +1988,7 @@ void SyntaxAnalyzer::PrintRecognizedString(std::string symbol) const
 			RECOGNIZED_COLOR);
 	#endif // COLOR_MODE
 
-	
+
 
 	std::cout << "\n\nRECOGNIZED............................................................................. " << symbol << "\n";
 
@@ -2014,9 +2026,7 @@ void SyntaxAnalyzer::PrintAcceptedRule(std::string ruleName, std::string rule) c
 			<< "  ->  " << rule;
 	#else
 			;
-
 	#endif
-
 
 	#ifdef COLOR_MODE
 		//set the ttribute to the original one
@@ -2025,5 +2035,4 @@ void SyntaxAnalyzer::PrintAcceptedRule(std::string ruleName, std::string rule) c
 			m_currentConsoleAttr);
 	#endif
 }
-
-#pragma endregion 
+#pragma endregion

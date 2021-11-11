@@ -1,12 +1,13 @@
 // main.cpp
 
-// this file serves as the driver for testing the lexical analyzer class of my compiler project.
-// The directions for using this program are found in the directory in which you found this file.
+// This is the driver file for the Syntactical Analyzer.
+// I modified the driver from project one to suit the needs of this project
+// so not much here is new code.
 
 // Author: Joshua Lollis
-// Last Edited: 10/16/21
+// Last Edited: 11/10/21
 // CPSC 323 James Choi, Fall 2021
-// Assignment 1 Lexical Analyzer
+// Assignment 2 Syntactical Analyzer
 
 #include <ios>
 #include <iostream>
