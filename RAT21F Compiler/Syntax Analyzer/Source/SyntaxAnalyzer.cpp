@@ -37,18 +37,23 @@
 
 #ifndef SLOW_MODE
 //#define SLOW_MODE		// Comment out ths line to turn off
+
 #endif // !SLOW_MODE
 
 #ifndef COLOR_MODE
 #define COLOR_MODE		// Comment out ths line to turn off
+
 #endif // !COLOR_MODE
 
 
+
+#pragma region Do Not Edit This Region
 #ifdef _WIN32
 	#include <windows.h>
 	#include <wincon.h>
 
 	#ifdef SLOW_MODE
+		int slowModeSpeed{ 1000 };			// milliseconds between printing lines
 		void mySleep(unsigned milliseconds)
 		{
 			Sleep(milliseconds);
@@ -78,7 +83,6 @@
 		COLOR RECOGNIZED_COLOR{ COLOR::aqua };
 		COLOR ACCEPTED_COLOR{ COLOR::green };
 	#endif
-
 #else
 #include <unistd.h>
 
@@ -87,7 +91,7 @@ void sleep(unsigned milliseconds)
 	usleep(milliseconds * 1000); // takes microseconds
 }
 #endif
-
+#pragma endregion
 
 
 
@@ -130,10 +134,13 @@ bool SyntaxAnalyzer::A()
 #ifdef SLOW_MODE
 	mySleep(slowModeSpeed);
 #endif
+
 	std::string rule{ "A" };
 	bool isA{ false };
+	
+
 	#ifdef PRINT_RULE_ON_CALL 
-	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
+		PrintOnCall(rule, AbstractEquivalenceMap.at(rule)); 
 	#endif
 
 	if (B())
@@ -174,27 +181,23 @@ bool SyntaxAnalyzer::A()
 //  <B> ->  C  |  CC      
 bool SyntaxAnalyzer::B() 
 {
-#ifdef SLOW_MODE
+	#ifdef SLOW_MODE
 	mySleep(slowModeSpeed);
-#endif
+	#endif
 
 	std::string rule{ "B" };
 	bool isB{ false };
-#ifdef PRINT_RULE_ON_CALL 
+
+	#ifdef PRINT_RULE_ON_CALL 
 	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
-#endif
+	#endif
 
 	if (C())
 	{
 		isB = true;
-		#ifdef PRINT_RULE_ON_ACCEPT 
-		std::cout << "\nACCEPTED:  <" << rule << ">"
-			#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT 
-				<< "  ->  ~<C>~  |  <CC>";
 
-			#else
-				;
-			#endif
+		#ifdef PRINT_RULE_ON_ACCEPT
+			PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 		#endif
 	}
 	else if (CC())
@@ -205,8 +208,6 @@ bool SyntaxAnalyzer::B()
 			PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 		#endif
 	}
-	else{}
-
 	return isB;
 }
 
@@ -216,13 +217,12 @@ bool SyntaxAnalyzer::C()
 	std::string rule{ "C" };
 	bool isC{ false };
 	
-#ifdef PRINT_RULE_ON_CALL 
+	#ifdef PRINT_RULE_ON_CALL 
 	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
-#endif
+	#endif
 
 	if (D())
-	{
-		
+	{		
 		if (C_())
 		{
 			isC = true;
@@ -232,23 +232,22 @@ bool SyntaxAnalyzer::C()
 			#endif
 		}
 	}
-
 	return isC;
 }
 
 //	D  ->  function	DD	(	E	)	J	I
 bool SyntaxAnalyzer::D()
 {
-#ifdef SLOW_MODE
-	mySleep(slowModeSpeed);
-#endif
+	#ifdef SLOW_MODE
+		mySleep(slowModeSpeed);
+	#endif
 
 	std::string rule{ "D" };
 	bool isD{ false };
 
-#ifdef PRINT_RULE_ON_CALL 
-	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
-#endif
+	#ifdef PRINT_RULE_ON_CALL 
+		PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
+	#endif
 
 	if (currentPair->second == "function") 
 	{
@@ -257,6 +256,7 @@ bool SyntaxAnalyzer::D()
 		#endif
 
 		++currentPair;
+
 		if (DD())
 		{			
 			if (currentPair->second == "(")
@@ -298,15 +298,15 @@ bool SyntaxAnalyzer::D()
 //	E  ->  F	|	CC
 bool SyntaxAnalyzer::E()
 {
-#ifdef SLOW_MODE
-	mySleep(slowModeSpeed);
-#endif
+	#ifdef SLOW_MODE
+		mySleep(slowModeSpeed);
+	#endif
 
 	std::string rule{ "E" };
 	bool isE{ true };
-#ifdef PRINT_RULE_ON_CALL 
-	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
-#endif
+	#ifdef PRINT_RULE_ON_CALL 
+		PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
+	#endif
 
 	if (F())
 	{
@@ -324,79 +324,76 @@ bool SyntaxAnalyzer::E()
 	{
 		isE = false;
 	}
-
 	return isE;
 }
 
 //	F  ->  G	F'
 bool SyntaxAnalyzer::F()
 {
-#ifdef SLOW_MODE
-	mySleep(slowModeSpeed);
-#endif
+	#ifdef SLOW_MODE
+		mySleep(slowModeSpeed);
+	#endif
 
 	std::string rule{ "F" };
-	bool isF{ true };
-#ifdef PRINT_RULE_ON_CALL 
-	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
-#endif
+	bool isF{ false };
+
+`	#ifdef PRINT_RULE_ON_CALL 
+		PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
+	#endif
 
 	if (G())
 	{
 		if (F_())
 		{
+			isF = true;
 			#ifdef PRINT_RULE_ON_ACCEPT
 				PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 			#endif
 		}
-		else isF = false;
 	}
-	else isF = false;
-
-
 	return isF;
 }
 
 //	G  ->  M	H
 bool SyntaxAnalyzer::G()
 {
-#ifdef SLOW_MODE
-	mySleep(slowModeSpeed);
-#endif
+	#ifdef SLOW_MODE
+		mySleep(slowModeSpeed);
+	#endif
 
 	std::string rule{ "G" };
-	bool isG{ true };
-#ifdef PRINT_RULE_ON_CALL 
-	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
-#endif
+	bool isG{ false };
+
+	#ifdef PRINT_RULE_ON_CALL 
+		PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
+	#endif
 
 	if (M())
 	{
 		if (H())
 		{
+			isG = true;
+
 			#ifdef PRINT_RULE_ON_ACCEPT
 				PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 			#endif
 		}
-		else isG = false;
 	}
-	else isG = false;
-
-
 	return isG;
 }
 
 // H  ->  integer	|	boolean	|	real
 bool SyntaxAnalyzer::H()
 {
-#ifdef SLOW_MODE
-	mySleep(slowModeSpeed);
-#endif
+	#ifdef SLOW_MODE
+		mySleep(slowModeSpeed);
+	#endif
 
 	std::string rule{ "H" };
-#ifdef PRINT_RULE_ON_CALL 
-	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
-#endif
+	bool isH{ false }
+	#ifdef PRINT_RULE_ON_CALL 
+		PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
+	#endif
 
 	if (currentPair->first == "integer")
 	{
@@ -404,11 +401,13 @@ bool SyntaxAnalyzer::H()
 			PrintRecognizedString("integer");
 		#endif
 
-			#ifdef PRINT_RULE_ON_ACCEPT
-			PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
-			#endif
+		#ifdef PRINT_RULE_ON_ACCEPT
+		PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
+		#endif
+
 		++currentPair;
-		return true;
+
+		isH = true;
 	}
 	else if (currentPair->first == "boolean")
 	{
@@ -420,7 +419,7 @@ bool SyntaxAnalyzer::H()
 			PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 		#endif
 		++currentPair;
-		return true;
+		isH = true;
 	}
 	else if (currentPair->first == "real")
 	{
@@ -434,29 +433,31 @@ bool SyntaxAnalyzer::H()
 
 
 		++currentPair;
-		return true;
+		isH = true;
 	}
 
-	return false;
+	return isH;
 }
 
 //  I  ->  {	<N>	}
 bool SyntaxAnalyzer::I()
 {
-#ifdef SLOW_MODE
-	mySleep(slowModeSpeed);
-#endif
+	#ifdef SLOW_MODE
+		mySleep(slowModeSpeed);
+	#endif
 
 	std::string rule{ "I" };
-#ifdef PRINT_RULE_ON_CALL 
-	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
-#endif
+	bool isI{ false };
+	#ifdef PRINT_RULE_ON_CALL 
+		PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
+	#endif
 
 	if (currentPair->second == "{")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
 			PrintRecognizedString("{");
 		#endif
+
 		++currentPair;
 		if (N())
 		{
@@ -465,14 +466,13 @@ bool SyntaxAnalyzer::I()
 				#ifdef PRINT_RECOGNIZE_LABEL 
 					PrintRecognizedString("}");
 				#endif
+
+				isI = true;
 				++currentPair;
-				return true;
 			}
-			else return false;
 		}
-		else return false;
 	}
-	else	return false;
+	return isI;
 }
 
 //	J ->  <K> | CC
@@ -483,10 +483,11 @@ bool SyntaxAnalyzer::J()
 	#endif
 
 	std::string rule{ "J" };
-	bool isJ{ true }; 
-#ifdef PRINT_RULE_ON_CALL 
-	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
-#endif
+	bool isJ{ true };
+
+	#ifdef PRINT_RULE_ON_CALL 
+		PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
+	#endif
 
 	if (K())
 	{
@@ -504,7 +505,6 @@ bool SyntaxAnalyzer::J()
 	{
 		isJ = false;
 	}
-
 	return isJ;
 }
 
@@ -519,9 +519,9 @@ bool SyntaxAnalyzer::K()
 	std::string rule{ "K" };
 	bool isK{ false };
 	
-#ifdef PRINT_RULE_ON_CALL 
-	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
-#endif
+	#ifdef PRINT_RULE_ON_CALL 
+		PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
+	#endif
 
 	if (L())
 	{
@@ -538,73 +538,74 @@ bool SyntaxAnalyzer::K()
 				#ifdef PRINT_RULE_ON_ACCEPT
 					PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
 				#endif
-			}
-			
+			}			
 		}
 	}
-
 	return isK;
 }
 
 // L  ->  integer	M	|	boolean	M	|	real	M
 bool SyntaxAnalyzer::L()
 {
-#ifdef SLOW_MODE
-	mySleep(slowModeSpeed);
-#endif
+	#ifdef SLOW_MODE
+		mySleep(slowModeSpeed);
+	#endif
 
 	std::string rule{ "L" };
 	bool isL{ false };
-#ifdef PRINT_RULE_ON_CALL 
-	PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
-#endif
+
+	#ifdef PRINT_RULE_ON_CALL 
+		PrintOnCall(rule, AbstractEquivalenceMap.at(rule));
+	#endif
 
 	if (currentPair->second == "integer")
 	{
-#ifdef PRINT_RECOGNIZE_LABEL 
-		PrintRecognizedString("integer");
-#endif
+		#ifdef PRINT_RECOGNIZE_LABEL 
+			PrintRecognizedString("integer");
+		#endif
 
-#ifdef PRINT_RULE_ON_ACCEPT
-		PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
-#endif
 		++currentPair;
 		if (M())
 		{
+			#ifdef PRINT_RULE_ON_ACCEPT
+				PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
+			#endif
+
 			isL = true;
 		}
 	}
 	else if (currentPair->second == "boolean")
 	{
-#ifdef PRINT_RECOGNIZE_LABEL 
-		PrintRecognizedString("boolean");
-#endif
+		#ifdef PRINT_RECOGNIZE_LABEL 
+			PrintRecognizedString("boolean");
+		#endif		
 
-#ifdef PRINT_RULE_ON_ACCEPT
-		PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
-#endif
 		++currentPair;
 		if(M()) 
 		{
+			#ifdef PRINT_RULE_ON_ACCEPT
+				PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
+			#endif
+
 			isL = true;
 		}
 	}
 	else if (currentPair->second == "real")
 	{
-#ifdef PRINT_RECOGNIZE_LABEL 
-		PrintRecognizedString("real");
-#endif
+		#ifdef PRINT_RECOGNIZE_LABEL 
+			PrintRecognizedString("real");
+		#endif
 
-#ifdef PRINT_RULE_ON_ACCEPT
-		PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
-#endif
 		++currentPair;
 		if(M()) 
 		{
+			#ifdef PRINT_RULE_ON_ACCEPT
+				PrintAcceptedRule(rule, AbstractEquivalenceMap.at(rule));
+			#endif
+
 			isL = true;
 		}
 	}
-
 	return isL;
 }
 
