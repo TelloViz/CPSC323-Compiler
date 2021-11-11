@@ -18,8 +18,6 @@
 #include <list>
 
 
-
-
 #pragma region File IO Function Signatures
 void ECHO_CLI_ARGS(int argc, char** argv);
 bool ConfirmInputArgSuccess(int argCount);
@@ -28,11 +26,8 @@ bool LoadInputFile(std::filebuf&, std::string, std::string&);
 bool OutputResultData(std::string, std::string);
 #pragma endregion // End File IO function Signatures
 
-#pragma region Main Entry Point
 int main(int argc, char** argv)
 {
-
-
 #pragma region Init CLI arg and stream data
 
 	// the source passed in from Command Line
@@ -75,8 +70,7 @@ int main(int argc, char** argv)
 	}
 #pragma endregion // End Stream Input Region
 
-
-
+#pragma region Lexical Analysis
 	// strings for passing to lexer that will hold the lexical units on each calling
 	std::string myToken, myLexeme;
 
@@ -107,6 +101,8 @@ int main(int argc, char** argv)
 			
 		}
 	}
+#pragma endregion
+
 #pragma region Stream Output
 
 	// check for file output filename arg
@@ -131,15 +127,18 @@ int main(int argc, char** argv)
 	}
 #pragma endregion // End Stream Output Region
 
+#pragma region Syntax Analysis
+	
 	SyntaxAnalyzer SA(tokenLexemeList);
 	if (SA.Analyze())
 	{
 		std::cout << "\n\nSyntax Correct!\n\n";
 	}
 
+#pragma endregion
+
 	return 0;
 }
-#pragma endregion // End Main Entry Point
 
 
 
