@@ -214,7 +214,7 @@ private:
 
 #pragma endregion
 
-	int slowModeSpeed{ 1000 };
+	
 	void PrintOnCall(std::string ruleName, std::string rule);
 	void PrintRecognizedString(std::string symbol) const;
 	void PrintAcceptedRule(std::string ruleName, std::string rule) const;
