@@ -60,7 +60,7 @@ namespace SA_cfg
 
 //************************* Print Rules Abstractly  (<A>, <B>, <C>) *****************************
 #ifndef ABBREVIATED_MODE
-#define ABBREVIATED_MODE		// Comment out ths line to turn off
+//#define ABBREVIATED_MODE		// Comment out ths line to turn off
 #endif // !ABBREVIATED_MODE
 // **********************************************************************************************
 

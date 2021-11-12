@@ -69,23 +69,17 @@ bool SyntaxAnalyzer::A()
 
 	if (isA == false)
 	{
-		#ifdef PRINT_RULE_ON_REJECT
-			#ifdef ABBREVIATED_MODE
-				//PrintRejectedRule(rule);
-			#else
-				PrintRejectedRule(RuleNameConversion(rule), EquivalenceMap.at(RuleNameConversion(rule)));
-			#endif // ABBREVIATED_MODE											
-		#endif
+		HandlePrintRejected(rule);
 	}
 	return isA;
 }
 
 //  <B> ->  C  |  CC      
-bool SyntaxAnalyzer::B() 
+bool SyntaxAnalyzer::B()
 {
-	#ifdef SLOW_MODE
+#ifdef SLOW_MODE
 	mySleep(slowModeSpeed);
-	#endif
+#endif
 
 	std::string rule{ "B" };
 	bool isB{ false };
@@ -101,12 +95,16 @@ bool SyntaxAnalyzer::B()
 	else if (CC())
 	{
 		isB = true;
-		
+
 		HandlePrintAccepted(rule);
 	}
-	return isB;
-}
 
+	if (isB == false)
+	{
+		HandlePrintRejected(rule);
+		return isB;
+	}
+}
 //	C  ->  D	C'
 bool SyntaxAnalyzer::C()
 {
@@ -124,6 +122,13 @@ bool SyntaxAnalyzer::C()
 			HandlePrintAccepted(rule);
 		}
 	}
+
+	if (isC == false)
+	{
+		HandlePrintRejected(rule);
+		return isC;
+	}
+
 	return isC;
 }
 
@@ -172,6 +177,12 @@ bool SyntaxAnalyzer::D()
 			}
 		}
 	}
+
+	if (isD == false)
+	{
+		HandlePrintRejected(rule);
+		return isD;
+	}
 	return isD;
 }
 
@@ -199,6 +210,13 @@ bool SyntaxAnalyzer::E()
 	{
 		isE = false;
 	}
+
+	if (isE == false)
+	{
+		HandlePrintRejected(rule);
+		return isE;
+	}
+
 	return isE;
 }
 
@@ -222,6 +240,13 @@ bool SyntaxAnalyzer::F()
 			HandlePrintAccepted(rule);
 		}
 	}
+
+	if (isF == false)
+	{
+		HandlePrintRejected(rule);
+		return isF;
+	}
+
 	return isF;
 }
 
@@ -246,6 +271,13 @@ bool SyntaxAnalyzer::G()
 				HandlePrintAccepted(rule);
 		}
 	}
+
+	if (isG == false)
+	{
+		HandlePrintRejected(rule);
+		return isG;
+	}
+
 	return isG;
 }
 
@@ -288,6 +320,13 @@ bool SyntaxAnalyzer::H()
 		++currentPair;
 		isH = true;
 	}
+
+	if (isH == false)
+	{
+		HandlePrintRejected(rule);
+		return isH;
+	}
+
 	return isH;
 }
 
@@ -305,18 +344,15 @@ bool SyntaxAnalyzer::I()
 
 	if (currentPair->second == "{")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
+		 
 			HandlePrintRecognized("{");
-		#endif
-
 		++currentPair;
 		if (N())
 		{
 			if (currentPair->second == "}")
 			{
-				#ifdef PRINT_RECOGNIZE_LABEL 
-					HandlePrintRecognized("}");
-				#endif
+				 
+				HandlePrintRecognized("}");
 						
 				HandlePrintAccepted(rule);
 					
@@ -325,6 +361,13 @@ bool SyntaxAnalyzer::I()
 			}
 		}
 	}
+
+	if (isI == false)
+	{
+		HandlePrintRejected(rule);
+		return isI;
+	}
+
 	return isI;
 }
 
@@ -353,6 +396,13 @@ bool SyntaxAnalyzer::J()
 	{
 		isJ = false;
 	}
+
+	if (isJ == false)
+	{
+		HandlePrintRejected(rule);
+		return isJ;
+	}
+
 	return isJ;
 }
 
@@ -373,9 +423,7 @@ bool SyntaxAnalyzer::K()
 	{
 		if (currentPair->second == ";")
 		{
-			#ifdef PRINT_RECOGNIZE_LABEL 
-				HandlePrintRecognized(";");
-			#endif
+			HandlePrintRecognized(";");
 			
 			++currentPair;
 			if (K_())
@@ -385,6 +433,13 @@ bool SyntaxAnalyzer::K()
 			}			
 		}
 	}
+
+	if (isK == false)
+	{
+		HandlePrintRejected(rule);
+		return isK;
+	}
+
 	return isK;
 }
 
@@ -436,6 +491,13 @@ bool SyntaxAnalyzer::L()
 			isL = true;
 		}
 	}
+
+	if (isL == false)
+	{
+		HandlePrintRejected(rule);
+		return isL;
+	}
+
 	return isL;
 }
 
@@ -460,6 +522,13 @@ bool SyntaxAnalyzer::M()
 				HandlePrintAccepted(rule);					
 			}
 		}
+
+		if (isM == false)
+		{
+			HandlePrintRejected(rule);
+			return isM;
+		}
+
 	return isM;
 }
 
@@ -484,6 +553,13 @@ bool SyntaxAnalyzer::N()
 				
 		}
 	}
+
+	if (isN == false)
+	{
+		HandlePrintRejected(rule);
+		return isN;
+	}
+
 	return isN;
 }
 
@@ -533,7 +609,11 @@ bool SyntaxAnalyzer::O()
 		HandlePrintAccepted(rule);
 			
 	}
-	else isO = false;
+	else
+	{
+		HandlePrintRejected(rule);
+		isO = false;
+	}
 
 	return isO;
 }
@@ -552,18 +632,15 @@ bool SyntaxAnalyzer::P()
 
 	if (currentPair->second == "{")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			HandlePrintRecognized("{");
-		#endif
+		HandlePrintRecognized("{");
 		
 		++currentPair;
 		if (N())
 		{
 			if (currentPair->second == "}")
 			{
-				#ifdef PRINT_RECOGNIZE_LABEL 
-					HandlePrintRecognized("}");
-				#endif
+				 
+				HandlePrintRecognized("}");
 				
 				isP = true;
 				++currentPair;
@@ -573,6 +650,12 @@ bool SyntaxAnalyzer::P()
 			}
 		}
 	}
+
+	if (isP == false)
+	{
+		HandlePrintRejected(rule);
+	}
+
 	return isP;
 }
 
@@ -593,10 +676,8 @@ bool SyntaxAnalyzer::Q()
 	{
 		if (currentPair->second == "=")
 		{
-			#ifdef PRINT_RECOGNIZE_LABEL 
-				HandlePrintRecognized("=");
-			#endif
-
+			HandlePrintRecognized("=");
+			
 			++currentPair;
 			
 			if (Y())
@@ -604,9 +685,7 @@ bool SyntaxAnalyzer::Q()
 
 				if (currentPair->second == ";")
 				{
-					#ifdef PRINT_RECOGNIZE_LABEL 
-						HandlePrintRecognized(";");
-					#endif
+					HandlePrintRecognized(";");
 
 					HandlePrintAccepted(rule);
 						
@@ -617,6 +696,12 @@ bool SyntaxAnalyzer::Q()
 			}
 		}
 	}
+
+	if (isQ == false)
+	{
+		HandlePrintRejected(rule);
+	}
+
 	return isQ;
 }
 
@@ -640,9 +725,7 @@ bool SyntaxAnalyzer::R()
 		
 		if (currentPair->second == "(")
 		{
-			#ifdef PRINT_RECOGNIZE_LABEL 
-				HandlePrintRecognized("(");
-			#endif
+			HandlePrintRecognized("(");
 
 			++currentPair;
 
@@ -650,9 +733,7 @@ bool SyntaxAnalyzer::R()
 			{
 				if (currentPair->second == ")")
 				{
-					#ifdef PRINT_RECOGNIZE_LABEL 
-						HandlePrintRecognized(")");
-					#endif
+					HandlePrintRecognized(")");
 					
 					++currentPair;
 			
@@ -661,8 +742,7 @@ bool SyntaxAnalyzer::R()
 						if (R_())
 						{							
 							HandlePrintAccepted(rule);
-								
-							
+															
 							isR = true;
 						}
 
@@ -671,6 +751,12 @@ bool SyntaxAnalyzer::R()
 			}
 		}
 	}
+
+	if (isR == false)
+	{
+		HandlePrintRejected(rule);
+	}
+
 	return isR;
 }
 
@@ -699,7 +785,14 @@ bool SyntaxAnalyzer::S()
 			HandlePrintAccepted(rule);
 				
 		}
-	}return isS;
+	}
+	
+	if (isS == false)
+	{
+		HandlePrintRejected(rule);
+	}
+
+	return isS;
 }
 
 // T  ->  put	(	Y	)	;
@@ -721,9 +814,7 @@ bool SyntaxAnalyzer::T()
 		++currentPair;
 		if (currentPair->second == "(")
 		{
-			#ifdef PRINT_RECOGNIZE_LABEL 
-				HandlePrintRecognized("(");
-			#endif
+			HandlePrintRecognized("(");
 			
 			++currentPair;
 			
@@ -731,16 +822,12 @@ bool SyntaxAnalyzer::T()
 			{
 				if (currentPair->second == ")")
 				{
-					#ifdef PRINT_RECOGNIZE_LABEL 
-						HandlePrintRecognized(")");
-					#endif
-					
+					 HandlePrintRecognized(")");
+
 					++currentPair;
 					if (currentPair->second == ";")
 					{
-						#ifdef PRINT_RECOGNIZE_LABEL 
-							HandlePrintRecognized(";");
-						#endif
+						HandlePrintRecognized(";");
 						
 						isT = true;
 						++currentPair;
@@ -752,6 +839,12 @@ bool SyntaxAnalyzer::T()
 			}
 		}
 	}
+
+	if (isT == false)
+	{
+		HandlePrintRejected(rule);
+	}
+
 	return isT;
 }
 
@@ -775,9 +868,7 @@ bool SyntaxAnalyzer::U()
 		
 		if (currentPair->second == "(")
 		{
-			#ifdef PRINT_RECOGNIZE_LABEL 
-				HandlePrintRecognized("(");
-			#endif
+			 HandlePrintRecognized("(");
 			
 			++currentPair;
 			
@@ -785,17 +876,13 @@ bool SyntaxAnalyzer::U()
 			{
 				if (currentPair->second == ")")
 				{
-					#ifdef PRINT_RECOGNIZE_LABEL 
-						HandlePrintRecognized(")");
-					#endif
+					 HandlePrintRecognized(")");
 					
 					++currentPair;
 					
 					if (currentPair->second == ";")
 					{
-						#ifdef PRINT_RECOGNIZE_LABEL 
-							HandlePrintRecognized(";");
-						#endif
+						HandlePrintRecognized(";");
 						
 						isU = true;
 						++currentPair;
@@ -807,6 +894,12 @@ bool SyntaxAnalyzer::U()
 			}
 		}
 	}
+
+	if (isU == false)
+	{
+		HandlePrintRejected(rule);
+	}
+
 	return isU;
 }
 
@@ -830,9 +923,7 @@ bool SyntaxAnalyzer::V()
 		
 		if (currentPair->second == "(")
 		{
-			#ifdef PRINT_RECOGNIZE_LABEL 
-				HandlePrintRecognized("(");
-			#endif
+			HandlePrintRecognized("(");
 			
 			++currentPair;
 			
@@ -840,9 +931,7 @@ bool SyntaxAnalyzer::V()
 			{
 				if (currentPair->second == ")")
 				{
-					#ifdef PRINT_RECOGNIZE_LABEL 
-						HandlePrintRecognized(")");
-					#endif
+					HandlePrintRecognized(")");
 					
 					++currentPair;
 					
@@ -850,13 +939,20 @@ bool SyntaxAnalyzer::V()
 					{
 						isV = true;
 
-						HandlePrintAccepted(rule);
-							
+						HandlePrintAccepted(rule);							
 					}
 				}
 			}
 		}
 	}
+
+	if (isV == false)
+	{
+		HandlePrintRejected(rule);
+	}
+
+
+
 	return isV;
 }
 
@@ -880,11 +976,17 @@ bool SyntaxAnalyzer::W()
 			{
 				isW = true;
 				
-				HandlePrintAccepted(rule);
-					
+				HandlePrintAccepted(rule);					
 			}
 		}
 	}
+
+	if (isW == false)
+	{
+		HandlePrintRejected(rule);
+	}
+
+
 	return isW;
 }
 
@@ -902,9 +1004,7 @@ bool SyntaxAnalyzer::X()
 
 	if (currentPair->second == "==")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			HandlePrintRecognized("==");
-		#endif
+		HandlePrintRecognized("==");
 
 		HandlePrintAccepted(rule);
 			
@@ -913,9 +1013,7 @@ bool SyntaxAnalyzer::X()
 	}
 	else if (currentPair->second == "!=")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			HandlePrintRecognized("!=");
-		#endif
+		HandlePrintRecognized("!=");
 
 		HandlePrintAccepted(rule);
 			
@@ -924,9 +1022,8 @@ bool SyntaxAnalyzer::X()
 	}
 	else if (currentPair->second == ">")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			HandlePrintRecognized(">");
-		#endif
+		 
+		HandlePrintRecognized(">");
 		
 		HandlePrintAccepted(rule);
 			
@@ -935,18 +1032,17 @@ bool SyntaxAnalyzer::X()
 	}
 	else if (currentPair->second == "<")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			HandlePrintRecognized("<");
-		#endif
+		 
+		HandlePrintRecognized("<");
+
 		HandlePrintAccepted(rule);
 			
 		++currentPair;
 	}
 	else if (currentPair->second == "<=")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			HandlePrintRecognized("<=");
-		#endif
+		 
+		HandlePrintRecognized("<=");
 
 		HandlePrintAccepted(rule);
 			
@@ -954,9 +1050,8 @@ bool SyntaxAnalyzer::X()
 	}
 	else if (currentPair->second == "=>")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-				HandlePrintRecognized("=>");
-		#endif
+		 
+		HandlePrintRecognized("=>");
 
 		HandlePrintAccepted(rule);
 			
@@ -965,6 +1060,7 @@ bool SyntaxAnalyzer::X()
 	else
 	{
 		isX = false;
+		HandlePrintRejected(rule);
 	}
 
 	return isX;
@@ -987,9 +1083,14 @@ bool SyntaxAnalyzer::Y()
 		if (Y_())
 		{
 			HandlePrintAccepted(rule);
-				
 		}
 	}
+
+	if (isY == false)
+	{
+		HandlePrintRejected(rule);
+	}
+
 	return isY;
 }
 
@@ -1009,10 +1110,15 @@ bool SyntaxAnalyzer::Z()
 	{
 		if (Z_())
 		{
-			HandlePrintAccepted(rule);
-				
+			HandlePrintAccepted(rule);				
 		}
 	}
+
+	if (isZ == false)
+	{
+		HandlePrintRejected(rule);
+	}
+
 
 	return isZ;
 }
@@ -1031,15 +1137,11 @@ bool SyntaxAnalyzer::AA()
 
 	if (currentPair->second == "-")
 	{
+		HandlePrintRecognized("-");
 
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			HandlePrintRecognized("-");
-		#endif
 		if (BB())
 		{
-
-			HandlePrintAccepted(rule);
-				
+			HandlePrintAccepted(rule);				
 		}
 	}
 	else if (BB())
@@ -1049,6 +1151,7 @@ bool SyntaxAnalyzer::AA()
 	}
 	else
 	{
+		HandlePrintRejected(rule);
 		isAA = false;
 	}
 	return isAA;
@@ -1072,8 +1175,7 @@ bool SyntaxAnalyzer::BB() // TODO keep looking into BB function
 
 		HandlePrintRecognized("TRUE");
 
-		HandlePrintAccepted(rule);
-			
+		HandlePrintAccepted(rule);			
 
 		++currentPair;
 	}
@@ -1082,8 +1184,7 @@ bool SyntaxAnalyzer::BB() // TODO keep looking into BB function
 
 		HandlePrintRecognized("FALSE");
 
-		HandlePrintAccepted(rule);
-			
+		HandlePrintAccepted(rule);			
 
 		++currentPair;
 	}
@@ -1091,8 +1192,7 @@ bool SyntaxAnalyzer::BB() // TODO keep looking into BB function
 	{
 		if (BB_())
 		{
-			HandlePrintAccepted(rule);
-				
+			HandlePrintAccepted(rule);				
 
 			isBB = true;
 		}
@@ -1104,17 +1204,15 @@ bool SyntaxAnalyzer::BB() // TODO keep looking into BB function
 	}
 	else if (currentPair->second == "(")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			HandlePrintRecognized("(");
-		#endif
+		HandlePrintRecognized("(");
+
 		++currentPair;
+
 		if (Y())
 		{
 			if (currentPair->second == ")")
 			{
-				#ifdef PRINT_RECOGNIZE_LABEL 
-					HandlePrintRecognized(")");
-				#endif
+				HandlePrintRecognized(")");
 
 				HandlePrintAccepted(rule);
 					
@@ -1127,9 +1225,15 @@ bool SyntaxAnalyzer::BB() // TODO keep looking into BB function
 	{
 		isBB = true;
 
-		HandlePrintAccepted(rule);
-			
-	}	
+		HandlePrintAccepted(rule);			
+	}
+
+	if (isBB == false)
+	{
+		HandlePrintRejected(rule);
+	}
+
+
 	return isBB;
 }
 
@@ -1162,14 +1266,17 @@ bool SyntaxAnalyzer::DD()
 
 	if (currentPair->first == "identifier")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			HandlePrintRecognized(currentPair->second);
-		#endif
+		HandlePrintRecognized(currentPair->second);
 		HandlePrintAccepted(rule);
 			
 
 		++currentPair;
 		isDD = true;;
+	}
+
+	if (isDD == false)
+	{
+		HandlePrintRejected(rule);
 	}
 
 	return isDD;	
@@ -1189,15 +1296,20 @@ bool SyntaxAnalyzer::EE()
 
 	if (currentPair->first == "integer")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			HandlePrintRecognized(currentPair->second);
-		#endif
+		 HandlePrintRecognized(currentPair->second);
 
 		HandlePrintAccepted(rule);
 
 		++currentPair;
 		isEE =  true;
 	}	
+
+	if (isEE == false)
+	{
+		HandlePrintRejected(rule);
+	}
+
+
 	return isEE;
 }
 
@@ -1223,6 +1335,13 @@ bool SyntaxAnalyzer::FF()
 		HandlePrintAccepted(rule);
 			
 	}
+
+	if (isFF == false)
+	{
+		HandlePrintRejected(rule);
+	}
+
+
 	return isFF;
 }
 
@@ -1240,9 +1359,7 @@ bool SyntaxAnalyzer::Y_()
 
 	if (currentPair->second == "+")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			HandlePrintRecognized("+");
-		#endif
+		HandlePrintRecognized("+");
 
 		++currentPair;
 
@@ -1259,9 +1376,7 @@ bool SyntaxAnalyzer::Y_()
 	}
 	else if (currentPair->second == "-")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			HandlePrintRecognized("-");
-		#endif
+		HandlePrintRecognized("-");
 
 		++currentPair;
 
@@ -1302,10 +1417,7 @@ bool SyntaxAnalyzer::Z_()
 
 	if (currentPair->second == "*")
 	{
-
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			HandlePrintRecognized("*");
-		#endif
+		HandlePrintRecognized("*");
 
 		++currentPair;
 
@@ -1315,16 +1427,13 @@ bool SyntaxAnalyzer::Z_()
 			{
 				isZ_ = true;
 
-				HandlePrintAccepted(rule);
-					
+				HandlePrintAccepted(rule);					
 			}
 		}
 	}
 	else if (currentPair->second == "/")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-				HandlePrintRecognized("/");
-		#endif
+		HandlePrintRecognized("/");
 
 		++currentPair;
 
@@ -1334,20 +1443,17 @@ bool SyntaxAnalyzer::Z_()
 			{
 				isZ_ = true;
 
-				HandlePrintAccepted(rule);
-					
+				HandlePrintAccepted(rule);					
 			}
 		}
 	}
 	else // epsilon
 	{
-
 		HandlePrintRecognized("epsilon");
 
 		isZ_ = true; // Because epsilon
 
-		HandlePrintAccepted(rule);
-			
+		HandlePrintAccepted(rule);			
 	}
 	return isZ_;
 }
@@ -1367,7 +1473,6 @@ bool SyntaxAnalyzer::C_()
 	if (C())
 	{
 		isC_ = true;
-
 	}
 	else
 	{
@@ -1397,9 +1502,7 @@ bool SyntaxAnalyzer::F_()
 		{
 			++currentPair;
 
-			#ifdef PRINT_RECOGNIZE_LABEL 
-				HandlePrintRecognized(",");
-			#endif
+			HandlePrintRecognized(",");
 
 			if (F())
 			{
@@ -1459,9 +1562,7 @@ bool SyntaxAnalyzer::M_()
 
 	if (currentPair->second == ",")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			HandlePrintRecognized(",");
-		#endif
+		HandlePrintRecognized(",");
 
 		++currentPair;
 
@@ -1547,6 +1648,13 @@ bool SyntaxAnalyzer::R_()
 			}
 		}
 	}
+
+	if (isR_ == false)
+	{
+		HandlePrintRejected(rule);
+	}
+
+
 	return isR_;
 }
 
@@ -1564,10 +1672,7 @@ bool SyntaxAnalyzer::S_()
 
 	if (currentPair->second == ";")
 	{
-
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			HandlePrintRecognized(";");
-		#endif
+		HandlePrintRecognized(";");
 
 		++currentPair;
 		isS_ = true;
@@ -1579,9 +1684,7 @@ bool SyntaxAnalyzer::S_()
 	{
 		if (currentPair->second == ";")
 		{
-			#ifdef PRINT_RECOGNIZE_LABEL 
-				HandlePrintRecognized(";");
-			#endif
+			HandlePrintRecognized(";");
 
 			++currentPair;
 			isS_ = true;
@@ -1590,10 +1693,15 @@ bool SyntaxAnalyzer::S_()
 			
 		}
 	}
+
+	if (isS_ == false)
+	{
+		HandlePrintRejected(rule);
+	}
 	return isS_;
 }
 
-// BB'  ->  epsilon	|	(	M	)
+// BB'  ->  (	M	)  |  epsilon
 bool SyntaxAnalyzer::BB_()
 {
 	#ifdef SLOW_MODE
@@ -1607,9 +1715,7 @@ bool SyntaxAnalyzer::BB_()
 
 	if (currentPair->second == "(")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			HandlePrintRecognized("(");
-		#endif
+		 HandlePrintRecognized("(");
 
 		++currentPair;
 
@@ -1617,9 +1723,8 @@ bool SyntaxAnalyzer::BB_()
 		{
 			if (currentPair->second == ")")
 			{
-				#ifdef PRINT_RECOGNIZE_LABEL 
-					HandlePrintRecognized(")");
-				#endif
+				 HandlePrintRecognized(")");
+
 				++currentPair;
 				isBB_ = true;
 			}
@@ -1791,7 +1896,7 @@ void SyntaxAnalyzer::HandlePrintOnCall(std::string ruleName)
 }
 void SyntaxAnalyzer::HandlePrintRecognized(std::string symbol)
 {
-	#ifdef PRINT_RECOGNIZE_LABEL 
+	#ifdef PRINT_RECOGNIZE_LABEL
 		PrintRecognizedString(symbol);
 	#endif
 }
