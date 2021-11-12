@@ -46,7 +46,7 @@ bool SyntaxAnalyzer::A()
 	{
 		if (currentPair->second == "#")
 		{
-			HandlePrintRecognized("#");
+			HandlePrintRecognized(*currentPair);
 			++currentPair;
 			if (J())
 			{
@@ -55,7 +55,7 @@ bool SyntaxAnalyzer::A()
 				{
 					if (currentPair->second == "#")
 					{
-						HandlePrintRecognized("#");
+						HandlePrintRecognized(*currentPair);
 
 						++currentPair;
 						isA = true;
@@ -67,10 +67,15 @@ bool SyntaxAnalyzer::A()
 		}
 	}
 
-	if (isA == false)
+	if (isA)
+	{
+		HandlePrintSuccessText();
+	}
+	else
 	{
 		HandlePrintRejected(rule);
 	}
+
 	return isA;
 }
 
@@ -146,21 +151,21 @@ bool SyntaxAnalyzer::D()
 
 	if (currentPair->second == "function") 
 	{
-		HandlePrintRecognized("function");
+		HandlePrintRecognized(*currentPair);
 		++currentPair;
 
 		if (DD())
 		{			
 			if (currentPair->second == "(")
 			{
-				HandlePrintRecognized("(");
+				HandlePrintRecognized(*currentPair);
 
 				++currentPair;
 				if (E())
 				{
 					if (currentPair->second == ")")
 					{
-						HandlePrintRecognized(")");
+						HandlePrintRecognized(*currentPair);
 
 						++currentPair;
 
@@ -295,7 +300,7 @@ bool SyntaxAnalyzer::H()
 
 	if (currentPair->first == "integer")
 	{
-		HandlePrintRecognized("integer");
+		HandlePrintRecognized(*currentPair);
 
 		HandlePrintAccepted(rule);
 
@@ -305,7 +310,7 @@ bool SyntaxAnalyzer::H()
 	}
 	else if (currentPair->first == "boolean")
 	{
-		HandlePrintRecognized("boolean");
+		HandlePrintRecognized(*currentPair);
 
 		HandlePrintAccepted(rule);
 		++currentPair;
@@ -313,7 +318,7 @@ bool SyntaxAnalyzer::H()
 	}
 	else if (currentPair->first == "real")
 	{
-		HandlePrintRecognized("real");
+		HandlePrintRecognized(*currentPair);
 
 		HandlePrintAccepted(rule);
 
@@ -343,17 +348,16 @@ bool SyntaxAnalyzer::I()
 	HandlePrintOnCall(rule);
 
 	if (currentPair->second == "{")
-	{
-		 
-			HandlePrintRecognized("{");
+	{		 
+		HandlePrintRecognized(*currentPair);
 		++currentPair;
+
 		if (N())
 		{
 			if (currentPair->second == "}")
 			{
 				 
-				HandlePrintRecognized("}");
-						
+				HandlePrintRecognized(*currentPair);						
 				HandlePrintAccepted(rule);
 					
 				isI = true;
@@ -423,7 +427,7 @@ bool SyntaxAnalyzer::K()
 	{
 		if (currentPair->second == ";")
 		{
-			HandlePrintRecognized(";");
+			HandlePrintRecognized(*currentPair);
 			
 			++currentPair;
 			if (K_())
@@ -457,7 +461,7 @@ bool SyntaxAnalyzer::L()
 
 	if (currentPair->second == "integer")
 	{
-		HandlePrintRecognized("integer");
+		HandlePrintRecognized(*currentPair);
 
 		++currentPair;
 		if (M())
@@ -469,7 +473,7 @@ bool SyntaxAnalyzer::L()
 	}
 	else if (currentPair->second == "boolean")
 	{
-		HandlePrintRecognized("boolean");		
+		HandlePrintRecognized(*currentPair);		
 
 		++currentPair;
 		if(M()) 
@@ -481,7 +485,7 @@ bool SyntaxAnalyzer::L()
 	}
 	else if (currentPair->second == "real")
 	{
-		HandlePrintRecognized("real");
+		HandlePrintRecognized(*currentPair);
 
 		++currentPair;
 		if(M()) 
@@ -632,7 +636,7 @@ bool SyntaxAnalyzer::P()
 
 	if (currentPair->second == "{")
 	{
-		HandlePrintRecognized("{");
+		HandlePrintRecognized(*currentPair);
 		
 		++currentPair;
 		if (N())
@@ -640,7 +644,7 @@ bool SyntaxAnalyzer::P()
 			if (currentPair->second == "}")
 			{
 				 
-				HandlePrintRecognized("}");
+				HandlePrintRecognized(*currentPair);
 				
 				isP = true;
 				++currentPair;
@@ -676,7 +680,7 @@ bool SyntaxAnalyzer::Q()
 	{
 		if (currentPair->second == "=")
 		{
-			HandlePrintRecognized("=");
+			HandlePrintRecognized(*currentPair);
 			
 			++currentPair;
 			
@@ -685,7 +689,7 @@ bool SyntaxAnalyzer::Q()
 
 				if (currentPair->second == ";")
 				{
-					HandlePrintRecognized(";");
+					HandlePrintRecognized(*currentPair);
 
 					HandlePrintAccepted(rule);
 						
@@ -719,13 +723,13 @@ bool SyntaxAnalyzer::R()
 
 	if (currentPair->second == "if")
 	{
-		HandlePrintRecognized("if");
+		HandlePrintRecognized(*currentPair);
 	
 		++currentPair;
 		
 		if (currentPair->second == "(")
 		{
-			HandlePrintRecognized("(");
+			HandlePrintRecognized(*currentPair);
 
 			++currentPair;
 
@@ -733,7 +737,7 @@ bool SyntaxAnalyzer::R()
 			{
 				if (currentPair->second == ")")
 				{
-					HandlePrintRecognized(")");
+					HandlePrintRecognized(*currentPair);
 					
 					++currentPair;
 			
@@ -774,7 +778,7 @@ bool SyntaxAnalyzer::S()
 
 	if (currentPair->second == "return")
 	{
-		HandlePrintRecognized("return");
+		HandlePrintRecognized(*currentPair);
 
 		++currentPair;
 
@@ -809,12 +813,12 @@ bool SyntaxAnalyzer::T()
 
 	if (currentPair->second == "put")
 	{
-		HandlePrintRecognized("put");
+		HandlePrintRecognized(*currentPair);
 		
 		++currentPair;
 		if (currentPair->second == "(")
 		{
-			HandlePrintRecognized("(");
+			HandlePrintRecognized(*currentPair);
 			
 			++currentPair;
 			
@@ -822,12 +826,12 @@ bool SyntaxAnalyzer::T()
 			{
 				if (currentPair->second == ")")
 				{
-					 HandlePrintRecognized(")");
+					 HandlePrintRecognized(*currentPair);
 
 					++currentPair;
 					if (currentPair->second == ";")
 					{
-						HandlePrintRecognized(";");
+						HandlePrintRecognized(*currentPair);
 						
 						isT = true;
 						++currentPair;
@@ -862,13 +866,13 @@ bool SyntaxAnalyzer::U()
 
 	if (currentPair->second == "get")
 	{
-		HandlePrintRecognized("get");
+		HandlePrintRecognized(*currentPair);
 		
 		++currentPair;
 		
 		if (currentPair->second == "(")
 		{
-			 HandlePrintRecognized("(");
+			 HandlePrintRecognized(*currentPair);
 			
 			++currentPair;
 			
@@ -876,13 +880,13 @@ bool SyntaxAnalyzer::U()
 			{
 				if (currentPair->second == ")")
 				{
-					 HandlePrintRecognized(")");
+					 HandlePrintRecognized(*currentPair);
 					
 					++currentPair;
 					
 					if (currentPair->second == ";")
 					{
-						HandlePrintRecognized(";");
+						HandlePrintRecognized(*currentPair);
 						
 						isU = true;
 						++currentPair;
@@ -917,13 +921,13 @@ bool SyntaxAnalyzer::V()
 
 	if (currentPair->second == "while")
 	{
-		HandlePrintRecognized("while");
+		HandlePrintRecognized(*currentPair);
 		
 		++currentPair;
 		
 		if (currentPair->second == "(")
 		{
-			HandlePrintRecognized("(");
+			HandlePrintRecognized(*currentPair);
 			
 			++currentPair;
 			
@@ -931,7 +935,7 @@ bool SyntaxAnalyzer::V()
 			{
 				if (currentPair->second == ")")
 				{
-					HandlePrintRecognized(")");
+					HandlePrintRecognized(*currentPair);
 					
 					++currentPair;
 					
@@ -1004,16 +1008,15 @@ bool SyntaxAnalyzer::X()
 
 	if (currentPair->second == "==")
 	{
-		HandlePrintRecognized("==");
+		HandlePrintRecognized(*currentPair);
 
-		HandlePrintAccepted(rule);
-			
+		HandlePrintAccepted(rule);			
 
 		++currentPair;
 	}
 	else if (currentPair->second == "!=")
 	{
-		HandlePrintRecognized("!=");
+		HandlePrintRecognized(*currentPair);
 
 		HandlePrintAccepted(rule);
 			
@@ -1023,7 +1026,7 @@ bool SyntaxAnalyzer::X()
 	else if (currentPair->second == ">")
 	{
 		 
-		HandlePrintRecognized(">");
+		HandlePrintRecognized(*currentPair);
 		
 		HandlePrintAccepted(rule);
 			
@@ -1033,7 +1036,7 @@ bool SyntaxAnalyzer::X()
 	else if (currentPair->second == "<")
 	{
 		 
-		HandlePrintRecognized("<");
+		HandlePrintRecognized(*currentPair);
 
 		HandlePrintAccepted(rule);
 			
@@ -1042,7 +1045,7 @@ bool SyntaxAnalyzer::X()
 	else if (currentPair->second == "<=")
 	{
 		 
-		HandlePrintRecognized("<=");
+		HandlePrintRecognized(*currentPair);
 
 		HandlePrintAccepted(rule);
 			
@@ -1051,7 +1054,7 @@ bool SyntaxAnalyzer::X()
 	else if (currentPair->second == "=>")
 	{
 		 
-		HandlePrintRecognized("=>");
+		HandlePrintRecognized(*currentPair);
 
 		HandlePrintAccepted(rule);
 			
@@ -1137,7 +1140,7 @@ bool SyntaxAnalyzer::AA()
 
 	if (currentPair->second == "-")
 	{
-		HandlePrintRecognized("-");
+		HandlePrintRecognized(*currentPair);
 
 		if (BB())
 		{
@@ -1173,7 +1176,7 @@ bool SyntaxAnalyzer::BB() // TODO keep looking into BB function
 	{
 		isBB = true;
 
-		HandlePrintRecognized("TRUE");
+		HandlePrintRecognized(*currentPair);
 
 		HandlePrintAccepted(rule);			
 
@@ -1182,7 +1185,7 @@ bool SyntaxAnalyzer::BB() // TODO keep looking into BB function
 	else if (currentPair->second == "FALSE")
 		{
 
-		HandlePrintRecognized("FALSE");
+		HandlePrintRecognized(*currentPair);
 
 		HandlePrintAccepted(rule);			
 
@@ -1204,7 +1207,7 @@ bool SyntaxAnalyzer::BB() // TODO keep looking into BB function
 	}
 	else if (currentPair->second == "(")
 	{
-		HandlePrintRecognized("(");
+		HandlePrintRecognized(*currentPair);
 
 		++currentPair;
 
@@ -1212,7 +1215,7 @@ bool SyntaxAnalyzer::BB() // TODO keep looking into BB function
 		{
 			if (currentPair->second == ")")
 			{
-				HandlePrintRecognized(")");
+				HandlePrintRecognized(*currentPair);
 
 				HandlePrintAccepted(rule);
 					
@@ -1248,7 +1251,8 @@ bool SyntaxAnalyzer::CC()
 	
 	HandlePrintOnCall(rule);
 
-	HandlePrintRecognized("epsilon");
+	std::pair<std::string, std::string> tempPair{ "epsilon", "epsilon" };
+	HandlePrintRecognized(tempPair);
 
 	HandlePrintAccepted(rule);
 		
@@ -1266,7 +1270,7 @@ bool SyntaxAnalyzer::DD()
 
 	if (currentPair->first == "identifier")
 	{
-		HandlePrintRecognized(currentPair->second);
+		HandlePrintRecognized(*currentPair);
 		HandlePrintAccepted(rule);
 			
 
@@ -1296,7 +1300,7 @@ bool SyntaxAnalyzer::EE()
 
 	if (currentPair->first == "integer")
 	{
-		 HandlePrintRecognized(currentPair->second);
+		 HandlePrintRecognized(*currentPair);
 
 		HandlePrintAccepted(rule);
 
@@ -1327,7 +1331,7 @@ bool SyntaxAnalyzer::FF()
 
 	if (currentPair->first == "real")
 	{
-		HandlePrintRecognized("real");
+		HandlePrintRecognized(*currentPair);
 
 		++currentPair;
 		isFF = true;
@@ -1359,7 +1363,7 @@ bool SyntaxAnalyzer::Y_()
 
 	if (currentPair->second == "+")
 	{
-		HandlePrintRecognized("+");
+		HandlePrintRecognized(*currentPair);
 
 		++currentPair;
 
@@ -1376,7 +1380,7 @@ bool SyntaxAnalyzer::Y_()
 	}
 	else if (currentPair->second == "-")
 	{
-		HandlePrintRecognized("-");
+		HandlePrintRecognized(*currentPair);
 
 		++currentPair;
 
@@ -1393,7 +1397,8 @@ bool SyntaxAnalyzer::Y_()
 	}
 	else // epsilon
 	{
-		HandlePrintRecognized("epsilon");
+		std::pair<std::string, std::string> tempPair{ "epsilon", "epsilon" };
+		HandlePrintRecognized(tempPair);
 
 		isY_ = true;
 
@@ -1417,7 +1422,7 @@ bool SyntaxAnalyzer::Z_()
 
 	if (currentPair->second == "*")
 	{
-		HandlePrintRecognized("*");
+		HandlePrintRecognized(*currentPair);
 
 		++currentPair;
 
@@ -1433,7 +1438,7 @@ bool SyntaxAnalyzer::Z_()
 	}
 	else if (currentPair->second == "/")
 	{
-		HandlePrintRecognized("/");
+		HandlePrintRecognized(*currentPair);
 
 		++currentPair;
 
@@ -1449,7 +1454,8 @@ bool SyntaxAnalyzer::Z_()
 	}
 	else // epsilon
 	{
-		HandlePrintRecognized("epsilon");
+		std::pair<std::string, std::string> tempPair{ "epsilon", "epsilon" };
+		HandlePrintRecognized(tempPair);
 
 		isZ_ = true; // Because epsilon
 
@@ -1476,7 +1482,8 @@ bool SyntaxAnalyzer::C_()
 	}
 	else
 	{
-		HandlePrintRecognized("epsilon");
+		std::pair<std::string, std::string> tempPair{ "epsilon", "epsilon" };
+		HandlePrintRecognized(tempPair);
 		
 		isC_ = true;
 	}
@@ -1500,10 +1507,9 @@ bool SyntaxAnalyzer::F_()
 
 		if (currentPair->second == ",")
 		{
+			HandlePrintRecognized(*currentPair);
 			++currentPair;
-
-			HandlePrintRecognized(",");
-
+			
 			if (F())
 			{
 				isF_ = true;
@@ -1511,7 +1517,8 @@ bool SyntaxAnalyzer::F_()
 		}
 		else
 		{
-			HandlePrintRecognized("epsilon");
+			std::pair<std::string, std::string> tempPair{ "epsilon", "epsilon" };
+			HandlePrintRecognized(tempPair);
 			isF_ = true;
 		}
 
@@ -1538,7 +1545,8 @@ bool SyntaxAnalyzer::K_()
 	}
 	else
 	{
-		HandlePrintRecognized("epsilon");
+		std::pair<std::string, std::string> tempPair{ "epsilon", "epsilon" };
+		HandlePrintRecognized(tempPair);
 		isK_ = true;
 	}
 
@@ -1562,7 +1570,7 @@ bool SyntaxAnalyzer::M_()
 
 	if (currentPair->second == ",")
 	{
-		HandlePrintRecognized(",");
+		HandlePrintRecognized(*currentPair);
 
 		++currentPair;
 
@@ -1573,7 +1581,8 @@ bool SyntaxAnalyzer::M_()
 	}
 	else 
 	{
-		HandlePrintRecognized("epsilon");
+		std::pair<std::string, std::string> tempPair{ "epsilon", "epsilon" };
+		HandlePrintRecognized(tempPair);
 		isM_ = true;
 	}
 
@@ -1600,7 +1609,8 @@ bool SyntaxAnalyzer::N_()
 	}
 	else
 	{
-		HandlePrintRecognized("epsilon");
+		std::pair<std::string, std::string> tempPair{ "epsilon", "epsilon" };
+		HandlePrintRecognized(tempPair);
 		isN_ = true;
 	}
 
@@ -1623,7 +1633,7 @@ bool SyntaxAnalyzer::R_()
 
 	if (currentPair->second == "endif")
 	{
-		HandlePrintRecognized("endif");
+		HandlePrintRecognized(*currentPair);
 		
 		++currentPair;
 		isR_ = true;
@@ -1632,7 +1642,7 @@ bool SyntaxAnalyzer::R_()
 	}
 	else if (currentPair->second == "else")
 	{
-		HandlePrintRecognized("else");
+		HandlePrintRecognized(*currentPair);
 
 		++currentPair;
 
@@ -1640,7 +1650,7 @@ bool SyntaxAnalyzer::R_()
 		{
 			if (currentPair->second == "endif")
 			{
-				HandlePrintRecognized("endif");
+				HandlePrintRecognized(*currentPair);
 				
 				isR_ = true;
 				++currentPair;
@@ -1672,7 +1682,7 @@ bool SyntaxAnalyzer::S_()
 
 	if (currentPair->second == ";")
 	{
-		HandlePrintRecognized(";");
+		HandlePrintRecognized(*currentPair);
 
 		++currentPair;
 		isS_ = true;
@@ -1684,7 +1694,7 @@ bool SyntaxAnalyzer::S_()
 	{
 		if (currentPair->second == ";")
 		{
-			HandlePrintRecognized(";");
+			HandlePrintRecognized(*currentPair);
 
 			++currentPair;
 			isS_ = true;
@@ -1715,7 +1725,7 @@ bool SyntaxAnalyzer::BB_()
 
 	if (currentPair->second == "(")
 	{
-		 HandlePrintRecognized("(");
+		 HandlePrintRecognized(*currentPair);
 
 		++currentPair;
 
@@ -1723,7 +1733,7 @@ bool SyntaxAnalyzer::BB_()
 		{
 			if (currentPair->second == ")")
 			{
-				 HandlePrintRecognized(")");
+				 HandlePrintRecognized(*currentPair);
 
 				++currentPair;
 				isBB_ = true;
@@ -1783,7 +1793,7 @@ void SyntaxAnalyzer::PrintOnCall(std::string ruleName, std::string rule) const
 	#endif
 }
 
-void SyntaxAnalyzer::PrintRecognizedString(std::string symbol) const
+void SyntaxAnalyzer::PrintRecognizedString(std::pair<std::string , std::string> tokLex) const
 {
 	#ifdef COLOR_MODE
 		HANDLE                      m_hConsole;
@@ -1803,7 +1813,7 @@ void SyntaxAnalyzer::PrintRecognizedString(std::string symbol) const
 
 
 
-	std::cout << "\n\nRECOGNIZED............................................................................. " << symbol << "\n";
+	std::cout << "\n\nRECOGNIZED............................................................................. " << tokLex.first << "  .....  " << tokLex.second << "\n";
 
 
 	#ifdef COLOR_MODE
@@ -1884,6 +1894,10 @@ void SyntaxAnalyzer::PrintRejectedRule(std::string ruleName, std::string rule) c
 		m_currentConsoleAttr);
 #endif
 }
+void SyntaxAnalyzer::PrintSuccessText() const
+{
+	std::cout << "\n\nSyntax Correct!\n\n";
+}
 void SyntaxAnalyzer::HandlePrintOnCall(std::string ruleName)
 {
 	#ifdef PRINT_RULE_ON_CALL 
@@ -1894,10 +1908,10 @@ void SyntaxAnalyzer::HandlePrintOnCall(std::string ruleName)
 		#endif // ABBREVIATED_MODE
 	#endif
 }
-void SyntaxAnalyzer::HandlePrintRecognized(std::string symbol)
+void SyntaxAnalyzer::HandlePrintRecognized(std::pair<std::string, std::string> tokLex)
 {
 	#ifdef PRINT_RECOGNIZE_LABEL
-		PrintRecognizedString(symbol);
+		PrintRecognizedString(tokLex);
 	#endif
 }
 void SyntaxAnalyzer::HandlePrintAccepted(std::string ruleName)
@@ -1919,5 +1933,34 @@ void SyntaxAnalyzer::HandlePrintRejected(std::string ruleName)
 			PrintRejectedRule(RuleNameConversion(ruleName), EquivalenceMap.at(RuleNameConversion(ruleName)));
 		#endif // ABBREVIATED_MODE											
 	#endif
+}
+void SyntaxAnalyzer::HandlePrintSuccessText()
+{
+
+#ifdef COLOR_MODE
+	HANDLE                      m_hConsole;
+	WORD                        m_currentConsoleAttr;
+	CONSOLE_SCREEN_BUFFER_INFO   csbi;
+
+	//retrieve and save the current attributes
+	m_hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	if (GetConsoleScreenBufferInfo(m_hConsole, &csbi))
+		m_currentConsoleAttr = csbi.wAttributes;
+
+	//change the attribute to what you like
+	SetConsoleTextAttribute(
+		m_hConsole,
+		SUCCESS_COLOR);
+#endif // COLOR_MODE
+
+	PrintSuccessText();
+
+#ifdef COLOR_MODE
+	//set the ttribute to the original one
+	SetConsoleTextAttribute(
+		m_hConsole,
+		m_currentConsoleAttr);
+#endif
+
 }
 #pragma endregion

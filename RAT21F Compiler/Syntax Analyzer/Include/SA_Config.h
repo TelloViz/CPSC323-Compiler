@@ -113,10 +113,11 @@ namespace SA_cfg
 		yellow = 14,
 		white = 15
 	};
-	COLOR TRYING_COLOR{ COLOR::yellow };
+	COLOR TRYING_COLOR{ COLOR::dark_yellow };
 	COLOR RECOGNIZED_COLOR{ COLOR::aqua };
-	COLOR ACCEPTED_COLOR{ COLOR::green };
+	COLOR ACCEPTED_COLOR{ COLOR::dark_aqua };
 	COLOR REJECTED_COLOR{ COLOR::red };
+	COLOR SUCCESS_COLOR{ COLOR::green };
 #endif
 #else
 #include <unistd.h>

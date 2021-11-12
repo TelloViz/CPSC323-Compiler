@@ -114,7 +114,7 @@ int main(int argc, char** argv)
 	SyntaxAnalyzer SA(tokenLexemeVec);
 	if (SA.Analyze())
 	{
-		std::cout << "\n\nSyntax Correct!\n\n";
+		
 	}
 
 #pragma endregion
