@@ -218,12 +218,9 @@ private:
 	bool R_( );
 	bool S_( );
 	bool BB_( );
-
-	
-
 #pragma endregion
 
-	
+#pragma region Print Function Signatures
 	void PrintOnCall(std::string ruleName, std::string rule) const;
 	void PrintRecognizedString(std::string symbol) const;
 	void PrintAcceptedRule(std::string ruleName, std::string rule) const;
@@ -233,7 +230,7 @@ private:
 	void HandlePrintRecognized(std::string ruleName);
 	void HandlePrintAccepted(std::string ruleName);
 	void HandlePrintRejected(std::string ruleName);
-
+#pragma endregion
 
 	std::vector<std::pair<std::string, std::string>> sourcePairs;
 	std::vector<std::pair<std::string, std::string>>::iterator currentPair;
