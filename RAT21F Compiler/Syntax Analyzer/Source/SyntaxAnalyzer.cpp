@@ -1742,6 +1742,8 @@ bool SyntaxAnalyzer::BB_()
 	}
 	else // epsilon
 	{
+		std::pair<std::string, std::string> tempPair{ "epsilon", "epsilon" };
+		HandlePrintRecognized(tempPair);
 		isBB_ = true;
 	}
 
@@ -1813,7 +1815,7 @@ void SyntaxAnalyzer::PrintRecognizedString(std::pair<std::string , std::string> 
 
 
 
-	std::cout << "\n\nRECOGNIZED............................................................................. " << tokLex.first << "  .....  " << tokLex.second << "\n";
+	std::cout << "\n\nRECOGNIZED................................................................ TOKEN: " << tokLex.first << "\tLEXEME: " << tokLex.second << "\n";
 
 
 	#ifdef COLOR_MODE
