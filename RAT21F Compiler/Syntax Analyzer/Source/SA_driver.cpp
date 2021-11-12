@@ -19,7 +19,6 @@
 
 
 #pragma region File IO Function Signatures
-void ECHO_CLI_ARGS(int argc, char** argv);
 bool ConfirmInputArgSuccess(int argCount);
 bool ConfirmOutputArgSuccess(int argCount);
 bool LoadInputFile(std::filebuf&, std::string, std::string&);
@@ -32,6 +31,10 @@ int main(int argc, char** argv)
 
 	// the source passed in from Command Line
 	std::string SOURCE{ "" };
+
+	// The pairs of Tokens/Lexemes as returned from the Lexer
+	std::vector<std::pair<std::string, std::string>> tokenLexemeVec;
+
 
 	// The string to output to file. Will append token/lexeme pairs to end
 	std::string formattedOutputString
@@ -54,20 +57,22 @@ int main(int argc, char** argv)
 #pragma endregion	// End Init CLI arg and stream data
 
 #pragma region Stream Input
-
-
 	// check if input arg exists
 	if (ConfirmInputArgSuccess(argc))
 	{
 		try // Try loading input source stream
 		{
-			if (isSourceInputSuccess = LoadInputFile(inStream, argv[1], SOURCE)) {}
+			if (isSourceInputSuccess = LoadInputFile(inStream, argv[1], SOURCE)) 
+			{
+				inStream.close();
+			}
 		}
 		catch (const std::exception&)
 		{
 			std::cout << "Error Loading Input File..." << std::endl;
 		}
 	}
+
 #pragma endregion // End Stream Input Region
 
 #pragma region Lexical Analysis
@@ -81,7 +86,6 @@ int main(int argc, char** argv)
 	bool isEOF{ false };
 
 	
-	std::vector<std::pair<std::string, std::string>> tokenLexemeList;
 	// while not end of file, analyze source
 	while (!isEOF)
 	{
@@ -96,15 +100,26 @@ int main(int argc, char** argv)
 		}		
 		else// otherwise append to the output string also syntax analyze it
 		{
-			tokenLexemeList.push_back(std::pair<std::string, std::string>{ myToken, myLexeme });
+			tokenLexemeVec.push_back(std::pair<std::string, std::string>{ myToken, myLexeme });
+
+
 			formattedOutputString.append("\n" + myToken + "\t\t" + myLexeme);
 			
 		}
 	}
 #pragma endregion
 
-#pragma region Stream Output
+#pragma region Syntax Analysis
 
+	SyntaxAnalyzer SA(tokenLexemeVec);
+	if (SA.Analyze())
+	{
+		std::cout << "\n\nSyntax Correct!\n\n";
+	}
+
+#pragma endregion
+
+#pragma region Stream Output
 	// check for file output filename arg
 	if (ConfirmOutputArgSuccess(argc))
 	{
@@ -126,17 +141,7 @@ int main(int argc, char** argv)
 		(isSourceOutputSuccess = OutputResultData(formattedOutputString, defaultFileName));
 	}
 #pragma endregion // End Stream Output Region
-
-#pragma region Syntax Analysis
 	
-	SyntaxAnalyzer SA(tokenLexemeList);
-	if (SA.Analyze())
-	{
-		std::cout << "\n\nSyntax Correct!\n\n";
-	}
-
-#pragma endregion
-
 	return 0;
 }
 
@@ -144,7 +149,6 @@ int main(int argc, char** argv)
 
 // Definitions for File IO functions
 #pragma region FILE IO FUNCTIONS
-
 // return true if there is an arg in the input argv[1] of the CLI
 bool ConfirmInputArgSuccess(int argCount)
 {
