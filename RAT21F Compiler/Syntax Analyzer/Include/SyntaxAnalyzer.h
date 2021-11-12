@@ -35,8 +35,6 @@ public:
 
 private:
 
-	void PrintRule(std::string theRule, std::string theRuleDef) const;
-
 	std::map<std::string, std::string> AbstractRuleNameConversion
 	{
 		{"A", "Rat21F"},
@@ -68,9 +66,9 @@ private:
 		{"AA", "Factor"},
 		{"BB", "Primary"},
 		{"CC", "Empty"},
-		{"DD", "Function'"},
-		{"EE", "Opt Parameter List'"},
-		{"FF", "Parameter List'"},
+		{"DD", "Identifier"},
+		{"EE", "Integer"},
+		{"FF", "Real"},
 		{"Y'", "Expression'"},
 		{"Z'", "Term'"},
 		{"C'","Function Definitions'"},
@@ -226,9 +224,15 @@ private:
 #pragma endregion
 
 	
-	void PrintOnCall(std::string ruleName, std::string rule);
+	void PrintOnCall(std::string ruleName, std::string rule) const;
 	void PrintRecognizedString(std::string symbol) const;
 	void PrintAcceptedRule(std::string ruleName, std::string rule) const;
+	void PrintRejectedRule(std::string ruleName, std::string rule) const;
+
+	void HandlePrintOnCall(std::string ruleName);
+	void HandlePrintRecognized(std::string ruleName);
+	void HandlePrintAccepted(std::string ruleName);
+	void HandlePrintRejected(std::string ruleName);
 
 
 	std::vector<std::pair<std::string, std::string>> sourcePairs;
