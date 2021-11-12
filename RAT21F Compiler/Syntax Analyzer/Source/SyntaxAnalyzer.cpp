@@ -11,7 +11,7 @@ Author: Josh Lollis
 Project 2 Syntax Analysis
 CPSC-323 Fall 2021
 
-Last Edit: 11/10/21
+Last Edit: 11/11/21
 
 */
 
@@ -275,9 +275,7 @@ bool SyntaxAnalyzer::D()
 				{
 					if (currentPair->second == ")")
 					{
-						#ifdef PRINT_RECOGNIZE_LABEL 
-							PrintRecognizedString(")");
-						#endif
+						HandlePrintRecognized(")");
 
 						++currentPair;
 
@@ -385,9 +383,7 @@ bool SyntaxAnalyzer::H()
 
 	if (currentPair->first == "integer")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("integer");
-		#endif
+		HandlePrintRecognized("integer");
 
 		HandlePrintAccepted(rule);
 
@@ -397,9 +393,7 @@ bool SyntaxAnalyzer::H()
 	}
 	else if (currentPair->first == "boolean")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("boolean");
-		#endif
+		HandlePrintRecognized("boolean");
 
 		HandlePrintAccepted(rule);
 		++currentPair;
@@ -407,16 +401,13 @@ bool SyntaxAnalyzer::H()
 	}
 	else if (currentPair->first == "real")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("real");
-		#endif
+		HandlePrintRecognized("real");
 
 		HandlePrintAccepted(rule);
 
 		++currentPair;
 		isH = true;
 	}
-
 	return isH;
 }
 
@@ -435,7 +426,7 @@ bool SyntaxAnalyzer::I()
 	if (currentPair->second == "{")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("{");
+			HandlePrintRecognized("{");
 		#endif
 
 		++currentPair;
@@ -444,7 +435,7 @@ bool SyntaxAnalyzer::I()
 			if (currentPair->second == "}")
 			{
 				#ifdef PRINT_RECOGNIZE_LABEL 
-					PrintRecognizedString("}");
+					HandlePrintRecognized("}");
 				#endif
 						
 				HandlePrintAccepted(rule);
@@ -503,7 +494,7 @@ bool SyntaxAnalyzer::K()
 		if (currentPair->second == ";")
 		{
 			#ifdef PRINT_RECOGNIZE_LABEL 
-				PrintRecognizedString(";");
+				HandlePrintRecognized(";");
 			#endif
 			
 			++currentPair;
@@ -531,9 +522,7 @@ bool SyntaxAnalyzer::L()
 
 	if (currentPair->second == "integer")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("integer");
-		#endif
+		HandlePrintRecognized("integer");
 
 		++currentPair;
 		if (M())
@@ -545,9 +534,7 @@ bool SyntaxAnalyzer::L()
 	}
 	else if (currentPair->second == "boolean")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("boolean");
-		#endif		
+		HandlePrintRecognized("boolean");		
 
 		++currentPair;
 		if(M()) 
@@ -559,9 +546,7 @@ bool SyntaxAnalyzer::L()
 	}
 	else if (currentPair->second == "real")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("real");
-		#endif
+		HandlePrintRecognized("real");
 
 		++currentPair;
 		if(M()) 
@@ -688,7 +673,7 @@ bool SyntaxAnalyzer::P()
 	if (currentPair->second == "{")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("{");
+			HandlePrintRecognized("{");
 		#endif
 		
 		++currentPair;
@@ -697,7 +682,7 @@ bool SyntaxAnalyzer::P()
 			if (currentPair->second == "}")
 			{
 				#ifdef PRINT_RECOGNIZE_LABEL 
-					PrintRecognizedString("}");
+					HandlePrintRecognized("}");
 				#endif
 				
 				isP = true;
@@ -729,7 +714,7 @@ bool SyntaxAnalyzer::Q()
 		if (currentPair->second == "=")
 		{
 			#ifdef PRINT_RECOGNIZE_LABEL 
-				PrintRecognizedString("=");
+				HandlePrintRecognized("=");
 			#endif
 
 			++currentPair;
@@ -740,7 +725,7 @@ bool SyntaxAnalyzer::Q()
 				if (currentPair->second == ";")
 				{
 					#ifdef PRINT_RECOGNIZE_LABEL 
-						PrintRecognizedString(";");
+						HandlePrintRecognized(";");
 					#endif
 
 					HandlePrintAccepted(rule);
@@ -769,16 +754,14 @@ bool SyntaxAnalyzer::R()
 
 	if (currentPair->second == "if")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("if");
-		#endif
+		HandlePrintRecognized("if");
 	
 		++currentPair;
 		
 		if (currentPair->second == "(")
 		{
 			#ifdef PRINT_RECOGNIZE_LABEL 
-				PrintRecognizedString("(");
+				HandlePrintRecognized("(");
 			#endif
 
 			++currentPair;
@@ -788,7 +771,7 @@ bool SyntaxAnalyzer::R()
 				if (currentPair->second == ")")
 				{
 					#ifdef PRINT_RECOGNIZE_LABEL 
-						PrintRecognizedString(")");
+						HandlePrintRecognized(")");
 					#endif
 					
 					++currentPair;
@@ -825,9 +808,7 @@ bool SyntaxAnalyzer::S()
 
 	if (currentPair->second == "return")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("return");
-		#endif
+		HandlePrintRecognized("return");
 
 		++currentPair;
 
@@ -855,15 +836,13 @@ bool SyntaxAnalyzer::T()
 
 	if (currentPair->second == "put")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("put");
-		#endif
+		HandlePrintRecognized("put");
 		
 		++currentPair;
 		if (currentPair->second == "(")
 		{
 			#ifdef PRINT_RECOGNIZE_LABEL 
-				PrintRecognizedString("(");
+				HandlePrintRecognized("(");
 			#endif
 			
 			++currentPair;
@@ -873,14 +852,14 @@ bool SyntaxAnalyzer::T()
 				if (currentPair->second == ")")
 				{
 					#ifdef PRINT_RECOGNIZE_LABEL 
-						PrintRecognizedString(")");
+						HandlePrintRecognized(")");
 					#endif
 					
 					++currentPair;
 					if (currentPair->second == ";")
 					{
 						#ifdef PRINT_RECOGNIZE_LABEL 
-							PrintRecognizedString(";");
+							HandlePrintRecognized(";");
 						#endif
 						
 						isT = true;
@@ -910,16 +889,14 @@ bool SyntaxAnalyzer::U()
 
 	if (currentPair->second == "get")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("get");
-		#endif
+		HandlePrintRecognized("get");
 		
 		++currentPair;
 		
 		if (currentPair->second == "(")
 		{
 			#ifdef PRINT_RECOGNIZE_LABEL 
-				PrintRecognizedString("(");
+				HandlePrintRecognized("(");
 			#endif
 			
 			++currentPair;
@@ -929,7 +906,7 @@ bool SyntaxAnalyzer::U()
 				if (currentPair->second == ")")
 				{
 					#ifdef PRINT_RECOGNIZE_LABEL 
-						PrintRecognizedString(")");
+						HandlePrintRecognized(")");
 					#endif
 					
 					++currentPair;
@@ -937,7 +914,7 @@ bool SyntaxAnalyzer::U()
 					if (currentPair->second == ";")
 					{
 						#ifdef PRINT_RECOGNIZE_LABEL 
-							PrintRecognizedString(";");
+							HandlePrintRecognized(";");
 						#endif
 						
 						isU = true;
@@ -967,16 +944,14 @@ bool SyntaxAnalyzer::V()
 
 	if (currentPair->second == "while")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("while");
-		#endif
+		HandlePrintRecognized("while");
 		
 		++currentPair;
 		
 		if (currentPair->second == "(")
 		{
 			#ifdef PRINT_RECOGNIZE_LABEL 
-				PrintRecognizedString("(");
+				HandlePrintRecognized("(");
 			#endif
 			
 			++currentPair;
@@ -986,7 +961,7 @@ bool SyntaxAnalyzer::V()
 				if (currentPair->second == ")")
 				{
 					#ifdef PRINT_RECOGNIZE_LABEL 
-						PrintRecognizedString(")");
+						HandlePrintRecognized(")");
 					#endif
 					
 					++currentPair;
@@ -1048,7 +1023,7 @@ bool SyntaxAnalyzer::X()
 	if (currentPair->second == "==")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("==");
+			HandlePrintRecognized("==");
 		#endif
 
 		HandlePrintAccepted(rule);
@@ -1059,7 +1034,7 @@ bool SyntaxAnalyzer::X()
 	else if (currentPair->second == "!=")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("!=");
+			HandlePrintRecognized("!=");
 		#endif
 
 		HandlePrintAccepted(rule);
@@ -1070,7 +1045,7 @@ bool SyntaxAnalyzer::X()
 	else if (currentPair->second == ">")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString(">");
+			HandlePrintRecognized(">");
 		#endif
 		
 		HandlePrintAccepted(rule);
@@ -1081,7 +1056,7 @@ bool SyntaxAnalyzer::X()
 	else if (currentPair->second == "<")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("<");
+			HandlePrintRecognized("<");
 		#endif
 		HandlePrintAccepted(rule);
 			
@@ -1090,7 +1065,7 @@ bool SyntaxAnalyzer::X()
 	else if (currentPair->second == "<=")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("<=");
+			HandlePrintRecognized("<=");
 		#endif
 
 		HandlePrintAccepted(rule);
@@ -1100,7 +1075,7 @@ bool SyntaxAnalyzer::X()
 	else if (currentPair->second == "=>")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-				PrintRecognizedString("=>");
+				HandlePrintRecognized("=>");
 		#endif
 
 		HandlePrintAccepted(rule);
@@ -1178,7 +1153,7 @@ bool SyntaxAnalyzer::AA()
 	{
 
 		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("-");
+			HandlePrintRecognized("-");
 		#endif
 		if (BB())
 		{
@@ -1215,9 +1190,7 @@ bool SyntaxAnalyzer::BB() // TODO keep looking into BB function
 	{
 		isBB = true;
 
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("TRUE");
-		#endif
+		HandlePrintRecognized("TRUE");
 
 		HandlePrintAccepted(rule);
 			
@@ -1227,9 +1200,7 @@ bool SyntaxAnalyzer::BB() // TODO keep looking into BB function
 	else if (currentPair->second == "FALSE")
 		{
 
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("FALSE");
-		#endif
+		HandlePrintRecognized("FALSE");
 
 		HandlePrintAccepted(rule);
 			
@@ -1254,7 +1225,7 @@ bool SyntaxAnalyzer::BB() // TODO keep looking into BB function
 	else if (currentPair->second == "(")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("(");
+			HandlePrintRecognized("(");
 		#endif
 		++currentPair;
 		if (Y())
@@ -1262,7 +1233,7 @@ bool SyntaxAnalyzer::BB() // TODO keep looking into BB function
 			if (currentPair->second == ")")
 			{
 				#ifdef PRINT_RECOGNIZE_LABEL 
-					PrintRecognizedString(")");
+					HandlePrintRecognized(")");
 				#endif
 
 				HandlePrintAccepted(rule);
@@ -1293,9 +1264,7 @@ bool SyntaxAnalyzer::CC()
 	
 	HandlePrintOnCall(rule);
 
-	#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("epsilon");
-	#endif
+	HandlePrintRecognized("epsilon");
 
 	HandlePrintAccepted(rule);
 		
@@ -1314,7 +1283,7 @@ bool SyntaxAnalyzer::DD()
 	if (currentPair->first == "identifier")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString(currentPair->second);
+			HandlePrintRecognized(currentPair->second);
 		#endif
 		HandlePrintAccepted(rule);
 			
@@ -1341,7 +1310,7 @@ bool SyntaxAnalyzer::EE()
 	if (currentPair->first == "integer")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString(currentPair->second);
+			HandlePrintRecognized(currentPair->second);
 		#endif
 
 		HandlePrintAccepted(rule);
@@ -1366,9 +1335,7 @@ bool SyntaxAnalyzer::FF()
 
 	if (currentPair->first == "real")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("real");
-		#endif
+		HandlePrintRecognized("real");
 
 		++currentPair;
 		isFF = true;
@@ -1394,7 +1361,7 @@ bool SyntaxAnalyzer::Y_()
 	if (currentPair->second == "+")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("+");
+			HandlePrintRecognized("+");
 		#endif
 
 		++currentPair;
@@ -1413,7 +1380,7 @@ bool SyntaxAnalyzer::Y_()
 	else if (currentPair->second == "-")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("-");
+			HandlePrintRecognized("-");
 		#endif
 
 		++currentPair;
@@ -1431,9 +1398,7 @@ bool SyntaxAnalyzer::Y_()
 	}
 	else // epsilon
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("epsilon");
-		#endif
+		HandlePrintRecognized("epsilon");
 
 		isY_ = true;
 
@@ -1459,7 +1424,7 @@ bool SyntaxAnalyzer::Z_()
 	{
 
 		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("*");
+			HandlePrintRecognized("*");
 		#endif
 
 		++currentPair;
@@ -1478,7 +1443,7 @@ bool SyntaxAnalyzer::Z_()
 	else if (currentPair->second == "/")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-				PrintRecognizedString("/");
+				HandlePrintRecognized("/");
 		#endif
 
 		++currentPair;
@@ -1497,9 +1462,7 @@ bool SyntaxAnalyzer::Z_()
 	else // epsilon
 	{
 
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("epsilon");
-		#endif
+		HandlePrintRecognized("epsilon");
 
 		isZ_ = true; // Because epsilon
 
@@ -1528,9 +1491,7 @@ bool SyntaxAnalyzer::C_()
 	}
 	else
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("epsilon");
-		#endif
+		HandlePrintRecognized("epsilon");
 		
 		isC_ = true;
 	}
@@ -1557,7 +1518,7 @@ bool SyntaxAnalyzer::F_()
 			++currentPair;
 
 			#ifdef PRINT_RECOGNIZE_LABEL 
-				PrintRecognizedString(",");
+				HandlePrintRecognized(",");
 			#endif
 
 			if (F())
@@ -1567,9 +1528,7 @@ bool SyntaxAnalyzer::F_()
 		}
 		else
 		{
-			#ifdef PRINT_RECOGNIZE_LABEL 
-				PrintRecognizedString("epsilon");
-			#endif
+			HandlePrintRecognized("epsilon");
 			isF_ = true;
 		}
 
@@ -1596,9 +1555,7 @@ bool SyntaxAnalyzer::K_()
 	}
 	else
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("epsilon");
-		#endif
+		HandlePrintRecognized("epsilon");
 		isK_ = true;
 	}
 
@@ -1623,7 +1580,7 @@ bool SyntaxAnalyzer::M_()
 	if (currentPair->second == ",")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString(",");
+			HandlePrintRecognized(",");
 		#endif
 
 		++currentPair;
@@ -1635,9 +1592,7 @@ bool SyntaxAnalyzer::M_()
 	}
 	else 
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("epsilon");
-		#endif
+		HandlePrintRecognized("epsilon");
 		isM_ = true;
 	}
 
@@ -1664,9 +1619,7 @@ bool SyntaxAnalyzer::N_()
 	}
 	else
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("epsilon");
-		#endif
+		HandlePrintRecognized("epsilon");
 		isN_ = true;
 	}
 
@@ -1689,9 +1642,7 @@ bool SyntaxAnalyzer::R_()
 
 	if (currentPair->second == "endif")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("endif");
-		#endif
+		HandlePrintRecognized("endif");
 		
 		++currentPair;
 		isR_ = true;
@@ -1700,9 +1651,7 @@ bool SyntaxAnalyzer::R_()
 	}
 	else if (currentPair->second == "else")
 	{
-		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("else");
-		#endif
+		HandlePrintRecognized("else");
 
 		++currentPair;
 
@@ -1710,9 +1659,7 @@ bool SyntaxAnalyzer::R_()
 		{
 			if (currentPair->second == "endif")
 			{
-				#ifdef PRINT_RECOGNIZE_LABEL 
-					PrintRecognizedString("endif");
-				#endif
+				HandlePrintRecognized("endif");
 				
 				isR_ = true;
 				++currentPair;
@@ -1739,7 +1686,7 @@ bool SyntaxAnalyzer::S_()
 	{
 
 		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString(";");
+			HandlePrintRecognized(";");
 		#endif
 
 		++currentPair;
@@ -1753,7 +1700,7 @@ bool SyntaxAnalyzer::S_()
 		if (currentPair->second == ";")
 		{
 			#ifdef PRINT_RECOGNIZE_LABEL 
-				PrintRecognizedString(";");
+				HandlePrintRecognized(";");
 			#endif
 
 			++currentPair;
@@ -1781,7 +1728,7 @@ bool SyntaxAnalyzer::BB_()
 	if (currentPair->second == "(")
 	{
 		#ifdef PRINT_RECOGNIZE_LABEL 
-			PrintRecognizedString("(");
+			HandlePrintRecognized("(");
 		#endif
 
 		++currentPair;
@@ -1791,7 +1738,7 @@ bool SyntaxAnalyzer::BB_()
 			if (currentPair->second == ")")
 			{
 				#ifdef PRINT_RECOGNIZE_LABEL 
-					PrintRecognizedString(")");
+					HandlePrintRecognized(")");
 				#endif
 				++currentPair;
 				isBB_ = true;
