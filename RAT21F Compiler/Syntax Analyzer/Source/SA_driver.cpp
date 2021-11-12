@@ -50,6 +50,8 @@ int main(int argc, char** argv)
 	// file buffer stream for loading file contents
 	std::filebuf inStream;
 
+	std::ostream* outStreamPtr;
+
 	// flags to signal successfull file IO
 	bool isSourceInputSuccess{ false };
 	bool isSourceOutputSuccess{ false };
@@ -111,7 +113,7 @@ int main(int argc, char** argv)
 
 #pragma region Syntax Analysis
 
-	SyntaxAnalyzer SA(tokenLexemeVec);
+	SyntaxAnalyzer SA(tokenLexemeVec, outStreamPtr);
 	if (SA.Analyze())
 	{
 		

@@ -20,7 +20,7 @@ Fall 20218*/
 class SyntaxAnalyzer
 {
 public:
-	SyntaxAnalyzer(std::vector<std::pair<std::string, std::string>> tokenizedSource);
+	SyntaxAnalyzer(std::vector<std::pair<std::string, std::string>> tokenizedSource, std::ostream* outStreamPtr);
 	bool Analyze() { return A(); }
 	
 	std::string RuleNameConversion(std::string simplifiedRuleName) const
@@ -236,5 +236,7 @@ private:
 
 	std::vector<std::pair<std::string, std::string>> sourcePairs;
 	std::vector<std::pair<std::string, std::string>>::iterator currentPair;
+
+	std::ostream* outputStreamPointer;
 
 };

@@ -23,7 +23,7 @@ Last Edit: 11/11/21
 using namespace SA_cfg;
 
 
-SyntaxAnalyzer::SyntaxAnalyzer(std::vector<std::pair<std::string, std::string>> tokenizedSource) : sourcePairs{ tokenizedSource }
+SyntaxAnalyzer::SyntaxAnalyzer(std::vector<std::pair<std::string, std::string>> tokenizedSource, std::ostream* outStreamPtr) : sourcePairs{ tokenizedSource }, outputStreamPointer{outStreamPtr}
 {
 	currentPair = sourcePairs.begin();
 }
@@ -1776,7 +1776,7 @@ void SyntaxAnalyzer::PrintOnCall(std::string ruleName, std::string rule) const
 	#endif // COLOR_MODE
 
 
-	std::cout << "\nTrying Rule :: <" << ruleName << ">"
+	(*outputStreamPointer) << "\nTrying Rule :: <" << ruleName << ">"
 
 	#ifdef VERBOSE_PRINT_RULE_ON_CALL
 			<< "  ->  " << rule;
@@ -1815,7 +1815,7 @@ void SyntaxAnalyzer::PrintRecognizedString(std::pair<std::string , std::string> 
 
 
 
-	std::cout << "\n\nRECOGNIZED................................................................ TOKEN: " << tokLex.first << "\tLEXEME: " << tokLex.second << "\n";
+		(*outputStreamPointer) << "\n\nRECOGNIZED................................................................ TOKEN: " << tokLex.first << "\tLEXEME: " << tokLex.second << "\n";
 
 
 	#ifdef COLOR_MODE
@@ -1845,7 +1845,7 @@ void SyntaxAnalyzer::PrintAcceptedRule(std::string ruleName, std::string rule) c
 	#endif // COLOR_MODE
 
 
-	std::cout << "\nACCEPTED:  <" << ruleName << ">"
+		(*outputStreamPointer) << "\nACCEPTED:  <" << ruleName << ">"
 
 	#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
 			<< "  ->  " << rule;
@@ -1881,7 +1881,7 @@ void SyntaxAnalyzer::PrintRejectedRule(std::string ruleName, std::string rule) c
 #endif // COLOR_MODE
 
 
-	std::cout << "\nREJECTED:  <" << ruleName << ">"
+	(*outputStreamPointer) << "\nREJECTED:  <" << ruleName << ">"
 
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
 		<< "  ->  " << rule;
@@ -1898,7 +1898,7 @@ void SyntaxAnalyzer::PrintRejectedRule(std::string ruleName, std::string rule) c
 }
 void SyntaxAnalyzer::PrintSuccessText() const
 {
-	std::cout << "\n\nSyntax Correct!\n\n";
+	(*outputStreamPointer) << "\n\nSyntax Correct!\n\n";
 }
 void SyntaxAnalyzer::HandlePrintOnCall(std::string ruleName)
 {
