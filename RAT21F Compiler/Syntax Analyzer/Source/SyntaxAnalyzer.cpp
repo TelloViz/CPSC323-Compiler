@@ -19,11 +19,13 @@ Last Edit: 11/11/21
 #include "../Include/SyntaxAnalyzer.h"
 #include "../Include/SA_Config.h"
 
+#include <sstream>
 
 using namespace SA_cfg;
 
 
-SyntaxAnalyzer::SyntaxAnalyzer(std::vector<std::pair<std::string, std::string>> tokenizedSource, std::ostream* outStreamPtr) : sourcePairs{ tokenizedSource }, outputStreamPointer{outStreamPtr}
+SyntaxAnalyzer::SyntaxAnalyzer(std::vector<std::pair<std::string, std::string>> tokenizedSource, std::string& outputString) 
+	: sourcePairs{ tokenizedSource }, outputStringRef{outputString}
 {
 	currentPair = sourcePairs.begin();
 }
@@ -1757,7 +1759,7 @@ bool SyntaxAnalyzer::BB_()
 
 #pragma region Print Functions
 
-void SyntaxAnalyzer::PrintOnCall(std::string ruleName, std::string rule) const
+void SyntaxAnalyzer::PrintOnCall(std::string ruleName, std::string rule) 
 {
 	#ifdef COLOR_MODE
 		HANDLE                      m_hConsole;
@@ -1775,11 +1777,18 @@ void SyntaxAnalyzer::PrintOnCall(std::string ruleName, std::string rule) const
 			TRYING_COLOR);
 	#endif // COLOR_MODE
 
-
-	(*outputStreamPointer) << "\nTrying Rule :: <" << ruleName << ">"
+	std::stringstream tempStringStream;
+	tempStringStream << "\nTrying Rule :: <" << ruleName << ">";
+	std::cout << tempStringStream.str();
+	outputStringRef.append(tempStringStream.str());
+	tempStringStream.str(std::string{ "" });
 
 	#ifdef VERBOSE_PRINT_RULE_ON_CALL
-			<< "  ->  " << rule;
+		tempStringStream << "  ->  " << rule;
+		std::cout << tempStringStream.str();
+		outputStringRef.append(tempStringStream.str());
+		tempStringStream.str(std::string{ "" });
+
 	#else
 			;
 	#endif // VERBOSE_PRINT_RULE_ON_CALL
@@ -1795,7 +1804,7 @@ void SyntaxAnalyzer::PrintOnCall(std::string ruleName, std::string rule) const
 	#endif
 }
 
-void SyntaxAnalyzer::PrintRecognizedString(std::pair<std::string , std::string> tokLex) const
+void SyntaxAnalyzer::PrintRecognizedString(std::pair<std::string , std::string> tokLex) 
 {
 	#ifdef COLOR_MODE
 		HANDLE                      m_hConsole;
@@ -1813,10 +1822,11 @@ void SyntaxAnalyzer::PrintRecognizedString(std::pair<std::string , std::string> 
 			RECOGNIZED_COLOR);
 	#endif // COLOR_MODE
 
-
-
-		(*outputStreamPointer) << "\n\nRECOGNIZED................................................................ TOKEN: " << tokLex.first << "\tLEXEME: " << tokLex.second << "\n";
-
+		std::stringstream tempStringStream;
+		tempStringStream << "\n\nRECOGNIZED................................................................ TOKEN: " << tokLex.first << "\tLEXEME: " << tokLex.second << "\n";
+		std::cout << tempStringStream.str();
+		outputStringRef.append(tempStringStream.str());
+		tempStringStream.str(std::string{""});
 
 	#ifdef COLOR_MODE
 		//set the ttribute to the original one
@@ -1826,29 +1836,35 @@ void SyntaxAnalyzer::PrintRecognizedString(std::pair<std::string , std::string> 
 	#endif
 }
 
-void SyntaxAnalyzer::PrintAcceptedRule(std::string ruleName, std::string rule) const
+void SyntaxAnalyzer::PrintAcceptedRule(std::string ruleName, std::string rule)
 {
-	#ifdef COLOR_MODE
-		HANDLE                      m_hConsole;
-		WORD                        m_currentConsoleAttr;
-		CONSOLE_SCREEN_BUFFER_INFO   csbi;
+#ifdef COLOR_MODE
+	HANDLE                      m_hConsole;
+	WORD                        m_currentConsoleAttr;
+	CONSOLE_SCREEN_BUFFER_INFO   csbi;
 
-		//retrieve and save the current attributes
-		m_hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-		if (GetConsoleScreenBufferInfo(m_hConsole, &csbi))
-			m_currentConsoleAttr = csbi.wAttributes;
+	//retrieve and save the current attributes
+	m_hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	if (GetConsoleScreenBufferInfo(m_hConsole, &csbi))
+		m_currentConsoleAttr = csbi.wAttributes;
 
-		//change the attribute to what you like
-		SetConsoleTextAttribute(
-			m_hConsole,
-			ACCEPTED_COLOR);
-	#endif // COLOR_MODE
+	//change the attribute to what you like
+	SetConsoleTextAttribute(
+		m_hConsole,
+		ACCEPTED_COLOR);
+#endif // COLOR_MODE
 
-
-		(*outputStreamPointer) << "\nACCEPTED:  <" << ruleName << ">"
+	std::stringstream tempStringStream;
+	tempStringStream << "\nACCEPTED:  <" << ruleName << ">";
+	std::cout << tempStringStream.str();
+	outputStringRef.append(tempStringStream.str());
+	tempStringStream.str(std::string{ "" });
 
 	#ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-			<< "  ->  " << rule;
+		tempStringStream << "  ->  " << rule;
+		std::cout << tempStringStream.str();
+		outputStringRef.append(tempStringStream.str());
+		tempStringStream.str(std::string{ "" });
 	#else
 			;
 	#endif
@@ -1862,7 +1878,7 @@ void SyntaxAnalyzer::PrintAcceptedRule(std::string ruleName, std::string rule) c
 }
 
 
-void SyntaxAnalyzer::PrintRejectedRule(std::string ruleName, std::string rule) const
+void SyntaxAnalyzer::PrintRejectedRule(std::string ruleName, std::string rule) 
 {
 #ifdef COLOR_MODE
 	HANDLE                      m_hConsole;
@@ -1881,10 +1897,17 @@ void SyntaxAnalyzer::PrintRejectedRule(std::string ruleName, std::string rule) c
 #endif // COLOR_MODE
 
 
-	(*outputStreamPointer) << "\nREJECTED:  <" << ruleName << ">"
+	std::stringstream tempStringStream;
+	tempStringStream << "\nREJECTED:  <" << ruleName << ">";
+	std::cout << tempStringStream.str();
+	outputStringRef.append(tempStringStream.str());
+	tempStringStream.str(std::string{ "" });
 
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-		<< "  ->  " << rule;
+		tempStringStream << "  ->  " << rule;
+		std::cout << tempStringStream.str();
+		outputStringRef.append(tempStringStream.str());
+		tempStringStream.str(std::string{ "" });
 #else
 		;
 #endif
@@ -1896,9 +1919,13 @@ void SyntaxAnalyzer::PrintRejectedRule(std::string ruleName, std::string rule) c
 		m_currentConsoleAttr);
 #endif
 }
-void SyntaxAnalyzer::PrintSuccessText() const
+void SyntaxAnalyzer::PrintSuccessText() 
 {
-	(*outputStreamPointer) << "\n\nSyntax Correct!\n\n";
+	std::stringstream tempStringStream;
+	tempStringStream << "\n\nSyntax Correct!\n\n";
+	std::cout << tempStringStream.str();
+	outputStringRef.append(tempStringStream.str());
+	tempStringStream.str(std::string{ "" });
 }
 void SyntaxAnalyzer::HandlePrintOnCall(std::string ruleName)
 {
