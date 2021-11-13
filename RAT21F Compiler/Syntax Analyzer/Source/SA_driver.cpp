@@ -9,9 +9,10 @@
 // CPSC 323 James Choi, Fall 2021
 // Assignment 2 Syntactical Analyzer
 
-#include <ios>
+
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <string>
 #include "../Include/LexicalAnalyzer.h"
 #include "../Include/SyntaxAnalyzer.h"
@@ -24,6 +25,12 @@ bool ConfirmOutputArgSuccess(int argCount);
 bool LoadInputFile(std::filebuf&, std::string, std::string&);
 bool OutputResultData(std::string, std::string);
 #pragma endregion // End File IO function Signatures
+
+
+#pragma region SA Functions
+
+//bool Open_Syntax_Analyzer_Output_Stream(std::ofstream& outStream);
+#pragma endregion
 
 int main(int argc, char** argv)
 {
@@ -49,6 +56,7 @@ int main(int argc, char** argv)
 
 	// file buffer stream for loading file contents
 	std::filebuf inStream;
+
 
 	// flags to signal successfull file IO
 	bool isSourceInputSuccess{ false };
@@ -111,10 +119,16 @@ int main(int argc, char** argv)
 
 #pragma region Syntax Analysis
 
-	SyntaxAnalyzer SA(tokenLexemeVec);
+
+	std::string SA_outString;
+
+	SyntaxAnalyzer SA(tokenLexemeVec, SA_outString);
 	if (SA.Analyze())
 	{
-		std::cout << "\n\nSyntax Correct!\n\n";
+		if (OutputResultData(SA_outString, std::string{ "Syntax_Analysis.txt" }))
+		{
+
+		}
 	}
 
 #pragma endregion
@@ -177,7 +191,8 @@ bool LoadInputFile(std::filebuf& fBuffer, std::string fileName, std::string& sou
 }
 
 // output file results to file
-bool OutputResultData(std::string outString, std::string outFilename = "output.RAT12F")
+bool OutputResultData(std::string outString, std::string outFilename)
+
 {
 	std::filebuf outStream; // see the filebuff is local in this function but passed in in the input version. I can remove the input version's param i think and make it local
 	bool openedSuccess{ false };
@@ -192,3 +207,23 @@ bool OutputResultData(std::string outString, std::string outFilename = "output.R
 }
 
 #pragma endregion // END file i/o function region
+
+
+//bool Open_Syntax_Analyzer_Output_Stream(std::string filename, std::string data)
+//{
+//	std::string filename{ "Syntax_Analysis_Results.txt" };
+//	std::ofstream outStream{ filename };
+//
+//	std::filebuf outStream; // see the filebuff is local in this function but passed in in the input version. I can remove the input version's param i think and make it local
+//	bool openedSuccess{ false };
+//	if (openedSuccess = outStream.open(filename, std::ios::out))
+//	{
+//		std::ostream os(&outStream);
+//		os << outString;
+//		outStream.close();
+//		return true;
+//	}
+//	return false;
+//
+//}
+

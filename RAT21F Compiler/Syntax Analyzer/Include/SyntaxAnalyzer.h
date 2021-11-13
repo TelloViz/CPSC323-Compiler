@@ -20,7 +20,9 @@ Fall 20218*/
 class SyntaxAnalyzer
 {
 public:
-	SyntaxAnalyzer(std::vector<std::pair<std::string, std::string>> tokenizedSource);
+
+  SyntaxAnalyzer(std::vector<std::pair<std::string, std::string>> tokenizedSource, std::string& outputString);
+
 	bool Analyze() { return A(); }
 	
 	std::string RuleNameConversion(std::string simplifiedRuleName) const
@@ -219,23 +221,26 @@ private:
 	bool S_( );
 	bool BB_( );
 
-	
-
 #pragma endregion
 
-	
-	void PrintOnCall(std::string ruleName, std::string rule) const;
-	void PrintRecognizedString(std::string symbol) const;
-	void PrintAcceptedRule(std::string ruleName, std::string rule) const;
-	void PrintRejectedRule(std::string ruleName, std::string rule) const;
+#pragma region Print Function Signatures
+	void PrintOnCall(std::string ruleName, std::string rule) ;
+	void PrintRecognizedString(std::pair<std::string, std::string> tokLex) ;
+	void PrintAcceptedRule(std::string ruleName, std::string rule) ;
+	void PrintRejectedRule(std::string ruleName, std::string rule) ;
+	void PrintSuccessText() ;
 
 	void HandlePrintOnCall(std::string ruleName);
-	void HandlePrintRecognized(std::string ruleName);
+	void HandlePrintRecognized(std::pair<std::string, std::string> tokLex);
 	void HandlePrintAccepted(std::string ruleName);
 	void HandlePrintRejected(std::string ruleName);
+	void HandlePrintSuccessText();
+#pragma endregion
 
 
 	std::vector<std::pair<std::string, std::string>> sourcePairs;
 	std::vector<std::pair<std::string, std::string>>::iterator currentPair;
 
+
+	std::string& outputStringRef;
 };
