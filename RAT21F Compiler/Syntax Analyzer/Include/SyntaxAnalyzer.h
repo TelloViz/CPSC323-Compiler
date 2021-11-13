@@ -20,7 +20,9 @@ Fall 20218*/
 class SyntaxAnalyzer
 {
 public:
-	SyntaxAnalyzer(std::vector<std::pair<std::string, std::string>> tokenizedSource, std::string& outputString);
+
+  SyntaxAnalyzer(std::vector<std::pair<std::string, std::string>> tokenizedSource, std::string& outputString);
+
 	bool Analyze() { return A(); }
 	
 	std::string RuleNameConversion(std::string simplifiedRuleName) const
@@ -218,6 +220,7 @@ private:
 	bool R_( );
 	bool S_( );
 	bool BB_( );
+
 #pragma endregion
 
 #pragma region Print Function Signatures
@@ -234,9 +237,10 @@ private:
 	void HandlePrintSuccessText();
 #pragma endregion
 
+
 	std::vector<std::pair<std::string, std::string>> sourcePairs;
 	std::vector<std::pair<std::string, std::string>>::iterator currentPair;
 
-	std::string& outputStringRef;
 
+	std::string& outputStringRef;
 };
