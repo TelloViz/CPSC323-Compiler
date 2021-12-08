@@ -1,4 +1,4 @@
-// SyntaxAnalyzer.h
+﻿// SyntaxAnalyzer.h
 
 /* This file is the header that holds the SA class and function signatures for the class.
 //  There are also various containers to convert from a simplified representation of non-terminals and
@@ -40,9 +40,6 @@ private:
 	std::map<std::string, std::string> AbstractRuleNameConversion
 	{
 		{"A", "Rat21F"},
-		{"B", "Opt Function Definitions"},
-		{"C", "Function Definitions"},
-		{"D", "Function"},
 		{"E", "Opt Parameter List"},
 		{"F", "Parameter List"},
 		{"G", "Parameter"},
@@ -70,10 +67,8 @@ private:
 		{"CC", "Empty"},
 		{"DD", "Identifier"},
 		{"EE", "Integer"},
-		{"FF", "Real"},
 		{"Y'", "Expression'"},
 		{"Z'", "Term'"},
-		{"C'","Function Definitions'"},
 		{"F'","Parameter List'"},
 		{"K'", "Declaration List"},
 		{"M'", "IDs'"},
@@ -85,23 +80,20 @@ private:
 
 	std::map<std::string, std::string> AbstractEquivalenceMap
 	{
-		{"A", "<B>  #  <J>  <N>  #"},
-		{"B", "<C>  |  <CC>"},
-		{"C", "<D>  <C'>"},
-		{"D", "function  <DD>  (  <E>  )  <J>  <I>"},
+		{"A", "#  <J>  <N>  #"},
 		{"E", "<F>  |  <CC>"},
 		{"F", "<G>  <F'>"},
 		{"G", "<M>  <H>"},
-		{"H", "integer  |  boolean  |  real"},
+		{"H", "integer  |  boolean"},
 		{"I", "{  <N>  }"},
 		{"J", "<K>  |  <CC>"},
 		{"K", "<L>  ;  <K'>"},
-		{"L", "integer  <M>  |  boolean  <M>  |  real  <M>"},
+		{"L", "integer  <M>  |  boolean  <M>"},
 		{"M", "<DD>  <M'>"},
 		{"N", "<O>  <N'>"},
 		{"O", "<P>  |  <Q>  |  <R>  |  <S>  |  <T>  |  <U>  |  <V>"},
 		{"P", "{  <N>  }"},
-		{"Q", "<DD>  =  <Y>  ;"},
+		{"Q", "<DD>  =  <Y>  ;"},										// A1) A -> id  = E { gen_instr (POPM,  get_address(id)) }
 		{"R", "if  (  <W>  )  <O>  <R'>"},
 		{"S", "return  <S'>"},
 		{"T", "put  (  <Y>  )  ;"},
@@ -109,17 +101,15 @@ private:
 		{"V", "while  (  <W>  )  <O>"},
 		{"W", "<Y>  <X>  <Y>"},
 		{"X", "==  |  !=  |  >  |  <  |  <=  |  =>"},
-		{"Y", "<Z>  <Y'>"},
-		{"Z", "<AA>  <Z'>"},
-		{"AA", "-  <BB>  |  <BB>"},
-		{"BB", "<DD>  <BB'>  |  <EE>  |  (  <Y>  )  |  <FF>  |  TRUE  |  FALSE"},
+		{"Y", "<Z>  <Y'>"},												// A2) E ->  T  E’ 
+		{"Z", "<AA>  <Z'>"},											// A5) T  ->   F  T’ 
+		{"AA", "-  <BB>  |  <BB>"},										
+		{"BB", "<DD>  <BB'>  |  <EE>  |  (  <Y>  )  |  TRUE  |  FALSE"},
 		{"CC", "epsilon"},
-		{"DD", "identifier"},
+		{"DD", "identifier"},											// A8) F -> id { gen_instr (PUSHM, get_address(id) )
 		{"EE", "integer"},
-		{"FF", "real"},
-		{"Y'", "+  <Z>  <Y'>  |  -  <Z>  <Y'>  |  epsilon"},
-		{"Z'", "*  <AA>  <Z'>  |  /  <AA>  <Z'>  |  epsilon"},
-		{"C'", "<C>  |  epsilon"},
+		{"Y'", "+  <Z>  <Y'>  |  -  <Z>  <Y'>  |  epsilon"},					// A3) E’ -> + T {  gen_intsr(ADD,  nil) }   E’ //  A4) E’ ->  epsilon
+		{"Z'", "*  <AA>  <Z'>  |  /  <AA>  <Z'>  |  epsilon"},					// A6) T’ -> * F { gen_instr (MUL, nil) }  T’ // A7) T’ -> epsilon
 		{"F'", ",  <F>  |  epsilon"},
 		{"K'", "<K>  |  epsilon"},
 		{"M'", ",  <M>  |  epsilon"},
@@ -132,18 +122,15 @@ private:
 
 	std::map<std::string, std::string> EquivalenceMap
 	{
-		{"Rat21F", "<Opt Function Definitions>  #  <Opt Declaration List>  <Statement List>  #"},
-		{"Opt Function Definitions", "<Function Definitions>  |  <Empty>"},
-		{"Function Definitions", "<Function>  <Function Definitions'>"},
-		{"Function", "function  <Identifier>  (  <Opt Parameter List>  )  <Opt Declaration List>  <Body>"},
+		{"Rat21F", "#  <Opt Declaration List>  <Statement List>  #"},
 		{"Opt Parameter List", "<Parameter List>  |  <Empty>"},
 		{"Parameter List", "<Parameter>  <Parameter List'>"},
 		{"Parameter", "<IDs>  <Qualifier>"},
-		{"Qualifier", "integer  |  boolean  |  real"},
+		{"Qualifier", "integer  |  boolean"},
 		{"Body", "{  <Statement List>  }"},
 		{"Opt Declaration List", "<Declaration List>  |  <Empty>"},
 		{"Declaration List", "<Declaration>  ;  <Declaration List'>"},
-		{"Declaration", "integer  <IDs>  |  boolean  <IDs>  |  real  <IDs>"},
+		{"Declaration", "integer  <IDs>  |  boolean  <IDs>"},
 		{"IDs", "<Identifier>  <IDs'>"},
 		{"Statement List", "<Statement>  <Statement List'>"},
 		{"Statement", "<Compound>  |  <Assign>  |  <If>  |  <Return>  |  <Print>  |  <Scan>  |  <While>"},
@@ -159,14 +146,13 @@ private:
 		{"Expression", "<Term>  <Expression'>"},
 		{"Term", "<Factor>  <Term'>"},
 		{"Factor", "-  <Primary>  |  <Primary>"},
-		{"Primary", "<Identifier>  <Primary'>  |  <Integer>  |  (  <Expression>  )  |  <Real>  |  TRUE  |  FALSE"},
+		{"Primary", "<Identifier>  <Primary'>  |  <Integer>  |  (  <Expression>  )  |  TRUE  |  FALSE"},
 		{"Empty", "epsilon"},
 		{"Identifier", "identifier"},
 		{"Integer", "integer"},
 		{"Real", "real"},
 		{"Expression'", "+  <Term>  <Expression'>  |  -  <Term>  <Expression'>  |  epsilon"},
 		{"Term'", "*  <Factor>  <Term'>  |  /  <Factor>  <Term'>  |  epsilon"},
-		{"Function Definitions'", "epsilon  |  <Function Definitions>"},
 		{"Parameter List'", "epsilon  |  ,  <Parameter List>"},
 		{"Declaration List'", "epsilon  |  <Declaration List>"},
 		{"IDs'", "epsilon  |  ,  <IDs>"},
@@ -179,9 +165,6 @@ private:
 
 #pragma region Production Rules
 	bool A();
-	bool B( );
-	bool C( );
-	bool D( );
 	bool E( );
 	bool F( );
 	bool G( );
@@ -209,10 +192,8 @@ private:
 	bool CC( );
 	bool DD( );
 	bool EE( );
-	bool FF( );
 	bool Y_( );
 	bool Z_( );
-	bool C_( );
 	bool F_( );
 	bool K_( );
 	bool M_( );
@@ -236,13 +217,52 @@ private:
 	void HandlePrintRejected(std::string ruleName);
 	void HandlePrintSuccessText();
 
-	void Expected(std::string msg) const { std::cout << "\nExpected " << msg << std::endl; };
+	void Expected(std::string msg) const { std::cout << "\nExpected " << msg; }
+	
 #pragma endregion
 
+#pragma region Symbol Table Handling
+
+
+#pragma endregion
+	const int FIRST_SYMTBL_ADDR{ 7000 };
+	const int FINAL_SYMTBL_ADDR{ 7999 };
+
+#pragma region Instruction Handling
+	const int FIRST_INSTR_ADDR{ 8000 };
+	const int FINAL_INSTR_ADDR{ 8999 };
+
+	int instrAddr{ FIRST_INSTR_ADDR };
+
+	int FirstInstrAddr() const { return FIRST_INSTR_ADDR; }
+	int InstrAddr() const { return FINAL_INSTR_ADDR; }
+	void IncrInstrAddr() { ++instrAddr; }
+
+	struct Instruction
+	{
+		int address;
+		std::string op;
+		std::string oprnd;
+	};
+
+	std::vector<Instruction> instr_table;
+
+	void GenerateInstruction(std::string op, std::string oprnd)
+	{
+
+		instr_table[InstrAddr()].address = InstrAddr();
+		instr_table[InstrAddr()].op = op;
+		instr_table[InstrAddr()].oprnd = oprnd;
+		IncrInstrAddr();
+
+	}
+#pragma endregion
 
 	std::vector<std::pair<std::string, std::string>> sourcePairs;
 	std::vector<std::pair<std::string, std::string>>::iterator currentPair;
 
-
 	std::string& outputStringRef;
+
+
+
 };

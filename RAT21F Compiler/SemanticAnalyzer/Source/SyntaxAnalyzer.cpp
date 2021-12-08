@@ -32,7 +32,7 @@ SyntaxAnalyzer::SyntaxAnalyzer(std::vector<std::pair<std::string, std::string>> 
 
 #pragma region Production Rules
 
-//	<A>  ->  <B>	#	<J>	<N>	#
+//	<A>  -> #	<J>	<N>	#
 bool SyntaxAnalyzer::A()
 {
 #ifdef SLOW_MODE
@@ -43,36 +43,33 @@ bool SyntaxAnalyzer::A()
 	bool isA{ false };	
 
 	HandlePrintOnCall(rule);
-
-	if (B())
+	
+	if (currentPair->second == "#")
 	{
-		if (currentPair->second == "#")
+
+		HandlePrintRecognized(*currentPair);
+
+		++currentPair;
+		if (J())
 		{
 
-			HandlePrintRecognized(*currentPair);
-
-			++currentPair;
-			if (J())
+			if (N())
 			{
-
-				if (N())
+				if (currentPair->second == "#")
 				{
-					if (currentPair->second == "#")
-					{
 
-						HandlePrintRecognized(*currentPair);
+					HandlePrintRecognized(*currentPair);
 
-						++currentPair;
-						isA = true;
+					++currentPair;
+					isA = true;
 
-						HandlePrintAccepted(rule);
-					}
-					else { Expected("#"); }
+					HandlePrintAccepted(rule);
 				}
+				else { Expected("#"); }
 			}
 		}
-		else { Expected("#"); }
 	}
+	else { Expected("#"); }
 
 
 	if (isA)
@@ -89,122 +86,7 @@ bool SyntaxAnalyzer::A()
 
 //  <B> ->  C  |  CC      
 
-bool SyntaxAnalyzer::B()
-{
-#ifdef SLOW_MODE
-	mySleep(slowModeSpeed);
-#endif
 
-
-	std::string rule{ "B" };
-	bool isB{ false };
-
-	HandlePrintOnCall(rule);
-
-	if (C())
-	{
-		isB = true;
-
-		HandlePrintAccepted(rule);
-	}
-	else if (CC())
-	{
-		isB = true;
-
-		HandlePrintAccepted(rule);
-	}
-
-	if (isB == false)
-	{
-		HandlePrintRejected(rule);
-		return isB;
-	}
-}
-
-//	C  ->  D	C'
-bool SyntaxAnalyzer::C()
-{
-	std::string rule{ "C" };
-	bool isC{ false };
-	
-	HandlePrintOnCall(rule);
-
-	if (D())
-	{		
-		if (C_())
-		{
-			isC = true;
-			
-			HandlePrintAccepted(rule);
-		}
-	}
-
-	if (isC == false)
-	{
-		HandlePrintRejected(rule);
-		return isC;
-	}
-
-	return isC;
-}
-
-//	D  ->  function	DD	(	E	)	J	I
-bool SyntaxAnalyzer::D()
-{
-	#ifdef SLOW_MODE
-		mySleep(slowModeSpeed);
-	#endif
-
-	std::string rule{ "D" };
-	bool isD{ false };
-
-	HandlePrintOnCall(rule);
-
-	if (currentPair->second == "function") 
-	{
-		HandlePrintRecognized(*currentPair);
-
-		++currentPair;
-
-		if (DD())
-		{			
-			if (currentPair->second == "(")
-			{
-				
-        HandlePrintRecognized(*currentPair);
-
-
-				++currentPair;
-				if (E())
-				{
-					if (currentPair->second == ")")
-					{
-						HandlePrintRecognized(*currentPair);
-
-						++currentPair;
-
-						if (J())
-						{
-							if (I())
-							{
-								isD = true;
-								HandlePrintAccepted(rule);									
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	if (isD == false)
-	{
-		HandlePrintRejected(rule);
-		return isD;
-	}
-
-	return isD;
-}
 
 //	E  ->  F	|	CC
 bool SyntaxAnalyzer::E()
@@ -386,8 +268,10 @@ bool SyntaxAnalyzer::I()
 				isI = true;
 				++currentPair;
 			}
+			else { Expected("}"); }
 		}
 	}
+	else { Expected("{"); }
 
 	if (isI == false)
 	{
@@ -461,6 +345,7 @@ bool SyntaxAnalyzer::K()
 				HandlePrintAccepted(rule);					
 			}			
 		}
+		else { Expected(";"); }
 	}
 
 	if (isK == false)
@@ -686,8 +571,10 @@ bool SyntaxAnalyzer::P()
 				HandlePrintAccepted(rule);
 					
 			}
+			else { Expected("}"); }
 		}
 	}
+	else { Expected("{"); }
 
 	if (isP == false)
 	{
@@ -698,7 +585,8 @@ bool SyntaxAnalyzer::P()
 	return isP;
 }
 
-// Q  ->  DD	=	Y  ;
+//		Q  ->  DD	 = Y  ;
+// A1)	A  ->  id  = E           { gen_instr (POPM,  get_address(id)) }
 bool SyntaxAnalyzer::Q()
 {
 	#ifdef SLOW_MODE
@@ -711,12 +599,11 @@ bool SyntaxAnalyzer::Q()
 
 	bool isQ{ false };
 
-	if (DD())
+	if (DD())  // if Token == identifier type
 	{
 		if (currentPair->second == "=")
 		{
-			HandlePrintRecognized(*currentPair);
-			
+			HandlePrintRecognized(*currentPair);			
 			++currentPair;
 			
 			if (Y())
@@ -732,8 +619,12 @@ bool SyntaxAnalyzer::Q()
 					isQ = true;
 					++currentPair;
 				}
+				
 			}
+
+			// TODO  get_instr (POPM, get_address (save) );
 		}
+		else { Expected("="); }
 	}
 
 	if (isQ == false)
@@ -790,9 +681,12 @@ bool SyntaxAnalyzer::R()
 
 					}
 				}
+				else { Expected(")"); }
 			}
 		}
+		else { Expected("("); }
 	}
+	else { Expected("if"); }
 
 	if (isR == false)
 	{
@@ -830,7 +724,8 @@ bool SyntaxAnalyzer::S()
 				
 		}
 
-  }
+	}
+	else { Expected("return"); }
 	
 	if (isS == false)
 	{
@@ -863,7 +758,7 @@ bool SyntaxAnalyzer::T()
 		if (currentPair->second == "(")
 		{
 
-      HandlePrintRecognized(*currentPair);
+			HandlePrintRecognized(*currentPair);
 
 			
 			++currentPair;
@@ -886,10 +781,14 @@ bool SyntaxAnalyzer::T()
 						HandlePrintAccepted(rule);
 							
 					}
+					else { Expected(";"); }
 				}
+				else { Expected(")"); }
 			}
 		}
+		else { Expected("("); }
 	}
+	else { Expected("put"); }
 
 
 	if (isT == false)
@@ -947,9 +846,12 @@ bool SyntaxAnalyzer::U()
 						HandlePrintAccepted(rule);
 							
 					}
+					else { Expected(";"); }
 				}
+				else { Expected(")"); }
 			}
 		}
+		else { Expected("("); }
 	}
 
 	if (isU == false)
@@ -1004,9 +906,12 @@ bool SyntaxAnalyzer::V()
 
 					}
 				}
+				else { Expected(")"); }
 			}
 		}
+		else { Expected("("); }
 	}
+	else { Expected("while"); }
 
 	if (isV == false)
 	{
@@ -1136,7 +1041,8 @@ bool SyntaxAnalyzer::X()
 	return isX;
 }
 
-// Y  ->  Z	Y'
+//		Y  ->  Z	Y'
+// A2)	E  ->  T  E’ 
 bool SyntaxAnalyzer::Y()
 {
 	#ifdef SLOW_MODE
@@ -1166,6 +1072,7 @@ bool SyntaxAnalyzer::Y()
 }
 
 // <Z>  ->  <AA>	<Z'>
+// A5) T  ->   F  T’
 bool SyntaxAnalyzer::Z()
 {
 	#ifdef SLOW_MODE
@@ -1196,6 +1103,7 @@ bool SyntaxAnalyzer::Z()
 }
 
 // AA  ->  -	BB	|	BB
+// A8) F -> id { gen_instr (PUSHM, get_address(id) )
 bool SyntaxAnalyzer::AA()
 {
 	#ifdef SLOW_MODE
@@ -1298,6 +1206,7 @@ bool SyntaxAnalyzer::BB() // TODO keep looking into BB function
 					++currentPair;
 					isBB = true;
 			}
+			else { Expected(")"); }
 		}
 	}
 	else if (FF())
@@ -1352,9 +1261,13 @@ bool SyntaxAnalyzer::DD()
 
 		HandlePrintAccepted(rule);
 			
-
+		//  TODO gen_instr(PUSHM,  get_address (token));
 		++currentPair;
 		isDD = true;;
+	}
+	else 
+	{
+		Expected("identifier");
 	}
 
 	if (isDD == false)
@@ -1387,7 +1300,8 @@ bool SyntaxAnalyzer::EE()
 
 		++currentPair;
 		isEE =  true;
-	}	
+	}
+	else { Expected("integer"); }
 
 	if (isEE == false)
 	{
@@ -1422,6 +1336,7 @@ bool SyntaxAnalyzer::FF()
 		HandlePrintAccepted(rule);
 			
 	}
+	else { Expected("real"); }
 
 	if (isFF == false)
 	{
@@ -1434,6 +1349,8 @@ bool SyntaxAnalyzer::FF()
 }
 
 // Y'  ->  +	Z	Y'	|	-	Z	Y'	|	epsilon
+// A3) E’ -> + T {  gen_intsr(ADD,  nil) }   E’ 
+// A4) E’ ->  epsilon
 bool SyntaxAnalyzer::Y_()
 {
 	#ifdef SLOW_MODE
@@ -1461,6 +1378,7 @@ bool SyntaxAnalyzer::Y_()
 				HandlePrintAccepted(rule);
 					
 			}
+			// TODO gen inst (ADD,nil);
 		}
 	}
 	else if (currentPair->second == "-")
@@ -1496,6 +1414,8 @@ bool SyntaxAnalyzer::Y_()
 }
 
 // Z'  ->  *	AA	Z'	|	/	AA	Z'	|	epsilon
+// A6) T’ -> * F { gen_instr (MUL, nil) }  T’ 
+// A7) T’ -> epsilon  
 bool SyntaxAnalyzer::Z_()
 {
 	#ifdef SLOW_MODE
@@ -1511,7 +1431,6 @@ bool SyntaxAnalyzer::Z_()
 	{
 		HandlePrintRecognized(*currentPair);
 
-
 		++currentPair;
 
 		if (AA())
@@ -1523,6 +1442,8 @@ bool SyntaxAnalyzer::Z_()
 				HandlePrintAccepted(rule);					
 
 			}
+
+			// TODO gen_instr(MUL, nil);
 		}
 	}
 	else if (currentPair->second == "/")
@@ -1554,36 +1475,6 @@ bool SyntaxAnalyzer::Z_()
 
 	}
 	return isZ_;
-}
-
-// C'  ->  C | epsilon
-bool SyntaxAnalyzer::C_()
-{
-	#ifdef SLOW_MODE
-		mySleep(slowModeSpeed);
-	#endif
-
-	bool isC_{ false };
-	std::string rule{ "C'" };
-
-	HandlePrintOnCall(rule);
-
-	if (C())
-	{
-		isC_ = true;
-	}
-	else
-	{
-		std::pair<std::string, std::string> tempPair{ "epsilon", "epsilon" };
-		HandlePrintRecognized(tempPair);
-
-		
-		isC_ = true;
-	}
-
-	HandlePrintAccepted(rule);
-		
-	return isC_;
 }
 
 // F'  ->  ,	F  |  epsilon
@@ -1758,6 +1649,7 @@ bool SyntaxAnalyzer::R_()
 				++currentPair;
 				HandlePrintAccepted(rule);
 			}
+			else { Expected("endif"); }
 		}
 	}
 
@@ -1807,6 +1699,7 @@ bool SyntaxAnalyzer::S_()
 			HandlePrintAccepted(rule);
 			
 		}
+		else { Expected(";"); }
 	}
 
 	if (isS_ == false)
@@ -1845,6 +1738,7 @@ bool SyntaxAnalyzer::BB_()
 				++currentPair;
 				isBB_ = true;
 			}
+			else { Expected(")"); }
 		}
 	}
 	else // epsilon
@@ -2017,7 +1911,7 @@ void SyntaxAnalyzer::PrintRejectedRule(std::string ruleName, std::string rule)
 	tempStringStream.str(std::string{ "" });
 
 #ifdef VERBOSE_PRINT_RULE_ON_ACCEPT
-		tempStringStream << "  ->  " << rule;
+		tempStringStream << "  ->  " << rule << std::endl;
 		std::cout << tempStringStream.str();
 		outputStringRef.append(tempStringStream.str());
 		tempStringStream.str(std::string{ "" });
