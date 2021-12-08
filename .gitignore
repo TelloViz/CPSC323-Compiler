@@ -388,8 +388,10 @@ FodyWeavers.xsd
 *.sln.iml
 *.filters
 
-*.vcxproj
+# *.vcxproj
 
 *.RAT21F
 
 *.txt
+
+RAT21F Compiler/SemanticAnalyzer/Include/ProductionRule.h
