@@ -67,9 +67,11 @@ bool SyntaxAnalyzer::A()
 
 						HandlePrintAccepted(rule);
 					}
+					else { Expected("#"); }
 				}
 			}
 		}
+		else { Expected("#"); }
 	}
 
 

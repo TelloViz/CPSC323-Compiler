@@ -235,6 +235,8 @@ private:
 	void HandlePrintAccepted(std::string ruleName);
 	void HandlePrintRejected(std::string ruleName);
 	void HandlePrintSuccessText();
+
+	void Expected(std::string msg) const { std::cout << "\nExpected " << msg << std::endl; };
 #pragma endregion
 
 
