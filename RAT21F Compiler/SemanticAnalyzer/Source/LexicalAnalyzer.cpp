@@ -14,7 +14,20 @@
 
 LexicalAnalyzer::LexicalAnalyzer(std::string sourceString) : source{ sourceString }
 {
+	std::string tempLine;
+	int lineNum{ 0 };
+	for (auto iter : sourceString)
+	{
+		tempLine.push_back(iter);
+		if(iter == '\n')
+		{
+			line_number_map[++lineNum] = tempLine;
+			tempLine = "";
+		}
+	}
 	source = RemoveComments(source, "/*", "*/"); // removal of comments in our local copy
+
+	PrintLineNumberedSource();
 }
 
 bool LexicalAnalyzer::Lexer(std::string& token, std::string& lexeme)

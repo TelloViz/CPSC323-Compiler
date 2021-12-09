@@ -11,49 +11,49 @@ namespace SA_cfg
 
 	//************************* Print Rule When Calling Function **********************************
 #ifndef PRINT_RULE_ON_CALL
-#define PRINT_RULE_ON_CALL // Comment out ths line to turn off
+//#define PRINT_RULE_ON_CALL // Comment out ths line to turn off
 #endif
 // **********************************************************************************************
 
 
 //************************* Print Rule When Calling Function Verbose ****************************
 #ifndef VERBOSE_PRINT_RULE_ON_CALL	// Both modes must be defined for Verbose to work
-#define VERBOSE_PRINT_RULE_ON_CALL  // Comment out ths line to turn off	
+//#define VERBOSE_PRINT_RULE_ON_CALL  // Comment out ths line to turn off	
 #endif
 // **********************************************************************************************
 
 
 //************************* Print Rule if Accepted **********************************************
 #ifndef PRINT_RULE_ON_ACCEPT
-#define PRINT_RULE_ON_ACCEPT
+//#define PRINT_RULE_ON_ACCEPT
 #endif
 // **********************************************************************************************
 
 
 //************************* Print Rule if Accepted Verbose *************************************
 #ifndef VERBOSE_PRINT_RULE_ON_ACCEPT	// Both modes must be defined for Verbose to work
-#define VERBOSE_PRINT_RULE_ON_ACCEPT	// Comment out ths line to turn off
+//#define VERBOSE_PRINT_RULE_ON_ACCEPT	// Comment out ths line to turn off
 #endif
 // **********************************************************************************************
 
 
 //************************* Print Rule if Rejected ************************************************
 #ifndef PRINT_RULE_ON_REJECT
-#define PRINT_RULE_ON_REJECT
+//#define PRINT_RULE_ON_REJECT
 #endif
 // **********************************************************************************************
 
 
 //************************* Print Rule if Rejected Verbose ****************************************
 #ifndef VERBOSE_PRINT_RULE_ON_REJECT	// Both modes must be defined for Verbose to work
-#define VERBOSE_PRINT_RULE_ON_REJECT	// Comment out ths line to turn off
+//#define VERBOSE_PRINT_RULE_ON_REJECT	// Comment out ths line to turn off
 #endif
 // **********************************************************************************************
 
 
 //************************* Print Symbols when Recognized ****************************************
 #ifndef PRINT_RECOGNIZE_LABEL
-#define PRINT_RECOGNIZE_LABEL	// Comment out ths line to turn off
+//#define PRINT_RECOGNIZE_LABEL	// Comment out ths line to turn off
 #endif // !PRINT_RECOGNIZE_LABEL
 // **********************************************************************************************
 

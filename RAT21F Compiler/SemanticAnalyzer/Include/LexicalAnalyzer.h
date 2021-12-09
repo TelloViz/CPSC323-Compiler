@@ -15,6 +15,7 @@
 #include <map>
 #include <stack>
 #include <cassert>
+#include <iostream>
 
 
 class LexicalAnalyzer
@@ -97,6 +98,16 @@ private:
 	}
 
 	
+	void PrintLineNumberedSource() const
+	{
+		for (auto iter : line_number_map)
+		{
+			if(iter.first < 10)	std::cout << iter.first << "  |  " << iter.second;
+			else if(iter.first>=10 && iter.first <= 99) std::cout << iter.first << " |  " << iter.second;
+			else if (iter.first >= 100 && iter.first <= 999) std::cout << iter.first << "|  " << iter.second;
+		}
+	}
+
 	// Enumerations representing each input type.
 	enum eInputType // These enumerations need to correspond with the column of the particular input character
 	{
@@ -213,6 +224,8 @@ private:
 	// the Lexical Analyzers local copy of the source code passed in during construction. 
 	// Note: this source is not the same as the passed source. This source has comments removed.
 	std::string source;
+
+	std::map<int, std::string> line_number_map;
 
 	// string iterators used for marking various points in the source during analysis
 	std::string::iterator currCharIter{ /*source.begin()*/};
