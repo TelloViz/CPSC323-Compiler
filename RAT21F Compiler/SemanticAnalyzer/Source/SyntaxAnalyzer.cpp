@@ -27,6 +27,19 @@ SyntaxAnalyzer::SyntaxAnalyzer(std::vector<std::pair<std::string, std::string>> 
 	: sourcePairs{ tokenizedSource }, outputStringRef{outputString}
 
 {
+
+	for (auto iter : tokenizedSource)
+	{
+		if (iter.first == "identifier")
+		{
+			if (!symbolExists(iter.second))
+			{
+				insert_symbol(SymbAddr(), iter.second);
+				IncrSymbAddr();
+			}
+		}
+	}
+
 	currentPair = sourcePairs.begin();
 }
 
@@ -75,6 +88,7 @@ bool SyntaxAnalyzer::A()
 	if (isA)
 	{
 		HandlePrintSuccessText();
+		PrintGeneratedInstructions();
 	}
 	else
 	{
@@ -268,10 +282,8 @@ bool SyntaxAnalyzer::I()
 				isI = true;
 				++currentPair;
 			}
-			else { Expected("}"); }
 		}
 	}
-	else { Expected("{"); }
 
 	if (isI == false)
 	{
@@ -345,7 +357,6 @@ bool SyntaxAnalyzer::K()
 				HandlePrintAccepted(rule);					
 			}			
 		}
-		else { Expected(";"); }
 	}
 
 	if (isK == false)
@@ -386,19 +397,6 @@ bool SyntaxAnalyzer::L()
 	else if (currentPair->second == "boolean")
 	{
 		HandlePrintRecognized(*currentPair);		
-
-
-		++currentPair;
-		if(M()) 
-		{
-			HandlePrintAccepted(rule);
-				
-			isL = true;
-		}
-	}
-	else if (currentPair->second == "real")
-	{
-		HandlePrintRecognized(*currentPair);
 
 
 		++currentPair;
@@ -571,10 +569,8 @@ bool SyntaxAnalyzer::P()
 				HandlePrintAccepted(rule);
 					
 			}
-			else { Expected("}"); }
 		}
 	}
-	else { Expected("{"); }
 
 	if (isP == false)
 	{
@@ -601,8 +597,11 @@ bool SyntaxAnalyzer::Q()
 
 	if (DD())  // if Token == identifier type
 	{
+		
 		if (currentPair->second == "=")
 		{
+
+			GenerateInstruction("POPM", std::to_string(get_address((currentPair-1)->second))); // TODO remove this awful pointer arithmetic
 			HandlePrintRecognized(*currentPair);			
 			++currentPair;
 			
@@ -622,9 +621,12 @@ bool SyntaxAnalyzer::Q()
 				
 			}
 
-			// TODO  get_instr (POPM, get_address (save) );
 		}
 		else { Expected("="); }
+	}
+	else
+	{
+		Expected("identifier");
 	}
 
 	if (isQ == false)
@@ -681,12 +683,9 @@ bool SyntaxAnalyzer::R()
 
 					}
 				}
-				else { Expected(")"); }
 			}
 		}
-		else { Expected("("); }
 	}
-	else { Expected("if"); }
 
 	if (isR == false)
 	{
@@ -781,14 +780,10 @@ bool SyntaxAnalyzer::T()
 						HandlePrintAccepted(rule);
 							
 					}
-					else { Expected(";"); }
 				}
-				else { Expected(")"); }
 			}
 		}
-		else { Expected("("); }
 	}
-	else { Expected("put"); }
 
 
 	if (isT == false)
@@ -846,12 +841,9 @@ bool SyntaxAnalyzer::U()
 						HandlePrintAccepted(rule);
 							
 					}
-					else { Expected(";"); }
 				}
-				else { Expected(")"); }
 			}
 		}
-		else { Expected("("); }
 	}
 
 	if (isU == false)
@@ -906,12 +898,9 @@ bool SyntaxAnalyzer::V()
 
 					}
 				}
-				else { Expected(")"); }
 			}
 		}
-		else { Expected("("); }
 	}
-	else { Expected("while"); }
 
 	if (isV == false)
 	{
@@ -1209,12 +1198,7 @@ bool SyntaxAnalyzer::BB() // TODO keep looking into BB function
 			else { Expected(")"); }
 		}
 	}
-	else if (FF())
-	{
-		isBB = true;
-
-		HandlePrintAccepted(rule);			
-	}
+	
 
 	if (isBB == false)
 	{
@@ -1261,14 +1245,15 @@ bool SyntaxAnalyzer::DD()
 
 		HandlePrintAccepted(rule);
 			
-		//  TODO gen_instr(PUSHM,  get_address (token));
+		GenerateInstruction("PUSHM", std::to_string(get_address(currentPair->second))); // need to replace "token" with actual token
 		++currentPair;
 		isDD = true;;
 	}
-	else 
+	else
 	{
 		Expected("identifier");
 	}
+
 
 	if (isDD == false)
 	{
@@ -1313,40 +1298,6 @@ bool SyntaxAnalyzer::EE()
 	return isEE;
 }
 
-// FF -> real
-bool SyntaxAnalyzer::FF()
-{
-	#ifdef SLOW_MODE
-		mySleep(slowModeSpeed);
-	#endif
-
-	bool isFF{ false };
-	std::string rule{ "FF" };
-
-	HandlePrintOnCall(rule);
-
-	if (currentPair->first == "real")
-	{
-		HandlePrintRecognized(*currentPair);
-
-
-		++currentPair;
-		isFF = true;
-
-		HandlePrintAccepted(rule);
-			
-	}
-	else { Expected("real"); }
-
-	if (isFF == false)
-	{
-		HandlePrintRejected(rule);
-	}
-
-
-
-	return isFF;
-}
 
 // Y'  ->  +	Z	Y'	|	-	Z	Y'	|	epsilon
 // A3) E’ -> + T {  gen_intsr(ADD,  nil) }   E’ 
@@ -1371,6 +1322,7 @@ bool SyntaxAnalyzer::Y_()
 
 		if (Z())
 		{
+			GenerateInstruction("ADD", "nil");
 			if (Y_())
 			{
 				isY_ = true;
@@ -1378,7 +1330,7 @@ bool SyntaxAnalyzer::Y_()
 				HandlePrintAccepted(rule);
 					
 			}
-			// TODO gen inst (ADD,nil);
+			
 		}
 	}
 	else if (currentPair->second == "-")
@@ -1435,6 +1387,8 @@ bool SyntaxAnalyzer::Z_()
 
 		if (AA())
 		{
+			GenerateInstruction("MUL", "nil");
+
 			if (Z_())
 			{
 				isZ_ = true;
@@ -1442,8 +1396,7 @@ bool SyntaxAnalyzer::Z_()
 				HandlePrintAccepted(rule);					
 
 			}
-
-			// TODO gen_instr(MUL, nil);
+			
 		}
 	}
 	else if (currentPair->second == "/")
@@ -1699,7 +1652,6 @@ bool SyntaxAnalyzer::S_()
 			HandlePrintAccepted(rule);
 			
 		}
-		else { Expected(";"); }
 	}
 
 	if (isS_ == false)
@@ -1738,7 +1690,6 @@ bool SyntaxAnalyzer::BB_()
 				++currentPair;
 				isBB_ = true;
 			}
-			else { Expected(")"); }
 		}
 	}
 	else // epsilon

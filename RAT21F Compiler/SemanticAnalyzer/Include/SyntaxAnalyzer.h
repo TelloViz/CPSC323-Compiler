@@ -223,19 +223,37 @@ private:
 
 #pragma region Symbol Table Handling
 
-
-#pragma endregion
 	const int FIRST_SYMTBL_ADDR{ 7000 };
 	const int FINAL_SYMTBL_ADDR{ 7999 };
+	int symbAddr{ FIRST_SYMTBL_ADDR + 1};
+
+	int FirstSymbAddr() const { return FIRST_SYMTBL_ADDR; }
+	int SymbAddr() const { return symbAddr; }
+	void IncrSymbAddr() { ++symbAddr; }
+
+	std::map<int, std::string> symb_table;
+	std::map<std::string, int> addr_table;
+
+	void	insert_symbol(int addr, std::string symbol) 
+	{ 
+		symb_table[addr] = symbol; 
+		addr_table[symbol] = addr;
+	}
+	bool		symbolExists(int addr) { return symb_table.find(addr) != symb_table.end(); }
+	bool		symbolExists(std::string symbol) { return addr_table.find(symbol) != addr_table.end(); }
+	int		get_address(std::string token) { return addr_table[token]; } // TODO finish implementing symbol table
+
+#pragma endregion
+	
 
 #pragma region Instruction Handling
 	const int FIRST_INSTR_ADDR{ 8000 };
 	const int FINAL_INSTR_ADDR{ 8999 };
 
-	int instrAddr{ FIRST_INSTR_ADDR };
+	int instrAddr{ FIRST_INSTR_ADDR + 1 };
 
 	int FirstInstrAddr() const { return FIRST_INSTR_ADDR; }
-	int InstrAddr() const { return FINAL_INSTR_ADDR; }
+	int InstrAddr() const { return instrAddr; }
 	void IncrInstrAddr() { ++instrAddr; }
 
 	struct Instruction
@@ -245,7 +263,7 @@ private:
 		std::string oprnd;
 	};
 
-	std::vector<Instruction> instr_table;
+	std::map<int, Instruction> instr_table;
 
 	void GenerateInstruction(std::string op, std::string oprnd)
 	{
@@ -255,6 +273,18 @@ private:
 		instr_table[InstrAddr()].oprnd = oprnd;
 		IncrInstrAddr();
 
+	}
+
+	void PrintGeneratedInstructions()
+	{
+		for (auto iter : addr_table)
+		{
+			std::cout << "\n" << iter.first << " " << iter.second;
+		}
+		for (auto iter : instr_table)
+		{
+			std::cout << "\n" << iter.first << " " << iter.second.op << " " << iter.second.oprnd;
+		}
 	}
 #pragma endregion
 

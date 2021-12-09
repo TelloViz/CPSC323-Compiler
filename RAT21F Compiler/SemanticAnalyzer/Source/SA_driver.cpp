@@ -92,7 +92,6 @@ int main(int argc, char** argv)
 
 	// instantiate and initialize EOF flag
 	bool isEOF{ false };
-
 	
 	// while not end of file, analyze source
 	while (!isEOF)
@@ -100,19 +99,16 @@ int main(int argc, char** argv)
 		// set EOF based on each call to Analyzer
 		isEOF = LA.Lexer(myToken, myLexeme);
 
-
 		// if the tokens are empty don't bother
 		if (myToken.empty() || myLexeme.empty())
 		{
 
 		}		
-		else// otherwise append to the output string also syntax analyze it
+		else// otherwise append to the output string
 		{
 			tokenLexemeVec.push_back(std::pair<std::string, std::string>{ myToken, myLexeme });
 
-
-			formattedOutputString.append("\n" + myToken + "\t\t" + myLexeme);
-			
+			formattedOutputString.append("\n" + myToken + "\t\t" + myLexeme);			
 		}
 	}
 #pragma endregion
