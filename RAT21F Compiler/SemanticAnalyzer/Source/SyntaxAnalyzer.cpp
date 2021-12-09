@@ -27,7 +27,6 @@ SyntaxAnalyzer::SyntaxAnalyzer(std::vector<std::pair<std::string, std::string>> 
 	: sourcePairs{ tokenizedSource }, outputStringRef{outputString}
 
 {
-
 	for (auto iter : tokenizedSource)
 	{
 		if (iter.first == "identifier")
@@ -599,9 +598,7 @@ bool SyntaxAnalyzer::Q()
 	{
 		std::string saveSymbol = (currentPair-1)->second;
 		if (currentPair->second == "=")
-		{
-
-			
+		{			
 			HandlePrintRecognized(*currentPair);			
 			++currentPair;
 			

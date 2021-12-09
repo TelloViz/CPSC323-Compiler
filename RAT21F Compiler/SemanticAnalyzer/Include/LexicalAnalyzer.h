@@ -17,6 +17,8 @@
 #include <cassert>
 #include <iostream>
 
+#include "LA_Config.h"
+
 
 class LexicalAnalyzer
 {
@@ -35,6 +37,16 @@ public:
  *  @param lexeme : as std::string reference to be loaded with found token 
  *  @return bool indicating End of File (end of analysis)
  */	bool Lexer(std::string& token, std::string& lexeme);
+
+ void PrintLineNumberedSource() const
+ {
+	 for (auto iter : line_number_map)
+	 {
+		 if (iter.first < 10)	std::cout << iter.first << "  |  " << iter.second;
+		 else if (iter.first >= 10 && iter.first <= 99) std::cout << iter.first << " |  " << iter.second;
+		 else if (iter.first >= 100 && iter.first <= 999) std::cout << iter.first << "|  " << iter.second;
+	 }
+ }
 
 private:
 
@@ -98,15 +110,7 @@ private:
 	}
 
 	
-	void PrintLineNumberedSource() const
-	{
-		for (auto iter : line_number_map)
-		{
-			if(iter.first < 10)	std::cout << iter.first << "  |  " << iter.second;
-			else if(iter.first>=10 && iter.first <= 99) std::cout << iter.first << " |  " << iter.second;
-			else if (iter.first >= 100 && iter.first <= 999) std::cout << iter.first << "|  " << iter.second;
-		}
-	}
+	
 
 	// Enumerations representing each input type.
 	enum eInputType // These enumerations need to correspond with the column of the particular input character

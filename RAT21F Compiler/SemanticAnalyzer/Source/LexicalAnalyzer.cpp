@@ -11,6 +11,7 @@
 #include "../Include/LexicalAnalyzer.h"
 #include <algorithm>
 
+using namespace LA_cfg;
 
 LexicalAnalyzer::LexicalAnalyzer(std::string sourceString) : source{ sourceString }
 {
@@ -27,7 +28,10 @@ LexicalAnalyzer::LexicalAnalyzer(std::string sourceString) : source{ sourceStrin
 	}
 	source = RemoveComments(source, "/*", "*/"); // removal of comments in our local copy
 
+#ifdef PRINT_SOURCE
 	PrintLineNumberedSource();
+#endif // PRINT_SOURCE
+
 }
 
 bool LexicalAnalyzer::Lexer(std::string& token, std::string& lexeme)

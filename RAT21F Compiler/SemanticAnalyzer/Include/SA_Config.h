@@ -78,6 +78,9 @@ namespace SA_cfg
 #endif // !COLOR_MODE
 // **********************************************************************************************
 
+#ifndef PRINT_SOURCE
+#define PRINT_SOURCE
+#endif // !PRINT_SOURCE
 
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! DO NOT EDIT #DEFINES BELOW !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

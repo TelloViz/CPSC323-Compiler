@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Include\LA_Config.h" />
     <ClInclude Include="Include\LexicalAnalyzer.h" />
     <ClInclude Include="Include\ProductionRule.h" />
     <ClInclude Include="Include\SA_Config.h" />
