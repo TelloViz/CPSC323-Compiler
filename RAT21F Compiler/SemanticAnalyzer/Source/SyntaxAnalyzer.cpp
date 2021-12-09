@@ -597,11 +597,11 @@ bool SyntaxAnalyzer::Q()
 
 	if (DD())  // if Token == identifier type
 	{
-		
+		std::string saveSymbol = (currentPair-1)->second;
 		if (currentPair->second == "=")
 		{
 
-			GenerateInstruction("POPM", std::to_string(get_address((currentPair-1)->second))); // TODO remove this awful pointer arithmetic
+			
 			HandlePrintRecognized(*currentPair);			
 			++currentPair;
 			
@@ -620,7 +620,7 @@ bool SyntaxAnalyzer::Q()
 				}
 				
 			}
-
+			GenerateInstruction("POPM", std::to_string(get_address(saveSymbol))); // TODO remove this awful pointer arithmetic
 		}
 		else { Expected("="); }
 	}

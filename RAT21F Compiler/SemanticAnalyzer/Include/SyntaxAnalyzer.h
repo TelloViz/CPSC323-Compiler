@@ -247,8 +247,8 @@ private:
 	
 
 #pragma region Instruction Handling
-	const int FIRST_INSTR_ADDR{ 8000 };
-	const int FINAL_INSTR_ADDR{ 8999 };
+	const int FIRST_INSTR_ADDR{ 0 };
+	const int FINAL_INSTR_ADDR{ 999 };
 
 	int instrAddr{ FIRST_INSTR_ADDR + 1 };
 
