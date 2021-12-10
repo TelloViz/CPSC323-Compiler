@@ -86,8 +86,8 @@ bool SyntaxAnalyzer::A()
 
 	if (isA)
 	{
-		HandlePrintSuccessText();
-		PrintGeneratedInstructions();
+		//HandlePrintSuccessText();
+		
 	}
 	else
 	{
@@ -231,16 +231,7 @@ bool SyntaxAnalyzer::H()
 		++currentPair;
 		isH = true;
 	}
-	else if (currentPair->first == "real")
-	{
-		HandlePrintRecognized(*currentPair);
-
-
-		HandlePrintAccepted(rule);
-
-		++currentPair;
-		isH = true;
-	}
+	
 
 	if (isH == false)
 	{
@@ -368,7 +359,7 @@ bool SyntaxAnalyzer::K()
 	return isK;
 }
 
-// L  ->  integer	M	|	boolean	M	|	real	M
+// L  ->  integer	M	|	boolean	M
 bool SyntaxAnalyzer::L()
 {
 	#ifdef SLOW_MODE
@@ -621,10 +612,10 @@ bool SyntaxAnalyzer::Q()
 		}
 		else { Expected("="); }
 	}
-	else
+	/*else
 	{
 		Expected("identifier");
-	}
+	}*/
 
 	if (isQ == false)
 	{
@@ -720,8 +711,8 @@ bool SyntaxAnalyzer::S()
 				
 		}
 
-	}
-	else { Expected("return"); }
+	}/*
+	else { Expected("return"); }*/
 	
 	if (isS == false)
 	{
@@ -1246,10 +1237,10 @@ bool SyntaxAnalyzer::DD()
 		++currentPair;
 		isDD = true;;
 	}
-	else
+	/*else
 	{
 		Expected("identifier");
-	}
+	}*/
 
 
 	if (isDD == false)

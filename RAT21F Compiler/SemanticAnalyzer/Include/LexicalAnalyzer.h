@@ -40,12 +40,14 @@ public:
 
  void PrintLineNumberedSource() const
  {
+	 std::cout << "\n\n*********** Numbered Source Lines **************\n";
 	 for (auto iter : line_number_map)
 	 {
 		 if (iter.first < 10)	std::cout << iter.first << "  |  " << iter.second;
 		 else if (iter.first >= 10 && iter.first <= 99) std::cout << iter.first << " |  " << iter.second;
 		 else if (iter.first >= 100 && iter.first <= 999) std::cout << iter.first << "|  " << iter.second;
 	 }
+
  }
 
 private:

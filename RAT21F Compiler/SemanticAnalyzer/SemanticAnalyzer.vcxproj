@@ -72,6 +72,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <TargetName>jp</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -139,15 +140,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Include\CLI11.hpp" />
     <ClInclude Include="Include\LA_Config.h" />
     <ClInclude Include="Include\LexicalAnalyzer.h" />
-    <ClInclude Include="Include\ProductionRule.h" />
     <ClInclude Include="Include\SA_Config.h" />
     <ClInclude Include="Include\SyntaxAnalyzer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\LexicalAnalyzer.cpp" />
-    <ClCompile Include="Source\ProductionRule.cpp" />
     <ClCompile Include="Source\SA_driver.cpp" />
     <ClCompile Include="Source\SyntaxAnalyzer.cpp" />
   </ItemGroup>

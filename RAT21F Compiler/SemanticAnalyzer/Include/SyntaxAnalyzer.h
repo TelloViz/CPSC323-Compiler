@@ -35,6 +35,30 @@ public:
 		return AbstractEquivalenceMap.at(simplifiedRuleName);
 	}
 
+	void PrintGeneratedInstructions()
+	{
+		/*for (auto iter : addr_table)
+		{
+			std::cout << "\n" << iter.first << " " << iter.second;
+		}*/
+
+		std::cout << "\n\n******* Semantic Actions / Assembly Instructions **************\n";
+
+		for (auto iter : instr_table)
+		{
+			std::cout << "\n" << iter.first << " " << iter.second.op << " " << iter.second.oprnd;
+		}
+
+	}
+
+	void PrintSymbolTable()
+	{
+		for (auto iter : symb_table)
+		{
+			std::cout << "\n" << iter.first << " " << iter.second;
+		}
+	}
+
 private:
 
 	std::map<std::string, std::string> AbstractRuleNameConversion
@@ -275,17 +299,7 @@ private:
 
 	}
 
-	void PrintGeneratedInstructions()
-	{
-		for (auto iter : addr_table)
-		{
-			std::cout << "\n" << iter.first << " " << iter.second;
-		}
-		for (auto iter : instr_table)
-		{
-			std::cout << "\n" << iter.first << " " << iter.second.op << " " << iter.second.oprnd;
-		}
-	}
+	
 #pragma endregion
 
 	std::vector<std::pair<std::string, std::string>> sourcePairs;

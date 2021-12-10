@@ -10,9 +10,9 @@ namespace LA_cfg
 	// ******************************************************************************************
 
 	//************************* Print Rule When Calling Function **********************************
-#ifndef PRINT_SOURCE
-#define PRINT_SOURCE // Comment out ths line to turn off
-#endif
+//#ifndef PRINT_SOURCE
+//#define PRINT_SOURCE // Comment out ths line to turn off
+//#endif
 // **********************************************************************************************
 
 

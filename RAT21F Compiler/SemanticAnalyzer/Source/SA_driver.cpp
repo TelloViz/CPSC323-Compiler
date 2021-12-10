@@ -18,6 +18,8 @@
 #include "../Include/SyntaxAnalyzer.h"
 #include <list>
 
+#include "../Include/CLI11.hpp"
+
 
 #pragma region File IO Function Signatures
 bool ConfirmInputArgSuccess(int argCount);
@@ -35,9 +37,69 @@ bool OutputResultData(std::string, std::string);
 int main(int argc, char** argv)
 {
 #pragma region Init CLI arg and stream data
-
+		
 	// the source passed in from Command Line
-	std::string SOURCE{ "" };
+	std::string SOURCE{};
+	
+	CLI::App cliApp{ "\n\nRAT21F Compiler" };
+
+	std::string HELP_STRING{ "Print this help menu." };
+	auto help = cliApp.set_help_flag("-h, --help", HELP_STRING);	
+	
+	std::string sourceFilename{};
+	//auto inputOptionGroup = cliApp.add_option_group("Input File", "Input File Option.");
+	//auto inputOption = inputOptionGroup->add_option("-i", sourceFilename, "Input Filename")->check(CLI::ExistingFile);
+
+	auto testOpt = cliApp.add_option("-i", sourceFilename, "Input Filename")->check(CLI::ExistingFile)->required(true);
+
+	//inputOptionGroup->require_option(1,1);
+
+	std::string defaultLexicalOutputFileName{ "lexout.RAT21F" };
+	std::string defaultSyntacticOutputFileName{ "synout.RAT21F" };
+	std::string defaultSemanticOutputFileName{ "semout.RAT21F" };
+	auto OutputFileOptionGroup = cliApp.add_option_group("Compiler File Output", "Output File Options.");
+	auto lexFileOption = OutputFileOptionGroup->add_option("--ofLex", defaultLexicalOutputFileName, "Output Lexical Analysis to [TEXT].txt")->ignore_case();
+	auto synFileOption = OutputFileOptionGroup->add_option("--ofSyn", defaultSyntacticOutputFileName, "Output Syntactic Analysis to [TEXT].txt")->ignore_case();
+	auto semFileOption = OutputFileOptionGroup->add_option("--ofSem", defaultSemanticOutputFileName, "Output Semantic Analysis to [TEXT].txt")->ignore_case();
+	OutputFileOptionGroup->require_option(0, 3);
+
+	
+	bool isLex2Console{ false };
+	bool isSyn2Console{ false };
+	bool isSem2Console{ false };
+	auto printFlags = cliApp.add_option_group("Compiler Console Output", "For compilation console print flags");
+	auto lexFlag = printFlags->add_flag("--lex", isLex2Console, "Print Lexical Analysis to console.")->ignore_case();
+	auto synFlag = printFlags->add_flag("--syn", isSyn2Console, "Print Syntactic Analysis to console.")->ignore_case();
+	auto semFlag = printFlags->add_flag("--sem", isSem2Console, "Print Semantic Analysis to console.")->ignore_case();
+	printFlags->require_option(0, 3);
+
+
+	bool shouldPrintLinedSource{};
+	auto linedSourceFlag = cliApp.add_flag("-l", shouldPrintLinedSource, "Print lined source code to console.")->ignore_case();
+
+
+	bool shouldPrintSource{};
+	auto sourceFlag = cliApp.add_flag("-s", shouldPrintSource, "Print source code to console.")->ignore_case();
+
+	//linedSourceFlag->excludes(sourceFlag);
+
+	bool shouldPrintASM{};
+	auto asmFlag = cliApp.add_flag("-a", shouldPrintASM, "Print assembly instruction set to console.");
+
+	bool shouldPrintSymbols{};
+	auto symbFlag = cliApp.add_flag("-t", shouldPrintSymbols, "Print symbol table to console.");
+
+	cliApp.get_formatter()->column_width(40);
+
+	try 
+	{
+		CLI11_PARSE(cliApp, argc, argv);		
+	}
+	catch (const CLI::Error& e)
+	{
+		std::cout << "Error in CLI parse" << std::endl;
+	}
+
 
 	// The pairs of Tokens/Lexemes as returned from the Lexer
 	std::vector<std::pair<std::string, std::string>> tokenLexemeVec;
@@ -50,8 +112,7 @@ int main(int argc, char** argv)
 		"------------------\n"
 	};
 
-	// default file name if an output file is not supplied
-	std::string defaultFileName{ "output.RAT21F" };
+	
 
 
 	// file buffer stream for loading file contents
@@ -66,11 +127,11 @@ int main(int argc, char** argv)
 
 #pragma region Stream Input
 	// check if input arg exists
-	if (ConfirmInputArgSuccess(argc))
+	if (*testOpt/*inputOption*/) // This *inputOption is dereferencing a CLI::Option* which converts to a bool by documentation.
 	{
 		try // Try loading input source stream
 		{
-			if (isSourceInputSuccess = LoadInputFile(inStream, argv[1], SOURCE)) 
+			if (isSourceInputSuccess = LoadInputFile(inStream, sourceFilename, SOURCE)) 
 			{
 				inStream.close();
 			}
@@ -89,6 +150,16 @@ int main(int argc, char** argv)
 
 	// Instantiation of the Lexical Analyzer passing our loaded string as source
 	LexicalAnalyzer LA(SOURCE); // Instantiate Lexical Analyzer object with source code string
+
+	if (shouldPrintSource)
+	{
+		std::cout << SOURCE;
+	}	
+	
+	if (shouldPrintLinedSource)
+	{
+		LA.PrintLineNumberedSource();
+	}
 
 	// instantiate and initialize EOF flag
 	bool isEOF{ false };
@@ -121,12 +192,23 @@ int main(int argc, char** argv)
 	SyntaxAnalyzer SA(tokenLexemeVec, SA_outString);
 	if (SA.Analyze())
 	{
+		if (shouldPrintASM)
+		{
+			SA.PrintGeneratedInstructions();
+		}
+
+		
 		if (OutputResultData(SA_outString, std::string{ "Syntax_Analysis.txt" }))
 		{
 
 		}
 	}
 
+	if (shouldPrintSymbols)
+	{
+		SA.PrintSymbolTable();
+	}
+	
 #pragma endregion
 
 #pragma region Stream Output
@@ -136,19 +218,13 @@ int main(int argc, char** argv)
 		try // Try outputting results to stream
 		{
 			// if the arg exists use it
-			if (isSourceOutputSuccess = OutputResultData(formattedOutputString, argv[2])) {}
+			if (isSourceOutputSuccess = OutputResultData(formattedOutputString, SOURCE)) {}
 
 		}
 		catch (const std::exception&)
 		{
 			std::cout << "Error Outputting Results to Stream..." << std::endl;
 		}
-	}
-
-	// else use the default file output name
-	else
-	{
-		(isSourceOutputSuccess = OutputResultData(formattedOutputString, defaultFileName));
 	}
 #pragma endregion // End Stream Output Region
 	
