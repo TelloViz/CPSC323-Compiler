@@ -679,45 +679,45 @@ bool SyntaxAnalyzer::R()
 	return isR;
 }
 
-// S  ->  return	S'
-bool SyntaxAnalyzer::S()
-{
-	#ifdef SLOW_MODE
-		mySleep(slowModeSpeed);
-	#endif
-
-	std::string rule{ "S" };
-	bool isS{ false };
-
-	HandlePrintOnCall(rule);
-
-	if (currentPair->second == "return")
-	{
-
-		HandlePrintRecognized(*currentPair);
-
-
-		++currentPair;
-
-		if (S_())
-		{
-			isS = true;
-
-			HandlePrintAccepted(rule);
-				
-		}
-
-	}/*
-	else { Expected("return"); }*/
-	
-	if (isS == false)
-	{
-		HandlePrintRejected(rule);
-	}
-
-	return isS;
-
-}
+//// S  ->  return	S'
+//bool SyntaxAnalyzer::S()
+//{
+//	#ifdef SLOW_MODE
+//		mySleep(slowModeSpeed);
+//	#endif
+//
+//	std::string rule{ "S" };
+//	bool isS{ false };
+//
+//	HandlePrintOnCall(rule);
+//
+//	if (currentPair->second == "return")
+//	{
+//
+//		HandlePrintRecognized(*currentPair);
+//
+//
+//		++currentPair;
+//
+//		if (S_())
+//		{
+//			isS = true;
+//
+//			HandlePrintAccepted(rule);
+//				
+//		}
+//
+//	}/*
+//	else { Expected("return"); }*/
+//	
+//	if (isS == false)
+//	{
+//		HandlePrintRejected(rule);
+//	}
+//
+//	return isS;
+//
+//}
 
 // T  ->  put	(	Y	)	;
 bool SyntaxAnalyzer::T()
@@ -734,10 +734,9 @@ bool SyntaxAnalyzer::T()
 	if (currentPair->second == "put")
 	{
 
-    HandlePrintRecognized(*currentPair);
-
-		
+		HandlePrintRecognized(*currentPair);		
 		++currentPair;
+
 		if (currentPair->second == "(")
 		{
 
@@ -748,6 +747,8 @@ bool SyntaxAnalyzer::T()
 			
 			if (Y())
 			{
+
+				GenerateInstruction("STDOUT", "nil");
 				if (currentPair->second == ")")
 				{
 					 HandlePrintRecognized(*currentPair);
@@ -791,11 +792,11 @@ bool SyntaxAnalyzer::U()
 
 	HandlePrintOnCall(rule);
 
-	if (currentPair->second == "get")
+	if (currentPair->second == "get") // TODO left off working on GET
 	{
 		HandlePrintRecognized(*currentPair);
 
-		
+		GenerateInstruction("STDIN", "nil");
 		++currentPair;
 		
 		if (currentPair->second == "(")
@@ -804,9 +805,10 @@ bool SyntaxAnalyzer::U()
 
 			
 			++currentPair;
-			
+			auto saveString{ currentPair->second };
 			if (M())
 			{
+				GenerateInstruction("POPM", std::to_string(get_address(saveString)));
 				if (currentPair->second == ")")
 				{
 					 HandlePrintRecognized(*currentPair);

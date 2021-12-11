@@ -86,7 +86,7 @@ private:
 		{"P", "Compound"},
 		{"Q", "Assign"},
 		{"R", "If"},
-		{"S", "Return"},
+		/*{"S", "Return"},*/
 		{"T", "Print"},
 		{"U", "Scan"},
 		{"V", "While"},
@@ -127,7 +127,7 @@ private:
 		{"P", "{  <N>  }"},
 		{"Q", "<DD>  =  <Y>  ;"},										// A1) A -> id  = E { gen_instr (POPM,  get_address(id)) }
 		{"R", "if  (  <W>  )  <O>  <R'>"},									// I ->   if ( C )  S   endif
-		{"S", "return  <S'>"},
+		/*{"S", "return  <S'>"},*/
 		{"T", "put  (  <Y>  )  ;"},
 		{"U", "get  (  <M>  )  ;"},
 		{"V", "while  (  <W>  )  <O>"},									// W1) W -> while (  C  )  S 
@@ -190,7 +190,7 @@ private:
 		{"IDs'", "epsilon  |  ,  <IDs>"},
 		{"Statement List'", "epsilon  |  <Statement List>"},
 		{"If'", "endif  |  else  <Statement>  endif"},
-		{"Return'", ";  |  <Expression>  ;"},
+		/*{"Return'", ";  |  <Expression>  ;"},*/
 		{"Primary'", "(  <IDs>  )  |  epsilon"},
 
 	};
