@@ -497,11 +497,11 @@ bool SyntaxAnalyzer::O()
 		HandlePrintAccepted(rule);
 			
 	}
-	else if (S())
+	/*else if (S())
 	{
 		HandlePrintAccepted(rule);
-			
-	}
+		*/	
+	/*}*/
 	else if (T())
 	{
 		HandlePrintAccepted(rule);
@@ -1642,49 +1642,49 @@ bool SyntaxAnalyzer::R_()
 }
 
 // S'  ->  ;	|	Y	;
-bool SyntaxAnalyzer::S_()
-{
-	#ifdef SLOW_MODE
-		mySleep(slowModeSpeed);
-	#endif
-
-	std::string rule{ "S'" };
-	bool isS_{ false };
-
-	HandlePrintOnCall(rule);
-
-	if (currentPair->second == ";")
-	{
-		HandlePrintRecognized(*currentPair);
-
-
-		++currentPair;
-		isS_ = true;
-
-		HandlePrintAccepted(rule);
-			
-	}
-	else if (Y())
-	{
-		if (currentPair->second == ";")
-		{
-			HandlePrintRecognized(*currentPair);
-
-
-			++currentPair;
-			isS_ = true;
-
-			HandlePrintAccepted(rule);
-			
-		}
-	}
-
-	if (isS_ == false)
-	{
-		HandlePrintRejected(rule);
-	}
-	return isS_;
-}
+//bool SyntaxAnalyzer::S_()
+//{
+//	#ifdef SLOW_MODE
+//		mySleep(slowModeSpeed);
+//	#endif
+//
+//	std::string rule{ "S'" };
+//	bool isS_{ false };
+//
+//	HandlePrintOnCall(rule);
+//
+//	if (currentPair->second == ";")
+//	{
+//		HandlePrintRecognized(*currentPair);
+//
+//
+//		++currentPair;
+//		isS_ = true;
+//
+//		HandlePrintAccepted(rule);
+//			
+//	}
+//	else if (Y())
+//	{
+//		if (currentPair->second == ";")
+//		{
+//			HandlePrintRecognized(*currentPair);
+//
+//
+//			++currentPair;
+//			isS_ = true;
+//
+//			HandlePrintAccepted(rule);
+//			
+//		}
+//	}
+//
+//	if (isS_ == false)
+//	{
+//		HandlePrintRejected(rule);
+//	}
+//	return isS_;
+//}
 
 // BB'  ->  (	M	)  |  epsilon
 

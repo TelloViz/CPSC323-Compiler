@@ -106,7 +106,7 @@ private:
 		{"M'", "IDs'"},
 		{"N'", "Statement List'"},
 		{"R'", "If'"},
-		{"S'", "Return'"},
+		/*{"S'", "Return'"},*/
 		{"BB'", "Primary'"},
 	};
 
@@ -147,7 +147,7 @@ private:
 		{"M'", ",  <M>  |  epsilon"},
 		{"N'", "<N>  |  epsilon"},
 		{"R'", "endif  |  else  <O>  endif"},
-		{"S'", ";  |  <Y>  ;"},
+		/*{"S'", ";  |  <Y>  ;"},*/
 		{"BB'", "(  <M>  )  |  epsilon"},
 	
 	};
@@ -169,7 +169,7 @@ private:
 		{"Compound", "{  <Statement List>  }"},
 		{"Assign", "<Identifier>  =  <Expression>  ;"},
 		{"If", "if  (  <Condition>  )  <Statement>  <If'>"},
-		{"Return", "return  <Return'>"},
+		/*{"Return", "return  <Return'>"},*/
 		{"Print", "put  (  <Expression>  )  ;"},
 		{"Scan", "get  (  <IDs>  )  ;"},
 		{"While", "while  (  <Condition>  )  <Statement>"},
@@ -211,7 +211,7 @@ private:
 	bool P( );
 	bool Q( );
 	bool R( );
-	bool S( );
+	/*bool S( );*/
 	bool T( );
 	bool U( );
 	bool V( );
@@ -231,7 +231,7 @@ private:
 	bool M_( );
 	bool N_( );
 	bool R_( );
-	bool S_( );
+	/*bool S_( );*/
 	bool BB_( );
 
 #pragma endregion
