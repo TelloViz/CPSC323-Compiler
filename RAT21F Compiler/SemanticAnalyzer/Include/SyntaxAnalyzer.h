@@ -15,6 +15,7 @@ Fall 20218*/
 #include <vector>
 #include <map>
 #include <iostream>
+#include <stack>
 
 
 class SyntaxAnalyzer
@@ -33,6 +34,11 @@ public:
 	std::string GetConversion(std::string simplifiedRuleName) const
 	{
 		return AbstractEquivalenceMap.at(simplifiedRuleName);
+	}
+
+	void error_message(std::ostream& out, std::string msg)
+	{
+		out << msg;
 	}
 
 	void PrintGeneratedInstructions()
@@ -60,6 +66,8 @@ public:
 	}
 
 private:
+
+	std::vector<std::string> operatorsVec{ "==", "!=", ">",  "<", "<=","=", ">"};
 
 	std::map<std::string, std::string> AbstractRuleNameConversion
 	{
@@ -118,15 +126,15 @@ private:
 		{"O", "<P>  |  <Q>  |  <R>  |  <S>  |  <T>  |  <U>  |  <V>"},
 		{"P", "{  <N>  }"},
 		{"Q", "<DD>  =  <Y>  ;"},										// A1) A -> id  = E { gen_instr (POPM,  get_address(id)) }
-		{"R", "if  (  <W>  )  <O>  <R'>"},
+		{"R", "if  (  <W>  )  <O>  <R'>"},									// I ->   if ( C )  S   endif
 		{"S", "return  <S'>"},
 		{"T", "put  (  <Y>  )  ;"},
 		{"U", "get  (  <M>  )  ;"},
-		{"V", "while  (  <W>  )  <O>"},
-		{"W", "<Y>  <X>  <Y>"},
-		{"X", "==  |  !=  |  >  |  <  |  <=  |  =>"},
+		{"V", "while  (  <W>  )  <O>"},									// W1) W -> while (  C  )  S 
+		{"W", "<Y>  <X>  <Y>"},											// W2) C -> E  R  E
+		{"X", "==  |  !=  |  >  |  <  |  <=  |  =>"},						// W3) R ->  == | != | > | < | => | <= 
 		{"Y", "<Z>  <Y'>"},												// A2) E ->  T  E’ 
-		{"Z", "<AA>  <Z'>"},											// A5) T  ->   F  T’ 
+		{"Z", "<AA>  <Z'>"},											// A5) T ->   F  T’ 
 		{"AA", "-  <BB>  |  <BB>"},										
 		{"BB", "<DD>  <BB'>  |  <EE>  |  (  <Y>  )  |  TRUE  |  FALSE"},
 		{"CC", "epsilon"},
@@ -249,7 +257,7 @@ private:
 
 	const int FIRST_SYMTBL_ADDR{ 7000 };
 	const int FINAL_SYMTBL_ADDR{ 7999 };
-	int symbAddr{ FIRST_SYMTBL_ADDR + 1};
+	int symbAddr{ FIRST_SYMTBL_ADDR};
 
 	int FirstSymbAddr() const { return FIRST_SYMTBL_ADDR; }
 	int SymbAddr() const { return symbAddr; }
@@ -297,6 +305,14 @@ private:
 		instr_table[InstrAddr()].oprnd = oprnd;
 		IncrInstrAddr();
 
+	}
+
+	std::stack<int> jmpStack;
+	void BackPatch(int jmpAddr)
+	{
+		int tempAddr = jmpStack.top();
+		jmpStack.pop();
+		instr_table[tempAddr].oprnd = std::to_string(jmpAddr);
 	}
 
 	

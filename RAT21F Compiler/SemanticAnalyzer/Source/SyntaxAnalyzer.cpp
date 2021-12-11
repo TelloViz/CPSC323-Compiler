@@ -527,6 +527,7 @@ bool SyntaxAnalyzer::O()
 	return isO;
 }
 
+// <Compound>
 // <P>  ->  {	<N>	}
 bool SyntaxAnalyzer::P()
 {
@@ -541,17 +542,16 @@ bool SyntaxAnalyzer::P()
 
 	if (currentPair->second == "{")
 	{
-		HandlePrintRecognized(*currentPair);
-
-		
+		HandlePrintRecognized(*currentPair);		
 		++currentPair;
+
+		std::string tempValChecker = currentPair->second;
 		if (N())
 		{
 			if (currentPair->second == "}")
 			{
 				 
 				HandlePrintRecognized(*currentPair);
-
 				
 				isP = true;
 				++currentPair;
@@ -587,7 +587,7 @@ bool SyntaxAnalyzer::Q()
 
 	if (DD())  // if Token == identifier type
 	{
-		std::string saveSymbol = (currentPair-1)->second;
+		std::string saveSymbol = (currentPair-1)->second; // cache the identifier for use lower down
 		if (currentPair->second == "=")
 		{			
 			HandlePrintRecognized(*currentPair);			
@@ -647,31 +647,27 @@ bool SyntaxAnalyzer::R()
 		if (currentPair->second == "(")
 		{
 			HandlePrintRecognized(*currentPair);
-
-
 			++currentPair;
 
-			if (W())
-			{
-				if (currentPair->second == ")")
-				{
-					HandlePrintRecognized(*currentPair);
-
-					
-					++currentPair;
+			W();
 			
-					if (O())
-					{
-						if (R_())
-						{							
-							HandlePrintAccepted(rule);
+			if (currentPair->second == ")")
+			{
+				HandlePrintRecognized(*currentPair);					
+				++currentPair;
+			
+				O();
+				BackPatch(InstrAddr());
+				if (R_())
+				{	
+					GenerateInstruction("LABEL", "nil");
+					HandlePrintAccepted(rule);
 								
-							isR = true;
-						}
-
-					}
+					isR = true;
 				}
+				//else Expected("Expected endif");
 			}
+			
 		}
 	}
 
@@ -843,7 +839,8 @@ bool SyntaxAnalyzer::U()
 	return isU;
 }
 
-// V  ->  while	(	W	)	O
+//		  V  ->  while	 (  W  )	O
+//  W1)     W  ->  while  (  C  )  S 
 bool SyntaxAnalyzer::V()
 {
 	#ifdef SLOW_MODE
@@ -857,38 +854,39 @@ bool SyntaxAnalyzer::V()
 
 	if (currentPair->second == "while")
 	{
-		HandlePrintRecognized(*currentPair);
-
-		
+		int addr = InstrAddr(); // this is the address of while instruction
+		GenerateInstruction("LABEL", "nil");
+		HandlePrintRecognized(*currentPair);		
 		++currentPair;
 		
 		if (currentPair->second == "(")
 		{
 			HandlePrintRecognized(*currentPair);
-
-			
 			++currentPair;
 			
 			if (W())
 			{
 				if (currentPair->second == ")")
 				{
-					HandlePrintRecognized(*currentPair);
-
-					
+					HandlePrintRecognized(*currentPair);					
 					++currentPair;
 					
 					if (O())
 					{
 						isV = true;
-
-						HandlePrintAccepted(rule);							
-
+						
+						HandlePrintAccepted(rule);
 					}
+					GenerateInstruction("JUMP", std::to_string(addr));
+					// TODO put BackPatch here not sure if right becaues my program operates just slightly differently so check back here
+					BackPatch(InstrAddr());
+					
 				}
+				else error_message(std::cout, "Expected )");
 			}
-		}
+		}else error_message(std::cout, "Expected (");
 	}
+	else error_message(std::cout, "Expected while");
 
 	if (isV == false)
 	{
@@ -899,7 +897,8 @@ bool SyntaxAnalyzer::V()
 	return isV;
 }
 
-// W  ->  Y	X	Y
+//		W  ->  Y	X  Y
+// W2)    C  - > E  R  E 
 bool SyntaxAnalyzer::W()
 {
 	#ifdef SLOW_MODE
@@ -913,14 +912,45 @@ bool SyntaxAnalyzer::W()
 
 	if (Y())
 	{
+		std::string relopString{ currentPair->second }; // This will grab the Relop before its changed in subsequent function calls.
 		if (X())
 		{
+			// if you've made it here, then you do have a relational operator in relopString
 			if (Y())
 			{
+				auto rhs = *(currentPair-1);
 				isW = true;
-				
-
 				HandlePrintAccepted(rule);					
+			}
+
+			auto iter = std::find(operatorsVec.begin(), operatorsVec.end(), relopString);
+			if (iter != operatorsVec.end())
+			{
+				int idx = iter - operatorsVec.begin();
+
+				//  ==  |	 != 	 |   >	|	<	|	<=	|  =>
+				switch (idx)
+				{
+				case 0: // ==
+					break;
+				case 1: // !=
+					break;
+				case 2: // >
+					GenerateInstruction("GRT", "nil");
+					jmpStack.push(InstrAddr());
+					GenerateInstruction("", "");
+
+					break;
+				case 3: // <
+					GenerateInstruction("LES", "nil");
+					jmpStack.push(InstrAddr());   /* another stack need */
+					GenerateInstruction("JUMPZ", "nil");
+					break;
+				case 4: // <=
+					break;
+				case 5: // =>
+					break;
+				}
 			}
 		}
 	}
@@ -934,7 +964,8 @@ bool SyntaxAnalyzer::W()
 	return isW;
 }
 
-// X  ->  ==	|	!=	|	>	|	<	|	<=	|	=>
+//		X  ->  ==	|	!=	|	>	|	<	|	<=	|  =>
+// W3)    R  ->  == |    !=   |    >    |    <    |    =>   |  <=
 bool SyntaxAnalyzer::X()
 {
 	#ifdef SLOW_MODE
@@ -1080,7 +1111,6 @@ bool SyntaxAnalyzer::Z()
 }
 
 // AA  ->  -	BB	|	BB
-// A8) F -> id { gen_instr (PUSHM, get_address(id) )
 bool SyntaxAnalyzer::AA()
 {
 	#ifdef SLOW_MODE
@@ -1095,7 +1125,7 @@ bool SyntaxAnalyzer::AA()
 	if (currentPair->second == "-")
 	{
 		HandlePrintRecognized(*currentPair);
-
+		++currentPair; // I just added this after turning in the previous assignment, this was an oversight.
 		if (BB())
 		{
 			HandlePrintAccepted(rule);				
@@ -1149,8 +1179,13 @@ bool SyntaxAnalyzer::BB() // TODO keep looking into BB function
 
 		++currentPair;
 	}
+
+	std::string saveID = currentPair->second;
 	if (DD())
 	{
+		GenerateInstruction("PUSHM", std::to_string(get_address(saveID))); // need to replace "token" with actual token
+
+
 		if (BB_())
 		{
 			HandlePrintAccepted(rule);				
@@ -1219,7 +1254,8 @@ bool SyntaxAnalyzer::CC()
 	return true;
 }
 
-// DD -> identifier
+//	  DD -> identifier
+// A8) F  -> id { gen_instr (PUSHM, get_address(id) )
 bool SyntaxAnalyzer::DD()
 {
 	bool isDD{ false };
@@ -1233,7 +1269,6 @@ bool SyntaxAnalyzer::DD()
 
 		HandlePrintAccepted(rule);
 			
-		GenerateInstruction("PUSHM", std::to_string(get_address(currentPair->second))); // need to replace "token" with actual token
 		++currentPair;
 		isDD = true;;
 	}
@@ -1270,7 +1305,7 @@ bool SyntaxAnalyzer::EE()
 
 
 		HandlePrintAccepted(rule);
-
+		GenerateInstruction("PUSHI", currentPair->second); // need to replace "token" with actual token
 		++currentPair;
 		isEE =  true;
 	}

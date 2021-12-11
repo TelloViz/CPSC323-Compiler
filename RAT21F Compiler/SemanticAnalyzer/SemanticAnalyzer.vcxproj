@@ -151,6 +151,11 @@
     <ClCompile Include="Source\SA_driver.cpp" />
     <ClCompile Include="Source\SyntaxAnalyzer.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="if.txt" />
+    <Text Include="test.txt" />
+    <Text Include="while.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
